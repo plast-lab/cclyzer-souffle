@@ -1,0 +1,21 @@
+//------------------------------------
+// Instruction (EDB) Entities
+//------------------------------------
+
+.type Instruction
+.decl instruction(instr:Instruction)
+
+// For constraints
+.decl schema_invalid_instruction(instr:Instruction, file:File, line:Line)
+
+
+// Apart from the instructions with 'void' type,
+// every instruction assigns its result to a variable.
+.decl instruction_assigns_to(instr:Instruction, var:Variable)
+
+// Auxiliary predicate that stores the instruction's return type
+.decl instruction_has_type(instr:Instruction, type:Type)
+
+instruction_has_type(Instr, Type) :-
+   instruction_assigns_to(Instr, Var),
+   variable_has_type(Var, Type).

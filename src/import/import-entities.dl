@@ -1,0 +1,19 @@
+.decl _constant(v0:Constant)
+.input _constant(IO="file", delimiter="\t", filename="facts/constant.dlm")
+
+constant(v0) :-
+   _constant(v0).
+
+
+.decl _variable(v0:Variable)
+.input _variable(IO="file", delimiter="\t", filename="facts/variable.dlm")
+
+variable(v0) :-
+   _variable(v0).
+
+
+.decl _add_instruction(instr:symbol)
+.input _add_instruction(IO="file", delimiter="\t", filename="facts/add_instruction.dlm")
+
+add_instruction(e0) :-
+   _add_instruction(e0).

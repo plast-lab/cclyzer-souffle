@@ -1,0 +1,16 @@
+.decl _add_instruction_first_operand(v0:symbol, v1:symbol)
+.input _add_instruction_first_operand(IO="file", delimiter="\t", filename="facts/add_instruction-first_operand.dlm")
+
+add_instruction_first_operand(v0, v1) :-
+   add_instruction(v0),
+   operand(v1),
+   _add_instruction_first_operand(v0, v1).
+
+
+.decl _add_instruction_second_operand(v0:symbol, v1:symbol)
+.input _add_instruction_second_operand(IO="file", delimiter="\t", filename="facts/add_instruction-second_operand.dlm")
+
+add_instruction_second_operand(v0, v1) :-
+   add_instruction(v0),
+   operand(v1),
+   _add_instruction_second_operand(v0, v1).

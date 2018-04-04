@@ -1,0 +1,52 @@
+//------------------------------------------------------------------------------
+// [Variables]
+//
+// The first type of instruction operands are variables. In this
+// representation, variables correspond to LLVM virtual
+// registers. They are either source-level variables with valid names
+// or temporaries introduced by LLVM that hold intermediate expressions.
+//------------------------------------------------------------------------------
+
+.type Variable
+.decl variable(v:Variable)
+
+.decl variable_has_type(v:Variable, type:Type)
+
+
+//------------------------------------------------------------------------------
+// [Constants]
+//
+// The second type of instruction operands are constants. Constants
+// may be quite complex (see constant expressions). Their full
+// hierarchy is represented in `constants.logic`.
+//------------------------------------------------------------------------------
+
+.type Constant
+.decl constant(c:Constant)
+
+.decl constant_has_type(c:Constant, type:Type)
+
+
+//--------------------------------------------------
+// [Operands] as union of {variable, constant}
+//--------------------------------------------------
+
+.type Operand = Constant | Variable
+.decl operand(op:Operand)
+
+operand(c) :-
+   constant(c).
+
+operand(v) :-
+   variable(v).
+
+
+// Type predicate
+
+.decl operand_has_type(op:Operand, type:Type)
+
+operand_has_type(var, type) :-
+   variable_has_type(var, type).
+
+operand_has_type(c, type) :-
+   constant_has_type(c, type).

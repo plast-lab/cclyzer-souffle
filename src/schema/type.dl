@@ -1,0 +1,103 @@
+//------------------------------------------------------------------------------
+// [Types]
+//------------------------------------------------------------------------------
+
+.type Type
+.decl type(t:Type)
+
+
+// Sizes of types in bytes
+
+.decl type_has_size(t:Type, size:number)
+.decl type_has_unpadded_size(t:Type, size:number)
+
+
+//------------------------------------------------------------------------------
+// [Primitive Types]
+//------------------------------------------------------------------------------
+
+.type PrimitiveType = Type
+.type IntegerType = PrimitiveType
+.type FPType = PrimitiveType
+.type VoidType = PrimitiveType
+.type LabelType = PrimitiveType
+.type MetadataType = PrimitiveType
+
+.decl primitive_type(type:PrimitiveType)
+.decl integer_type(type:IntegerType)
+.decl fp_type(type:FPType)
+.decl void_type(type:VoidType)
+.decl label_type(type:LabelType)
+.decl metadata_type(type:MetadataType)
+
+type(t) :- primitive_type(t).
+primitive_type(t) :- integer_type(t).
+primitive_type(t) :- fp_type(t).
+primitive_type(t) :- void_type(t).
+primitive_type(t) :- label_type(t).
+primitive_type(t) :- metadata_type(t).
+
+
+//------------------------------------------------------------------------------
+// [Derived Types]
+//
+// keywords: derived; first class; aggregate
+// http://llvm.org/docs/LangRef.html#array-type
+// http://llvm.org/docs/LangRef.html#function-type
+// http://llvm.org/docs/LangRef.html#pointer-type
+// http://llvm.org/docs/LangRef.html#structure-type
+// http://llvm.org/docs/LangRef.html#vector-type
+//------------------------------------------------------------------------------
+
+.type DerivedType = Type
+.type FunctionType = DerivedType
+.type PointerType = DerivedType
+.type VectorType = DerivedType
+.type AggregateType = DerivedType
+.type ArrayType = AggregateType
+.type StructType = AggregateType
+.type OpaqueStructType = StructType
+
+.decl derived_type(type:DerivedType)
+.decl function_type(type:FunctionType)
+.decl pointer_type(type:PointerType)
+.decl vector_type(type:VectorType)
+.decl aggregate_type(type:AggregateType)
+.decl array_type(type:ArrayType)
+.decl struct_type(type:StructType)
+.decl opaque_struct_type(type:OpaqueStructType)
+
+type(t) :- derived_type(t).
+derived_type(t) :- function_type(t).
+derived_type(t) :- pointer_type(t).
+derived_type(t) :- vector_type(t).
+derived_type(t) :- aggregate_type(t).
+aggregate_type(t) :- array_type(t).
+aggregate_type(t) :- struct_type(t).
+struct_type(t) :- opaque_struct_type(t).
+
+
+//----------------------
+// First Class Types
+//----------------------
+
+.decl type_is_firstclass(type:Type)
+
+type_is_firstclass(Type) :-
+   type(Type),
+   !function_type(Type),
+   !void_type(Type).
+
+
+//----------------------
+// Vector type
+//----------------------
+
+.decl vector_type_has_component(type:VectorType, comp:Type)
+.decl vector_type_has_size(type:VectorType, size:number)
+
+.decl integer_vector_type(type:VectorType)
+
+integer_vector_type(Type) :-
+   vector_type_has_component(Type, Comp),
+   integer_type(Comp).

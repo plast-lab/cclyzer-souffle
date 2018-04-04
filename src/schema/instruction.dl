@@ -14,8 +14,8 @@
 .decl instruction_assigns_to(instr:Instruction, var:Variable)
 
 // Auxiliary predicate that stores the instruction's return type
-.decl instruction_has_type(instr:Instruction, type:Type)
+.decl instruction_returns_type(instr:Instruction, type:Type)
 
-instruction_has_type(Instr, Type) :-
+instruction_returns_type(Instr, Type) :-
    instruction_assigns_to(Instr, Var),
    variable_has_type(Var, Type).

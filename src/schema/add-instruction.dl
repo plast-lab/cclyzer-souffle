@@ -7,7 +7,6 @@
 instruction(v) :-
    add_instruction(v).
 
-
 .decl add_instruction_first_operand(instr:AddInstruction, op:Operand)
 .decl add_instruction_second_operand(instr:AddInstruction, op:Operand)
 
@@ -37,23 +36,18 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
    add_instruction(Instr),
-   !add_instruction_second_operand(Instr, _).
-
-schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
-   schema_sanity(),
-   add_instruction(Instr),
-   instruction_has_type(Instr, Type),
+   instruction_returns_type(Instr, Type),
    !integer_type(Type),
    !integer_vector_type(Type).
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
-   instruction_has_type(Instr, Type),
+   instruction_returns_type(Instr, Type),
    add_instruction_first_operand(Instr, LeftOp),
    !operand_has_type(LeftOp, Type).
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
-   instruction_has_type(Instr, Type),
+   instruction_returns_type(Instr, Type),
    add_instruction_first_operand(Instr, RightOp),
    !operand_has_type(RightOp, Type).

@@ -49,6 +49,8 @@ primitive_type(t) :- metadata_type(t).
 // http://llvm.org/docs/LangRef.html#vector-type
 //------------------------------------------------------------------------------
 
+// Type Hierarchy
+
 .type DerivedType = Type
 .type FunctionType = DerivedType
 .type PointerType = DerivedType

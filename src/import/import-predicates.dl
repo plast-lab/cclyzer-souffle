@@ -14,3 +14,52 @@ add_instruction_second_operand(v0, v1) :-
    add_instruction(v0),
    operand(v1),
    _add_instruction_second_operand(v0, v1).
+
+
+.decl _variable_has_type(v0:symbol, v1:symbol)
+.input _variable_has_type(IO="file", delimiter="\t", filename="facts/variable-type.dlm")
+
+variable(v0), type(v1), variable_has_type(v0, v1) :-
+   _variable_has_type(v0, v1).
+
+
+.decl _constant_has_type(v0:symbol, v1:symbol)
+.input _constant_has_type(IO="file", delimiter="\t", filename="facts/constant-type.dlm")
+
+constant(v0), type(v1), constant_has_type(v0, v1) :-
+   _constant_has_type(v0, v1).
+
+
+.decl _type_has_size(v0:symbol, v1:number)
+.input _type_has_size(IO="file", delimiter="\t", filename="facts/type-size.dlm")
+
+type(v0), type_has_size(v0, v1) :-
+   _type_has_size(v0, v1).
+
+
+.decl _type_has_unpadded_size(v0:symbol, v1:number)
+.input _type_has_unpadded_size(IO="file", delimiter="\t", filename="facts/type-size.dlm")
+
+type(v0), type_has_unpadded_size(v0, v1) :-
+   _type_has_unpadded_size(v0, v1).
+
+
+.decl _instruction_assigns_to(v0:symbol, v1:symbol)
+.input _instruction_assigns_to(IO="file", delimiter="\t", filename="facts/instruction-to.dlm")
+
+instruction(v0), variable(v1), instruction_assigns_to(v0, v1) :-
+   _instruction_assigns_to(v0, v1).
+
+
+.decl _vector_type_has_component(v0:symbol, v1:symbol)
+.input _vector_type_has_component(IO="file", delimiter="\t", filename="facts/vector_type-component.dlm")
+
+vector_type(v0), type(v1), vector_type_has_component(v0, v1) :-
+   _vector_type_has_component(v0, v1).
+
+
+.decl _vector_type_has_size(v0:symbol, v1:number)
+.input _vector_type_has_size(IO="file", delimiter="\t", filename="facts/vector_type-size.dlm")
+
+vector_type(v0), vector_type_has_size(v0, v1) :-
+   _vector_type_has_size(v0, v1).

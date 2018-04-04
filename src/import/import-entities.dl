@@ -1,19 +1,75 @@
-.decl _constant(v0:Constant)
+.decl _constant(v0:symbol)
 .input _constant(IO="file", delimiter="\t", filename="facts/constant.dlm")
 
 constant(v0) :-
    _constant(v0).
 
 
-.decl _variable(v0:Variable)
+.decl _variable(v0:symbol)
 .input _variable(IO="file", delimiter="\t", filename="facts/variable.dlm")
 
 variable(v0) :-
    _variable(v0).
 
 
-.decl _add_instruction(instr:symbol)
+.decl _add_instruction(v0:symbol)
 .input _add_instruction(IO="file", delimiter="\t", filename="facts/add_instruction.dlm")
 
 add_instruction(e0) :-
    _add_instruction(e0).
+
+
+.decl _integer_type(v0:symbol)
+.input _integer_type(IO="file", delimiter="\t", filename="facts/integer_type.dlm")
+
+integer_type(e0) :-
+   _integer_type(e0).
+
+
+.decl _fp_type(v0:symbol)
+.input _fp_type(IO="file", delimiter="\t", filename="facts/fp_type.dlm")
+
+fp_type(e0) :-
+   _fp_type(e0).
+
+
+.decl _function_type(v0:symbol)
+.input _function_type(IO="file", delimiter="\t", filename="facts/function_type.dlm")
+
+function_type(e0) :-
+   _function_type(e0).
+
+
+.decl _pointer_type(v0:symbol)
+.input _pointer_type(IO="file", delimiter="\t", filename="facts/pointer_type.dlm")
+
+pointer_type(e0) :-
+   _pointer_type(e0).
+
+
+.decl _array_type(v0:symbol)
+.input _array_type(IO="file", delimiter="\t", filename="facts/array_type.dlm")
+
+array_type(e0) :-
+   _array_type(e0).
+
+
+.decl _vector_type(v0:symbol)
+.input _vector_type(IO="file", delimiter="\t", filename="facts/vector_type.dlm")
+
+vector_type(e0) :-
+   _vector_type(e0).
+
+
+.decl _struct_type(v0:symbol)
+.input _struct_type(IO="file", delimiter="\t", filename="facts/struct_type.dlm")
+
+struct_type(e0) :-
+   _struct_type(e0).
+
+
+.decl _opaque_struct_type(v0:symbol)
+.input _opaque_struct_type(IO="file", delimiter="\t", filename="facts/opaque_struct_type.dlm")
+
+opaque_struct_type(e0) :-
+   _opaque_struct_type(e0).

@@ -29,6 +29,7 @@
 .decl void_type(type:VoidType)
 .decl label_type(type:LabelType)
 .decl metadata_type(type:MetadataType)
+.decl x86mmx_type(type:PrimitiveType)
 
 type(t) :- primitive_type(t).
 primitive_type(t) :- integer_type(t).
@@ -36,6 +37,15 @@ primitive_type(t) :- fp_type(t).
 primitive_type(t) :- void_type(t).
 primitive_type(t) :- label_type(t).
 primitive_type(t) :- metadata_type(t).
+primitive_type(t) :- x86mmx_type(t).
+
+
+// Standard types as constants
+
+void_type("void").
+label_type("label").
+metadata_type("metadata").
+x86mmx_type("x86mmx").
 
 
 //------------------------------------------------------------------------------

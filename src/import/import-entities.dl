@@ -19,6 +19,13 @@ add_instruction(e0) :-
    _add_instruction(e0).
 
 
+.decl _sub_instruction(v0:symbol)
+.input _sub_instruction(IO="file", delimiter="\t", filename="facts/sub_instruction.dlm")
+
+sub_instruction(e0) :-
+   _sub_instruction(e0).
+
+
 .decl _primitive_type(v0:symbol)
 .input _primitive_type(IO="file", delimiter="\t", filename="facts/primitive_type.dlm")
 

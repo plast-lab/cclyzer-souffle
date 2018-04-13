@@ -11,6 +11,9 @@
 .decl type_has_size(t:Type, size:number)
 .decl type_has_unpadded_size(t:Type, size:number)
 
+// For constraints
+.decl schema_invalid_type(type:Type, file:File, line:Line)
+
 
 //------------------------------------------------------------------------------
 // [Primitive Types]
@@ -99,6 +102,31 @@ type_is_firstclass(Type) :-
    type(Type),
    !function_type(Type),
    !void_type(Type).
+
+
+//----------------------
+// Array type
+//----------------------
+
+.decl array_type_has_component(type:ArrayType, comp:Type)
+.decl array_type_has_size(type:ArrayType, size:number)
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   array_type(Type),
+   !array_type_has_component(Type, _).
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   array_type(Type),
+   !array_type_has_size(Type, _).
+
+
+.decl int8_array_type(type:ArrayType)
+
+int8_array_type(Type) :-
+   array_type_has_component(Type, Comp),
+   int8_type(Comp).
 
 
 //----------------------

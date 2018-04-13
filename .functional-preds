@@ -12,6 +12,10 @@ add_instruction add_instruction_first_operand
 add_instruction add_instruction_second_operand
 
 vector_type vector_type_has_component
+vector_type vector_type_has_size
+
+array_type array_type_has_component
+array_type array_type_has_size
 
 null void_type
 null label_type

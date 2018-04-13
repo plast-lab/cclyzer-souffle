@@ -63,3 +63,17 @@ vector_type(v0), type(v1), vector_type_has_component(v0, v1) :-
 
 vector_type(v0), vector_type_has_size(v0, v1) :-
    _vector_type_has_size(v0, v1).
+
+
+.decl _array_type_has_component(v0:symbol, v1:symbol)
+.input _array_type_has_component(IO="file", delimiter="\t", filename="facts/array_type-component.dlm")
+
+array_type(v0), type(v1), array_type_has_component(v0, v1) :-
+   _array_type_has_component(v0, v1).
+
+
+.decl _array_type_has_size(v0:symbol, v1:number)
+.input _array_type_has_size(IO="file", delimiter="\t", filename="facts/array_type-size.dlm")
+
+array_type(v0), array_type_has_size(v0, v1) :-
+   _array_type_has_size(v0, v1).

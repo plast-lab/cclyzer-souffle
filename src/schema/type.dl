@@ -52,6 +52,53 @@ x86mmx_type("x86mmx").
 
 
 //------------------------------------------------------------------------------
+// [Integer Types] and their selectors
+//------------------------------------------------------------------------------
+
+.decl int1_type(type:IntegerType)
+.decl int8_type(type:IntegerType)
+.decl int32_type(type:IntegerType)
+.decl int64_type(type:IntegerType)
+.decl boolean_type(type:IntegerType)
+
+integer_type(t) :- int1_type(t).
+integer_type(t) :- int8_type(t).
+integer_type(t) :- int32_type(t).
+integer_type(t) :- int64_type(t).
+
+int1_type("i1").
+int8_type("i8").
+int32_type("i32").
+int64_type("i64").
+
+// Boolean alias
+boolean_type(t) :- int1_type(t).
+
+//------------------------------------------------------------------------------
+// [Floating Point Types] and their selectors
+//------------------------------------------------------------------------------
+
+.decl double_type(type:FPType)
+.decl float_type(type:FPType)
+.decl half_type(type:FPType)
+.decl fp128_type(type:FPType)
+.decl x86_fp80_type(type:FPType)
+.decl ppc_fp128_type(type:FPType)
+
+fp_type(t) :- double_type(t).
+fp_type(t) :- float_type(t).
+fp_type(t) :- half_type(t).
+fp_type(t) :- fp128_type(t).
+
+double_type("double").
+float_type("float").
+half_type("half").
+fp128_type("fp128").
+x86_fp80_type("x86_fp80").
+ppc_fp128_type("ppc_fp128").
+
+
+//------------------------------------------------------------------------------
 // [Derived Types]
 //
 // keywords: derived; first class; aggregate

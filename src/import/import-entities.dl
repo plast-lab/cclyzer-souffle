@@ -19,6 +19,13 @@ add_instruction(e0) :-
    _add_instruction(e0).
 
 
+.decl _fadd_instruction(v0:symbol)
+.input _fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
+
+fadd_instruction(e0) :-
+   _fadd_instruction(e0).
+
+
 .decl _sub_instruction(v0:symbol)
 .input _sub_instruction(IO="file", delimiter="\t", filename="facts/sub_instruction.dlm")
 

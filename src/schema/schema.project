@@ -5,4 +5,5 @@
 
 #include "instruction.dl"
 #include "add-instruction.dl"
+#include "fadd-instruction.dl"
 #include "sub-instruction.dl"

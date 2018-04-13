@@ -184,7 +184,27 @@ int8_array_type(Type) :-
 .decl vector_type_has_size(type:VectorType, size:number)
 
 .decl integer_vector_type(type:VectorType)
+.decl fp_vector_type(type:VectorType)
+.decl int32_vector_type(type:VectorType)
+.decl boolean_vector_type(type:VectorType)
+.decl pointer_vector_type(type:VectorType)
 
 integer_vector_type(Type) :-
    vector_type_has_component(Type, Comp),
    integer_type(Comp).
+
+fp_vector_type(Type) :-
+   vector_type_has_component(Type, Comp),
+   fp_type(Comp).
+
+int32_vector_type(Type) :-
+   vector_type_has_component(Type, Comp),
+   int32_type(Comp).
+
+boolean_vector_type(Type) :-
+   vector_type_has_component(Type, Comp),
+   boolean_type(Comp).
+
+pointer_vector_type(Type) :-
+   vector_type_has_component(Type, Comp),
+   pointer_type(Comp).

@@ -40,6 +40,13 @@ sdiv_instruction(e0) :-
    _sdiv_instruction(e0).
 
 
+.decl _srem_instruction(v0:symbol)
+.input _srem_instruction(IO="file", delimiter="\t", filename="facts/srem_instruction.dlm")
+
+srem_instruction(e0) :-
+   _srem_instruction(e0).
+
+
 .decl _udiv_instruction(v0:symbol)
 .input _udiv_instruction(IO="file", delimiter="\t", filename="facts/udiv_instruction.dlm")
 
@@ -47,11 +54,11 @@ udiv_instruction(e0) :-
    _udiv_instruction(e0).
 
 
-.decl _srem_instruction(v0:symbol)
-.input _srem_instruction(IO="file", delimiter="\t", filename="facts/srem_instruction.dlm")
+.decl _urem_instruction(v0:symbol)
+.input _urem_instruction(IO="file", delimiter="\t", filename="facts/urem_instruction.dlm")
 
-srem_instruction(e0) :-
-   _srem_instruction(e0).
+urem_instruction(e0) :-
+   _urem_instruction(e0).
 
 
 .decl _fadd_instruction(v0:symbol)

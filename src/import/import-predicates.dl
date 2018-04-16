@@ -70,6 +70,24 @@ sdiv_instruction_second_operand(v0, v1) :-
    _sdiv_instruction_second_operand(v0, v1).
 
 
+.decl _srem_instruction_first_operand(v0:symbol, v1:symbol)
+.input _srem_instruction_first_operand(IO="file", delimiter="\t", filename="facts/srem_instruction-first_operand.dlm")
+
+srem_instruction_first_operand(v0, v1) :-
+   srem_instruction(v0),
+   operand(v1),
+   _srem_instruction_first_operand(v0, v1).
+
+
+.decl _srem_instruction_second_operand(v0:symbol, v1:symbol)
+.input _srem_instruction_second_operand(IO="file", delimiter="\t", filename="facts/srem_instruction-second_operand.dlm")
+
+srem_instruction_second_operand(v0, v1) :-
+   srem_instruction(v0),
+   operand(v1),
+   _srem_instruction_second_operand(v0, v1).
+
+
 .decl _fadd_instruction_first_operand(v0:symbol, v1:symbol)
 .input _fadd_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fadd_instruction-first_operand.dlm")
 

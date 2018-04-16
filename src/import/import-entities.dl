@@ -40,6 +40,13 @@ sdiv_instruction(e0) :-
    _sdiv_instruction(e0).
 
 
+.decl _srem_instruction(v0:symbol)
+.input _srem_instruction(IO="file", delimiter="\t", filename="facts/srem_instruction.dlm")
+
+srem_instruction(e0) :-
+   _srem_instruction(e0).
+
+
 .decl _fadd_instruction(v0:symbol)
 .input _fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
 

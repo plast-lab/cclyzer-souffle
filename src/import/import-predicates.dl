@@ -271,3 +271,33 @@ pointer_type(v0), type(v1), pointer_type_has_component(v0, v1) :-
 
 pointer_type(v0), pointer_type_has_addr_space(v0, v1) :-
    _pointer_type_has_addr_space(v0, v1).
+
+
+.decl _load_instruction_ordering(v0:symbol, v1:symbol)
+.input _load_instruction_ordering(IO="file", delimiter="\t", filename="facts/load_instruction-ordering.dlm")
+
+load_instruction(v0), ordering(v1), load_instruction_ordering(v0, v1) :-
+   _load_instruction_ordering(v0, v1).
+
+
+.decl _load_instruction_alignment(v0:symbol, v1:number)
+.input _load_instruction_alignment(IO="file", delimiter="\t", filename="facts/load_instruction-alignment.dlm")
+
+load_instruction(v0), load_instruction_alignment(v0, v1) :-
+   _load_instruction_alignment(v0, v1).
+
+
+.decl _load_instruction_volatile(v0:symbol)
+.input _load_instruction_volatile(IO="file", delimiter="\t", filename="facts/load_instruction-volatile.dlm")
+
+load_instruction(v0), load_instruction_is_volatile(v0) :-
+   _load_instruction_volatile(v0).
+
+
+.decl _load_instruction_address(v0:symbol, v1:symbol)
+.input _load_instruction_address(IO="file", delimiter="\t", filename="facts/load_instruction-address.dlm")
+
+load_instruction_address(v0, v1) :-
+   load_instruction(v0),
+   operand(v1),
+   _load_instruction_address(v0, v1).

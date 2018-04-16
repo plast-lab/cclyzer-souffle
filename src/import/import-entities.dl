@@ -150,3 +150,10 @@ struct_type(e0) :-
 
 opaque_struct_type(e0) :-
    _opaque_struct_type(e0).
+
+
+.decl _load_instruction(v0:symbol)
+.input _load_instruction(IO="file", delimiter="\t", filename="facts/load_instruction.dlm")
+
+load_instruction(e0) :-
+   _load_instruction(e0).

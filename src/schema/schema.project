@@ -16,3 +16,4 @@
 #include "fsub-instruction.dl"
 #include "fmul-instruction.dl"
 #include "fdiv-instruction.dl"
+#include "load-instruction.dl"

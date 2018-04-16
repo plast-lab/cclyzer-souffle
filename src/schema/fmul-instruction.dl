@@ -1,13 +1,13 @@
 // http://llvm.org/docs/LangRef.html#fmul-instruction
 // keywords: arithmetic; binary; instruction
 
-.type FmulInstruction = Instruction
-.decl fmul_instruction(instr:FmulInstruction)
+.type FMulInstruction = Instruction
+.decl fmul_instruction(instr:FMulInstruction)
 
 instruction(v) :- fmul_instruction(v).
 
-.decl fmul_instruction_first_operand(instr:FmulInstruction, op:Operand)
-.decl fmul_instruction_second_operand(instr:FmulInstruction, op:Operand)
+.decl fmul_instruction_first_operand(instr:FMulInstruction, op:Operand)
+.decl fmul_instruction_second_operand(instr:FMulInstruction, op:Operand)
 
 
 //-------------------------------------------------------------------

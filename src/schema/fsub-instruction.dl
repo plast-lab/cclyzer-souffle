@@ -1,13 +1,13 @@
 // http://llvm.org/docs/LangRef.html#fsub-instruction
 // keywords: arithmetic; binary; instruction
 
-.type FsubInstruction = Instruction
-.decl fsub_instruction(instr:FsubInstruction)
+.type FSubInstruction = Instruction
+.decl fsub_instruction(instr:FSubInstruction)
 
 instruction(v) :- fsub_instruction(v).
 
-.decl fsub_instruction_first_operand(instr:FsubInstruction, op:Operand)
-.decl fsub_instruction_second_operand(instr:FsubInstruction, op:Operand)
+.decl fsub_instruction_first_operand(instr:FSubInstruction, op:Operand)
+.decl fsub_instruction_second_operand(instr:FSubInstruction, op:Operand)
 
 
 //-------------------------------------------------------------------

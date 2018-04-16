@@ -1,13 +1,13 @@
 // http://llvm.org/docs/LangRef.html#fdiv-instruction
 // keywords: arithmetic; binary; instruction
 
-.type FdivInstruction = Instruction
-.decl fdiv_instruction(instr:FdivInstruction)
+.type FDivInstruction = Instruction
+.decl fdiv_instruction(instr:FDivInstruction)
 
 instruction(v) :- fdiv_instruction(v).
 
-.decl fdiv_instruction_first_operand(instr:FdivInstruction, op:Operand)
-.decl fdiv_instruction_second_operand(instr:FdivInstruction, op:Operand)
+.decl fdiv_instruction_first_operand(instr:FDivInstruction, op:Operand)
+.decl fdiv_instruction_second_operand(instr:FDivInstruction, op:Operand)
 
 
 //-------------------------------------------------------------------

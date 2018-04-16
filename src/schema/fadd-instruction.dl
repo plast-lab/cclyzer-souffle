@@ -1,13 +1,13 @@
 // http://llvm.org/docs/LangRef.html#fadd-instruction
 // keywords: arithmetic; binary; instruction
 
-.type FaddInstruction = Instruction
-.decl fadd_instruction(instr:FaddInstruction)
+.type FAddInstruction = Instruction
+.decl fadd_instruction(instr:FAddInstruction)
 
 instruction(v) :- fadd_instruction(v).
 
-.decl fadd_instruction_first_operand(instr:FaddInstruction, op:Operand)
-.decl fadd_instruction_second_operand(instr:FaddInstruction, op:Operand)
+.decl fadd_instruction_first_operand(instr:FAddInstruction, op:Operand)
+.decl fadd_instruction_second_operand(instr:FAddInstruction, op:Operand)
 
 
 //-------------------------------------------------------------------

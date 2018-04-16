@@ -70,6 +70,24 @@ sdiv_instruction_second_operand(v0, v1) :-
    _sdiv_instruction_second_operand(v0, v1).
 
 
+.decl _udiv_instruction_first_operand(v0:symbol, v1:symbol)
+.input _udiv_instruction_first_operand(IO="file", delimiter="\t", filename="facts/udiv_instruction-first_operand.dlm")
+
+udiv_instruction_first_operand(v0, v1) :-
+   udiv_instruction(v0),
+   operand(v1),
+   _udiv_instruction_first_operand(v0, v1).
+
+
+.decl _udiv_instruction_second_operand(v0:symbol, v1:symbol)
+.input _udiv_instruction_second_operand(IO="file", delimiter="\t", filename="facts/udiv_instruction-second_operand.dlm")
+
+udiv_instruction_second_operand(v0, v1) :-
+   udiv_instruction(v0),
+   operand(v1),
+   _udiv_instruction_second_operand(v0, v1).
+
+
 .decl _srem_instruction_first_operand(v0:symbol, v1:symbol)
 .input _srem_instruction_first_operand(IO="file", delimiter="\t", filename="facts/srem_instruction-first_operand.dlm")
 

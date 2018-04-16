@@ -10,6 +10,7 @@
 #include "mul-instruction.dl"
 #include "sdiv-instruction.dl"
 #include "srem-instruction.dl"
+#include "udiv-instruction.dl"
 #include "fadd-instruction.dl"
 #include "fsub-instruction.dl"
 #include "fmul-instruction.dl"

@@ -52,6 +52,24 @@ sub_instruction_second_operand(v0, v1) :-
    _sub_instruction_second_operand(v0, v1).
 
 
+.decl _fsub_instruction_first_operand(v0:symbol, v1:symbol)
+.input _fsub_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fsub_instruction-first_operand.dlm")
+
+fsub_instruction_first_operand(v0, v1) :-
+   fsub_instruction(v0),
+   operand(v1),
+   _fsub_instruction_first_operand(v0, v1).
+
+
+.decl _fsub_instruction_second_operand(v0:symbol, v1:symbol)
+.input _fsub_instruction_second_operand(IO="file", delimiter="\t", filename="facts/fsub_instruction-second_operand.dlm")
+
+fsub_instruction_second_operand(v0, v1) :-
+   fsub_instruction(v0),
+   operand(v1),
+   _fsub_instruction_second_operand(v0, v1).
+
+
 .decl _variable_has_type(v0:symbol, v1:symbol)
 .input _variable_has_type(IO="file", delimiter="\t", filename="facts/variable-type.dlm")
 

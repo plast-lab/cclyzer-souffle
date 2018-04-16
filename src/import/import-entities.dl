@@ -33,6 +33,13 @@ sub_instruction(e0) :-
    _sub_instruction(e0).
 
 
+.decl _fsub_instruction(v0:symbol)
+.input _fsub_instruction(IO="file", delimiter="\t", filename="facts/fsub_instruction.dlm")
+
+fsub_instruction(e0) :-
+   _fsub_instruction(e0).
+
+
 .decl _primitive_type(v0:symbol)
 .input _primitive_type(IO="file", delimiter="\t", filename="facts/primitive_type.dlm")
 

@@ -16,24 +16,6 @@ add_instruction_second_operand(v0, v1) :-
    _add_instruction_second_operand(v0, v1).
 
 
-.decl _fadd_instruction_first_operand(v0:symbol, v1:symbol)
-.input _fadd_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fadd_instruction-first_operand.dlm")
-
-fadd_instruction_first_operand(v0, v1) :-
-   fadd_instruction(v0),
-   operand(v1),
-   _fadd_instruction_first_operand(v0, v1).
-
-
-.decl _fadd_instruction_second_operand(v0:symbol, v1:symbol)
-.input _fadd_instruction_second_operand(IO="file", delimiter="\t", filename="facts/fadd_instruction-second_operand.dlm")
-
-fadd_instruction_second_operand(v0, v1) :-
-   fadd_instruction(v0),
-   operand(v1),
-   _fadd_instruction_second_operand(v0, v1).
-
-
 .decl _sub_instruction_first_operand(v0:symbol, v1:symbol)
 .input _sub_instruction_first_operand(IO="file", delimiter="\t", filename="facts/sub_instruction-first_operand.dlm")
 
@@ -52,6 +34,42 @@ sub_instruction_second_operand(v0, v1) :-
    _sub_instruction_second_operand(v0, v1).
 
 
+.decl _mul_instruction_first_operand(v0:symbol, v1:symbol)
+.input _mul_instruction_first_operand(IO="file", delimiter="\t", filename="facts/mul_instruction-first_operand.dlm")
+
+mul_instruction_first_operand(v0, v1) :-
+   mul_instruction(v0),
+   operand(v1),
+   _mul_instruction_first_operand(v0, v1).
+
+
+.decl _mul_instruction_second_operand(v0:symbol, v1:symbol)
+.input _mul_instruction_second_operand(IO="file", delimiter="\t", filename="facts/mul_instruction-second_operand.dlm")
+
+mul_instruction_second_operand(v0, v1) :-
+   mul_instruction(v0),
+   operand(v1),
+   _mul_instruction_second_operand(v0, v1).
+
+
+.decl _fadd_instruction_first_operand(v0:symbol, v1:symbol)
+.input _fadd_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fadd_instruction-first_operand.dlm")
+
+fadd_instruction_first_operand(v0, v1) :-
+   fadd_instruction(v0),
+   operand(v1),
+   _fadd_instruction_first_operand(v0, v1).
+
+
+.decl _fadd_instruction_second_operand(v0:symbol, v1:symbol)
+.input _fadd_instruction_second_operand(IO="file", delimiter="\t", filename="facts/fadd_instruction-second_operand.dlm")
+
+fadd_instruction_second_operand(v0, v1) :-
+   fadd_instruction(v0),
+   operand(v1),
+   _fadd_instruction_second_operand(v0, v1).
+
+
 .decl _fsub_instruction_first_operand(v0:symbol, v1:symbol)
 .input _fsub_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fsub_instruction-first_operand.dlm")
 
@@ -68,6 +86,24 @@ fsub_instruction_second_operand(v0, v1) :-
    fsub_instruction(v0),
    operand(v1),
    _fsub_instruction_second_operand(v0, v1).
+
+
+.decl _fmul_instruction_first_operand(v0:symbol, v1:symbol)
+.input _fmul_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fmul_instruction-first_operand.dlm")
+
+fmul_instruction_first_operand(v0, v1) :-
+   fmul_instruction(v0),
+   operand(v1),
+   _fmul_instruction_first_operand(v0, v1).
+
+
+.decl _fmul_instruction_second_operand(v0:symbol, v1:symbol)
+.input _fmul_instruction_second_operand(IO="file", delimiter="\t", filename="facts/fmul_instruction-second_operand.dlm")
+
+fmul_instruction_second_operand(v0, v1) :-
+   fmul_instruction(v0),
+   operand(v1),
+   _fmul_instruction_second_operand(v0, v1).
 
 
 .decl _variable_has_type(v0:symbol, v1:symbol)

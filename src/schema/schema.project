@@ -6,5 +6,7 @@
 #include "instruction.dl"
 #include "add-instruction.dl"
 #include "sub-instruction.dl"
+#include "mul-instruction.dl"
 #include "fadd-instruction.dl"
 #include "fsub-instruction.dl"
+#include "fmul-instruction.dl"

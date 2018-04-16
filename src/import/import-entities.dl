@@ -19,13 +19,6 @@ add_instruction(e0) :-
    _add_instruction(e0).
 
 
-.decl _fadd_instruction(v0:symbol)
-.input _fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
-
-fadd_instruction(e0) :-
-   _fadd_instruction(e0).
-
-
 .decl _sub_instruction(v0:symbol)
 .input _sub_instruction(IO="file", delimiter="\t", filename="facts/sub_instruction.dlm")
 
@@ -33,11 +26,32 @@ sub_instruction(e0) :-
    _sub_instruction(e0).
 
 
+.decl _mul_instruction(v0:symbol)
+.input _mul_instruction(IO="file", delimiter="\t", filename="facts/mul_instruction.dlm")
+
+mul_instruction(e0) :-
+   _mul_instruction(e0).
+
+
+.decl _fadd_instruction(v0:symbol)
+.input _fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
+
+fadd_instruction(e0) :-
+   _fadd_instruction(e0).
+
+
 .decl _fsub_instruction(v0:symbol)
 .input _fsub_instruction(IO="file", delimiter="\t", filename="facts/fsub_instruction.dlm")
 
 fsub_instruction(e0) :-
    _fsub_instruction(e0).
+
+
+.decl _fmul_instruction(v0:symbol)
+.input _fmul_instruction(IO="file", delimiter="\t", filename="facts/fmul_instruction.dlm")
+
+fmul_instruction(e0) :-
+   _fmul_instruction(e0).
 
 
 .decl _primitive_type(v0:symbol)

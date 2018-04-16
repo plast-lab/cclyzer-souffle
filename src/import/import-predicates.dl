@@ -106,6 +106,24 @@ fmul_instruction_second_operand(v0, v1) :-
    _fmul_instruction_second_operand(v0, v1).
 
 
+.decl _fdiv_instruction_first_operand(v0:symbol, v1:symbol)
+.input _fdiv_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fdiv_instruction-first_operand.dlm")
+
+fdiv_instruction_first_operand(v0, v1) :-
+   fdiv_instruction(v0),
+   operand(v1),
+   _fdiv_instruction_first_operand(v0, v1).
+
+
+.decl _fdiv_instruction_second_operand(v0:symbol, v1:symbol)
+.input _fdiv_instruction_second_operand(IO="file", delimiter="\t", filename="facts/fdiv_instruction-second_operand.dlm")
+
+fdiv_instruction_second_operand(v0, v1) :-
+   fdiv_instruction(v0),
+   operand(v1),
+   _fdiv_instruction_second_operand(v0, v1).
+
+
 .decl _variable_has_type(v0:symbol, v1:symbol)
 .input _variable_has_type(IO="file", delimiter="\t", filename="facts/variable-type.dlm")
 

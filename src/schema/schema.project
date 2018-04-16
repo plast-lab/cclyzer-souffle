@@ -10,3 +10,4 @@
 #include "fadd-instruction.dl"
 #include "fsub-instruction.dl"
 #include "fmul-instruction.dl"
+#include "fdiv-instruction.dl"

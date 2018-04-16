@@ -54,6 +54,13 @@ fmul_instruction(e0) :-
    _fmul_instruction(e0).
 
 
+.decl _fdiv_instruction(v0:symbol)
+.input _fdiv_instruction(IO="file", delimiter="\t", filename="facts/fdiv_instruction.dlm")
+
+fdiv_instruction(e0) :-
+   _fdiv_instruction(e0).
+
+
 .decl _primitive_type(v0:symbol)
 .input _primitive_type(IO="file", delimiter="\t", filename="facts/primitive_type.dlm")
 

@@ -14,6 +14,8 @@ sub_instruction sub_instruction_first_operand
 sub_instruction sub_instruction_second_operand
 mul_instruction mul_instruction_first_operand
 mul_instruction mul_instruction_second_operand
+sdiv_instruction sdiv_instruction_first_operand
+sdiv_instruction sdiv_instruction_second_operand
 fadd_instruction fadd_instruction_first_operand
 fadd_instruction fadd_instruction_second_operand
 fsub_instruction fsub_instruction_first_operand
@@ -26,9 +28,10 @@ fdiv_instruction fdiv_instruction_second_operand
 
 vector_type vector_type_has_component
 vector_type vector_type_has_size
-
 array_type array_type_has_component
 array_type array_type_has_size
+pointer_type pointer_type_has_component
+pointer_type pointer_type_has_addr_space
 
 null void_type
 null label_type

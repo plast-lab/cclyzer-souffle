@@ -33,6 +33,13 @@ mul_instruction(e0) :-
    _mul_instruction(e0).
 
 
+.decl _sdiv_instruction(v0:symbol)
+.input _sdiv_instruction(IO="file", delimiter="\t", filename="facts/sdiv_instruction.dlm")
+
+sdiv_instruction(e0) :-
+   _sdiv_instruction(e0).
+
+
 .decl _fadd_instruction(v0:symbol)
 .input _fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
 

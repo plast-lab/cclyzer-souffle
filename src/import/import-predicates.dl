@@ -52,6 +52,24 @@ mul_instruction_second_operand(v0, v1) :-
    _mul_instruction_second_operand(v0, v1).
 
 
+.decl _sdiv_instruction_first_operand(v0:symbol, v1:symbol)
+.input _sdiv_instruction_first_operand(IO="file", delimiter="\t", filename="facts/sdiv_instruction-first_operand.dlm")
+
+sdiv_instruction_first_operand(v0, v1) :-
+   sdiv_instruction(v0),
+   operand(v1),
+   _sdiv_instruction_first_operand(v0, v1).
+
+
+.decl _sdiv_instruction_second_operand(v0:symbol, v1:symbol)
+.input _sdiv_instruction_second_operand(IO="file", delimiter="\t", filename="facts/sdiv_instruction-second_operand.dlm")
+
+sdiv_instruction_second_operand(v0, v1) :-
+   sdiv_instruction(v0),
+   operand(v1),
+   _sdiv_instruction_second_operand(v0, v1).
+
+
 .decl _fadd_instruction_first_operand(v0:symbol, v1:symbol)
 .input _fadd_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fadd_instruction-first_operand.dlm")
 

@@ -301,3 +301,26 @@ load_instruction_address(v0, v1) :-
    load_instruction(v0),
    operand(v1),
    _load_instruction_address(v0, v1).
+
+
+.decl _alloca_instruction_alignment(v0:symbol, v1:number)
+.input _alloca_instruction_alignment(IO="file", delimiter="\t", filename="facts/alloca_instruction-alignment.dlm")
+
+alloca_instruction(v0), alloca_instruction_alignment(v0, v1) :-
+   _alloca_instruction_alignment(v0, v1).
+
+
+.decl _alloca_instruction_type(v0:symbol, v1:symbol)
+.input _alloca_instruction_type(IO="file", delimiter="\t", filename="facts/alloca_instruction-type.dlm")
+
+alloca_instruction(v0), type(v1), alloca_instruction_type(v0, v1) :-
+   _alloca_instruction_type(v0, v1).
+
+
+.decl _alloca_instruction_size(v0:symbol, v1:symbol)
+.input _alloca_instruction_size(IO="file", delimiter="\t", filename="facts/alloca_instruction-size.dlm")
+
+alloca_instruction_size(v0, v1) :-
+   alloca_instruction(v0),
+   operand(v1),
+   _alloca_instruction_size(v0, v1).

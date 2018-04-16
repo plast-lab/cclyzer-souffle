@@ -34,6 +34,10 @@ load_instruction load_instruction_alignment
 load_instruction load_instruction_ordering
 load_instruction load_instruction_address
 load_instruction load_instruction_address_ptr_type
+alloca_instruction alloca_instruction_alignment
+alloca_instruction alloca_instruction_size
+alloca_instruction alloca_instruction_type
+
 
 vector_type vector_type_has_component
 vector_type vector_type_has_size

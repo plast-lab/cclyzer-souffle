@@ -324,3 +324,21 @@ alloca_instruction_size(v0, v1) :-
    alloca_instruction(v0),
    operand(v1),
    _alloca_instruction_size(v0, v1).
+
+
+.decl _and_instruction_first_operand(v0:symbol, v1:symbol)
+.input _and_instruction_first_operand(IO="file", delimiter="\t", filename="facts/and_instruction-first_operand.dlm")
+
+and_instruction_first_operand(v0, v1) :-
+   and_instruction(v0),
+   operand(v1),
+   _and_instruction_first_operand(v0, v1).
+
+
+.decl _and_instruction_second_operand(v0:symbol, v1:symbol)
+.input _and_instruction_second_operand(IO="file", delimiter="\t", filename="facts/and_instruction-second_operand.dlm")
+
+and_instruction_second_operand(v0, v1) :-
+   and_instruction(v0),
+   operand(v1),
+   _and_instruction_second_operand(v0, v1).

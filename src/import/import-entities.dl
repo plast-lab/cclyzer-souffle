@@ -164,3 +164,10 @@ load_instruction(e0) :-
 
 alloca_instruction(e0) :-
    _alloca_instruction(e0).
+
+
+.decl _and_instruction(v0:symbol)
+.input _and_instruction(IO="file", delimiter="\t", filename="facts/and_instruction.dlm")
+
+and_instruction(e0) :-
+   _and_instruction(e0).

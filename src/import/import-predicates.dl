@@ -378,3 +378,57 @@ xor_instruction_second_operand(v0, v1) :-
    xor_instruction(v0),
    operand(v1),
    _xor_instruction_second_operand(v0, v1).
+
+
+.decl _ashr_instruction_first_operand(v0:symbol, v1:symbol)
+.input _ashr_instruction_first_operand(IO="file", delimiter="\t", filename="facts/ashr_instruction-first_operand.dlm")
+
+ashr_instruction_first_operand(v0, v1) :-
+   ashr_instruction(v0),
+   operand(v1),
+   _ashr_instruction_first_operand(v0, v1).
+
+
+.decl _ashr_instruction_second_operand(v0:symbol, v1:symbol)
+.input _ashr_instruction_second_operand(IO="file", delimiter="\t", filename="facts/ashr_instruction-second_operand.dlm")
+
+ashr_instruction_second_operand(v0, v1) :-
+   ashr_instruction(v0),
+   operand(v1),
+   _ashr_instruction_second_operand(v0, v1).
+
+
+.decl _lshr_instruction_first_operand(v0:symbol, v1:symbol)
+.input _lshr_instruction_first_operand(IO="file", delimiter="\t", filename="facts/lshr_instruction-first_operand.dlm")
+
+lshr_instruction_first_operand(v0, v1) :-
+   lshr_instruction(v0),
+   operand(v1),
+   _lshr_instruction_first_operand(v0, v1).
+
+
+.decl _lshr_instruction_second_operand(v0:symbol, v1:symbol)
+.input _lshr_instruction_second_operand(IO="file", delimiter="\t", filename="facts/lshr_instruction-second_operand.dlm")
+
+lshr_instruction_second_operand(v0, v1) :-
+   lshr_instruction(v0),
+   operand(v1),
+   _lshr_instruction_second_operand(v0, v1).
+
+
+.decl _shl_instruction_first_operand(v0:symbol, v1:symbol)
+.input _shl_instruction_first_operand(IO="file", delimiter="\t", filename="facts/shl_instruction-first_operand.dlm")
+
+shl_instruction_first_operand(v0, v1) :-
+   shl_instruction(v0),
+   operand(v1),
+   _shl_instruction_first_operand(v0, v1).
+
+
+.decl _shl_instruction_second_operand(v0:symbol, v1:symbol)
+.input _shl_instruction_second_operand(IO="file", delimiter="\t", filename="facts/shl_instruction-second_operand.dlm")
+
+shl_instruction_second_operand(v0, v1) :-
+   shl_instruction(v0),
+   operand(v1),
+   _shl_instruction_second_operand(v0, v1).

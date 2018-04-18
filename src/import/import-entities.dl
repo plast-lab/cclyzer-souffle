@@ -185,3 +185,24 @@ or_instruction(e0) :-
 
 xor_instruction(e0) :-
    _xor_instruction(e0).
+
+
+.decl _ashr_instruction(v0:symbol)
+.input _ashr_instruction(IO="file", delimiter="\t", filename="facts/ashr_instruction.dlm")
+
+ashr_instruction(e0) :-
+   _ashr_instruction(e0).
+
+
+.decl _lshr_instruction(v0:symbol)
+.input _lshr_instruction(IO="file", delimiter="\t", filename="facts/lshr_instruction.dlm")
+
+lshr_instruction(e0) :-
+   _lshr_instruction(e0).
+
+
+.decl _shl_instruction(v0:symbol)
+.input _shl_instruction(IO="file", delimiter="\t", filename="facts/shl_instruction.dlm")
+
+shl_instruction(e0) :-
+   _shl_instruction(e0).

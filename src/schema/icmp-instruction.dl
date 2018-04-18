@@ -120,4 +120,4 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
    icmp_instruction_from_type(Instr, FromType),
    icmp_instruction_to_type(Instr, ToType),
-   vector_compatible_types(FromType, ToType).
+   !vector_compatible_types(FromType, ToType).

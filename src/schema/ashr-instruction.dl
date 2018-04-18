@@ -49,5 +49,5 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
    instruction_returns_type(Instr, Type),
-   ashr_instruction_first_operand(Instr, RightOp),
+   ashr_instruction_second_operand(Instr, RightOp),
    !operand_has_type(RightOp, Type).

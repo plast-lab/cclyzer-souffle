@@ -206,3 +206,10 @@ lshr_instruction(e0) :-
 
 shl_instruction(e0) :-
    _shl_instruction(e0).
+
+
+.decl _icmp_instruction(v0:symbol)
+.input _icmp_instruction(IO="file", delimiter="\t", filename="facts/icmp_instruction.dlm")
+
+icmp_instruction(e0) :-
+   _icmp_instruction(e0).

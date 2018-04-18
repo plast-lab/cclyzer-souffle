@@ -259,3 +259,48 @@ boolean_vector_type(Type) :-
 pointer_vector_type(Type) :-
    vector_type_has_component(Type, Comp),
    pointer_type(Comp).
+
+
+//------------------------------------------------------------------------------
+// The original version of the constraint contained these two atoms:
+//   integer_pointer_type(Comp) ; fp_pointer_type(Comp)
+// instead of the single:
+//   pointer_type(Comp)
+//
+// In fact, the LLVM reference manual states that: /elementtype may be
+// any integer or floating point type, or a pointer to these types./
+//
+// However, in practice we have seen that the LLVM IR supports
+// pointers to arbitrary types, so we loosened this constaint as
+// explained above.
+//------------------------------------------------------------------------------
+
+
+// Helper predicate
+
+.decl eq_size_vector_types(type1:VectorType, type2:VectorType)
+.decl eq_size_vector_types_(type1:VectorType, type2:VectorType, type3:VectorType)
+
+eq_size_vector_types(Type1, Type2) :-
+   vector_type_has_size(Type1, Size),
+   vector_type_has_size(Type2, Size).
+
+eq_size_vector_types_(Type1, Type2, Type3) :-
+   vector_type_has_size(Type1, Size),
+   vector_type_has_size(Type2, Size),
+   vector_type_has_size(Type3, Size).
+
+// Two types are vector-compatible if:
+//  (i)  neither is a vector, or
+//  (ii) both are vectors of the same size.
+
+.decl vector_compatible_types(type1:Type, type2:Type)
+
+vector_compatible_types(Type1, Type2) :-
+   type(Type1),
+   type(Type2),
+   !vector_type(Type1),
+   !vector_type(Type2).
+
+vector_compatible_types(Type1, Type2) :-
+   eq_size_vector_types(Type1, Type2).

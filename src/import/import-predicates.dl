@@ -432,3 +432,29 @@ shl_instruction_second_operand(v0, v1) :-
    shl_instruction(v0),
    operand(v1),
    _shl_instruction_second_operand(v0, v1).
+
+
+.decl _icmp_instruction_first_operand(v0:symbol, v1:symbol)
+.input _icmp_instruction_first_operand(IO="file", delimiter="\t", filename="facts/icmp_instruction-first_operand.dlm")
+
+icmp_instruction_first_operand(v0, v1) :-
+   icmp_instruction(v0),
+   operand(v1),
+   _icmp_instruction_first_operand(v0, v1).
+
+
+.decl _icmp_instruction_second_operand(v0:symbol, v1:symbol)
+.input _icmp_instruction_second_operand(IO="file", delimiter="\t", filename="facts/icmp_instruction-second_operand.dlm")
+
+icmp_instruction_second_operand(v0, v1) :-
+   icmp_instruction(v0),
+   operand(v1),
+   _icmp_instruction_second_operand(v0, v1).
+
+
+.decl _icmp_instruction_condition(v0:symbol, v1:symbol)
+.input _icmp_instruction_condition(IO="file", delimiter="\t", filename="facts/icmp_instruction-condition.dlm")
+
+icmp_instruction_condition(v0, v1) :-
+    icmp_instruction(v0),
+    _icmp_instruction_condition(v0, v1).

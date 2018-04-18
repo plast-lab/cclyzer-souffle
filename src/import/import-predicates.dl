@@ -530,3 +530,21 @@ bitcast_instruction_to_type(v0, v1) :-
     bitcast_instruction(v0),
     type(v1),
     _bitcast_instruction_to_type(v0, v1).
+
+
+.decl _inttoptr_instruction_from_operand(v0:symbol, v1:symbol)
+.input _inttoptr_instruction_from_operand(IO="file", delimiter="\t", filename="facts/inttoptr_instruction-from.dlm")
+
+inttoptr_instruction_from_operand(v0, v1) :-
+   inttoptr_instruction(v0),
+   operand(v1),
+   _inttoptr_instruction_from_operand(v0, v1).
+
+
+.decl _inttoptr_instruction_to_type(v0:symbol, v1:symbol)
+.input _inttoptr_instruction_to_type(IO="file", delimiter="\t", filename="facts/inttoptr_instruction-to_type.dlm")
+
+inttoptr_instruction_to_type(v0, v1) :-
+    inttoptr_instruction(v0),
+    type(v1),
+    _inttoptr_instruction_to_type(v0, v1).

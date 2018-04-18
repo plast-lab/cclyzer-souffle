@@ -227,3 +227,10 @@ fcmp_instruction(e0) :-
 
 bitcast_instruction(e0) :-
    _bitcast_instruction(e0).
+
+
+.decl _inttoptr_instruction(v0:symbol)
+.input _inttoptr_instruction(IO="file", delimiter="\t", filename="facts/inttoptr_instruction.dlm")
+
+inttoptr_instruction(e0) :-
+   _inttoptr_instruction(e0).

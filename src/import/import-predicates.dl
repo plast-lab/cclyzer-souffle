@@ -342,3 +342,39 @@ and_instruction_second_operand(v0, v1) :-
    and_instruction(v0),
    operand(v1),
    _and_instruction_second_operand(v0, v1).
+
+
+.decl _or_instruction_first_operand(v0:symbol, v1:symbol)
+.input _or_instruction_first_operand(IO="file", delimiter="\t", filename="facts/or_instruction-first_operand.dlm")
+
+or_instruction_first_operand(v0, v1) :-
+   or_instruction(v0),
+   operand(v1),
+   _or_instruction_first_operand(v0, v1).
+
+
+.decl _or_instruction_second_operand(v0:symbol, v1:symbol)
+.input _or_instruction_second_operand(IO="file", delimiter="\t", filename="facts/or_instruction-second_operand.dlm")
+
+or_instruction_second_operand(v0, v1) :-
+   or_instruction(v0),
+   operand(v1),
+   _or_instruction_second_operand(v0, v1).
+
+
+.decl _xor_instruction_first_operand(v0:symbol, v1:symbol)
+.input _xor_instruction_first_operand(IO="file", delimiter="\t", filename="facts/xor_instruction-first_operand.dlm")
+
+xor_instruction_first_operand(v0, v1) :-
+   xor_instruction(v0),
+   operand(v1),
+   _xor_instruction_first_operand(v0, v1).
+
+
+.decl _xor_instruction_second_operand(v0:symbol, v1:symbol)
+.input _xor_instruction_second_operand(IO="file", delimiter="\t", filename="facts/xor_instruction-second_operand.dlm")
+
+xor_instruction_second_operand(v0, v1) :-
+   xor_instruction(v0),
+   operand(v1),
+   _xor_instruction_second_operand(v0, v1).

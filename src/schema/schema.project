@@ -17,5 +17,7 @@
 #include "fmul-instruction.dl"
 #include "fdiv-instruction.dl"
 #include "and-instruction.dl"
+#include "or-instruction.dl"
+#include "xor-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"

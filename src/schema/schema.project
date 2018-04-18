@@ -24,5 +24,6 @@
 #include "shl-instruction.dl"
 #include "icmp-instruction.dl"
 #include "fcmp-instruction.dl"
+#include "bitcast-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"

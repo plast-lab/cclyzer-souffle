@@ -484,3 +484,21 @@ fcmp_instruction_second_operand(v0, v1) :-
 fcmp_instruction_condition(v0, v1) :-
     fcmp_instruction(v0),
     _fcmp_instruction_condition(v0, v1).
+
+
+.decl _bitcast_instruction_from_operand(v0:symbol, v1:symbol)
+.input _bitcast_instruction_from_operand(IO="file", delimiter="\t", filename="facts/bitcast_instruction-from.dlm")
+
+bitcast_instruction_from_operand(v0, v1) :-
+   bitcast_instruction(v0),
+   operand(v1),
+   _bitcast_instruction_from_operand(v0, v1).
+
+
+.decl _bitcast_instruction_to_type(v0:symbol, v1:symbol)
+.input _bitcast_instruction_to_type(IO="file", delimiter="\t", filename="facts/bitcast_instruction-to_type.dlm")
+
+bitcast_instruction_to_type(v0, v1) :-
+    bitcast_instruction(v0),
+    type(v1),
+    _bitcast_instruction_to_type(v0, v1).

@@ -220,3 +220,10 @@ icmp_instruction(e0) :-
 
 fcmp_instruction(e0) :-
    _fcmp_instruction(e0).
+
+
+.decl _bitcast_instruction(v0:symbol)
+.input _bitcast_instruction(IO="file", delimiter="\t", filename="facts/bitcast_instruction.dlm")
+
+bitcast_instruction(e0) :-
+   _bitcast_instruction(e0).

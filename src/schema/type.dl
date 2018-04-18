@@ -177,6 +177,27 @@ int8_array_type(Type) :-
 
 
 //----------------------
+// Function type
+//----------------------
+
+.decl function_type_has_varargs(type:FunctionType)
+.decl function_type_return(type:FunctionType, ret:Type)
+.decl function_type_param(type:FunctionType, index:number, param:Type)
+.decl function_type_nparams(type:FunctionType, total:number)
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   function_type(Type),
+   !function_type_nparams(Type, _).
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   function_type(Type),
+   function_type_return(Type, RetType),
+   (metadata_type(RetType) ; label_type(RetType)).
+
+
+//----------------------
 // Pointer type
 //----------------------
 
@@ -259,6 +280,40 @@ boolean_vector_type(Type) :-
 pointer_vector_type(Type) :-
    vector_type_has_component(Type, Comp),
    pointer_type(Comp).
+
+
+//------------------------------------------------------------------------------
+// [Constraints and Vector Compatibiliry]
+//
+//  (1) A vector type requires a size (number of elements)
+//      and a component type.
+//  (2) The number of elements is a constant integer value
+//      larger than 0.
+//  (3) The component type can be any integer or floating point type,
+//      or a pointer to these types.
+//------------------------------------------------------------------------------
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   vector_type(Type),
+   !vector_type_has_component(Type, _).
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   vector_type(Type),
+   !vector_type_has_size(Type, _).
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   vector_type(Type),
+   vector_type_has_size(Type, Size),
+   Size <= 0.
+
+schema_invalid_type(Type, __FILE__, __LINE__) :-
+   schema_sanity(),
+   vector_type(Type),
+   vector_type_has_component(Type, CompType),
+   !integer_type(CompType), !fp_type(CompType), !pointer_type(CompType).
 
 
 //------------------------------------------------------------------------------

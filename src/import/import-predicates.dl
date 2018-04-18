@@ -1,3 +1,31 @@
+.decl _function_type_nparams(v0:symbol, v1:number)
+.input _function_type_nparams(IO="file", delimiter="\t", filename="facts/function_type-nparams.dlm")
+
+function_type(e0), function_type_nparams(e0, e1) :-
+   _function_type_nparams(e0, e1).
+
+
+.decl _function_type_param(v0:symbol, v1:number, v2:symbol)
+.input _function_type_param(IO="file", delimiter="\t", filename="facts/function_type-param.dlm")
+
+function_type(e0), type(e2), function_type_param(e0, e1, e2) :-
+   _function_type_param(e0, e1, e2).
+
+
+.decl _function_type_return(v0:symbol, v1:symbol)
+.input _function_type_return(IO="file", delimiter="\t", filename="facts/function_type-return.dlm")
+
+function_type(e0), type(e1), function_type_return(e0, e1) :-
+   _function_type_return(e0, e1).
+
+
+.decl _function_type_has_varargs(v0:symbol)
+.input _function_type_has_varargs(IO="file", delimiter="\t", filename="facts/function_type-varargs.dlm")
+
+function_type(e0), function_type_has_varargs(e0) :-
+   _function_type_has_varargs(e0).
+
+
 .decl _add_instruction_first_operand(v0:symbol, v1:symbol)
 .input _add_instruction_first_operand(IO="file", delimiter="\t", filename="facts/add_instruction-first_operand.dlm")
 

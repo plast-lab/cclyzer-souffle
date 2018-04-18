@@ -458,3 +458,29 @@ icmp_instruction_second_operand(v0, v1) :-
 icmp_instruction_condition(v0, v1) :-
     icmp_instruction(v0),
     _icmp_instruction_condition(v0, v1).
+
+
+.decl _fcmp_instruction_first_operand(v0:symbol, v1:symbol)
+.input _fcmp_instruction_first_operand(IO="file", delimiter="\t", filename="facts/fcmp_instruction-first_operand.dlm")
+
+fcmp_instruction_first_operand(v0, v1) :-
+   fcmp_instruction(v0),
+   operand(v1),
+   _fcmp_instruction_first_operand(v0, v1).
+
+
+.decl _fcmp_instruction_second_operand(v0:symbol, v1:symbol)
+.input _fcmp_instruction_second_operand(IO="file", delimiter="\t", filename="facts/fcmp_instruction-second_operand.dlm")
+
+fcmp_instruction_second_operand(v0, v1) :-
+   fcmp_instruction(v0),
+   operand(v1),
+   _fcmp_instruction_second_operand(v0, v1).
+
+
+.decl _fcmp_instruction_condition(v0:symbol, v1:symbol)
+.input _fcmp_instruction_condition(IO="file", delimiter="\t", filename="facts/fcmp_instruction-condition.dlm")
+
+fcmp_instruction_condition(v0, v1) :-
+    fcmp_instruction(v0),
+    _fcmp_instruction_condition(v0, v1).

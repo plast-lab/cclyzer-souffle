@@ -213,3 +213,10 @@ shl_instruction(e0) :-
 
 icmp_instruction(e0) :-
    _icmp_instruction(e0).
+
+
+.decl _fcmp_instruction(v0:symbol)
+.input _fcmp_instruction(IO="file", delimiter="\t", filename="facts/fcmp_instruction.dlm")
+
+fcmp_instruction(e0) :-
+   _fcmp_instruction(e0).

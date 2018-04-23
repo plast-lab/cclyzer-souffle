@@ -8,6 +8,17 @@ operand operand_has_type
 instruction instruction_assigns_to
 instruction instruction_returns_type
 
+function function_alignment
+function function_calling_convention
+function function_gc
+function function_linkage_type
+function function_visibility
+function function_pers_fn
+function function_has_type
+function function_has_name
+function function_has_signature
+function * function_param
+
 add_instruction add_instruction_first_operand
 add_instruction add_instruction_second_operand
 sub_instruction sub_instruction_first_operand
@@ -83,6 +94,7 @@ store_instruction store_instruction_address_ptr_type
 store_instruction store_instruction_value
 store_instruction store_instruction_value_type
 fence_instruction fence_instruction_ordering
+resume_instruction resume_instruction_operand
 alloca_instruction alloca_instruction_alignment
 alloca_instruction alloca_instruction_size
 alloca_instruction alloca_instruction_type

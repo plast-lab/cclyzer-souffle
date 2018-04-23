@@ -385,6 +385,15 @@ fence_instruction(v0), ordering(v1), fence_instruction_ordering(v0, v1) :-
    _fence_instruction_ordering(v0, v1).
 
 
+.decl _resume_instruction_operand(v0:symbol, v1:symbol)
+.input _resume_instruction_operand(IO="file", delimiter="\t", filename="facts/resume_instruction-operand.dlm")
+
+resume_instruction_operand(v0, v1) :-
+   resume_instruction(v0),
+   operand(v1),
+   _resume_instruction_operand(v0, v1).
+
+
 .decl _alloca_instruction_alignment(v0:symbol, v1:number)
 .input _alloca_instruction_alignment(IO="file", delimiter="\t", filename="facts/alloca_instruction-alignment.dlm")
 
@@ -798,3 +807,126 @@ inline_asm_text(v0, v1) :-
 inline_asm_constraints(v0, v1) :-
    inline_asm(v0),
    _inline_asm_constraints(v0, v1).
+
+
+.decl _function_alignment(v0:symbol, v1:number)
+.input _function_alignment(IO="file", delimiter="\t", filename="facts/function-alignment.dlm")
+
+function_alignment(v0, v1) :-
+   function_decl(v0),
+   _function_alignment(v0, v1).
+
+
+.decl _function_calling_convention(v0:symbol, v1:symbol)
+.input _function_calling_convention(IO="file", delimiter="\t", filename="facts/function-calling_convention.dlm")
+
+function_calling_convention(v0, v1) :-
+   function_decl(v0),
+   _function_calling_convention(v0, v1).
+
+
+.decl _function_gc(v0:symbol, v1:symbol)
+.input _function_gc(IO="file", delimiter="\t", filename="facts/function-gc.dlm")
+
+function_gc(v0, v1) :-
+   function_decl(v0),
+   _function_gc(v0, v1).
+
+
+.decl _function_linkage_type(v0:symbol, v1:symbol)
+.input _function_linkage_type(IO="file", delimiter="\t", filename="facts/function-linkage_type.dlm")
+
+function_linkage_type(v0, v1) :-
+   function_decl(v0),
+   _function_linkage_type(v0, v1).
+
+
+.decl _function_has_name(v0:symbol, v1:symbol)
+.input _function_has_name(IO="file", delimiter="\t", filename="facts/function-name.dlm")
+
+function_has_name(v0, v1) :-
+   function_decl(v0),
+   _function_has_name(v0, v1).
+
+
+.decl _function_has_signature(v0:symbol, v1:symbol)
+.input _function_has_signature(IO="file", delimiter="\t", filesignature="facts/function-signature.dlm")
+
+function_has_signature(v0, v1) :-
+   function_decl(v0),
+   _function_has_signature(v0, v1).
+
+
+.decl _function_visibility(v0:symbol, v1:symbol)
+.input _function_visibility(IO="file", delimiter="\t", filename="facts/function-visibility.dlm")
+
+function_visibility(v0, v1) :-
+   function_decl(v0),
+   _function_visibility(v0, v1).
+
+
+.decl _function_with_unnamed_addr(v0:symbol)
+.input _function_with_unnamed_addr(IO="file", delimiter="\t", filename="facts/function-unnamed_addr.dlm")
+
+function_with_unnamed_addr(v0) :-
+   function_decl(v0),
+   _function_with_unnamed_addr(v0).
+
+
+.decl _function_has_type(v0:symbol, v1:symbol)
+.input _function_has_type(IO="file", delimiter="\t", filename="facts/function-type.dlm")
+
+function_has_type(v0, v1) :-
+   function_decl(v0),
+   type(v1),
+   _function_has_type(v0, v1).
+
+
+.decl _function_section(v0:symbol, v1:symbol)
+.input _function_section(IO="file", delimiter="\t", filename="facts/function-section.dlm")
+
+function_section(v0, v1) :-
+   function(v0),
+   _function_section(v0, v1).
+
+
+.decl _function_param(v0:symbol, v1:number, v2:symbol)
+.input _function_param(IO="file", delimiter="\t", filename="facts/function-param.dlm")
+
+function_param(e0, e1, e2) :-
+   function(e0),
+   variable(e2),
+   _function_param(e0, e1, e2).
+
+
+.decl _function_pers_fn(v0:symbol, v1:symbol)
+.input _function_pers_fn(IO="file", delimiter="\t", filename="facts/function-pers_fn.dlm")
+
+function_pers_fn(e0, e1) :-
+   function_decl(e0),
+   constant(e1),
+   _function_pers_fn(e0, e1).
+
+
+.decl _function_return_attribute(v0:symbol, v1:symbol)
+.input _function_return_attribute(IO="file", delimiter="\t", filename="facts/function-return_attribute.dlm")
+
+function_return_attribute(v0, v1) :-
+   function_decl(v0),
+   _function_return_attribute(v0, v1).
+
+
+.decl _function_param_attribute(v0:symbol, v1:number, v2:symbol)
+.input _function_param_attribute(IO="file", delimiter="\t", filename="facts/function-param_attribute.dlm")
+
+function_param_attribute(v0, v1, v2) :-
+   function_decl(v0),
+   _function_param_attribute(v0, v1, v2).
+
+
+.decl _function_has_attribute(v0:symbol, v1:symbol)
+.input _function_has_attribute(IO="file", delimiter="\t", filename="facts/function-attribute.dlm")
+
+function_has_attribute(v0, v1) :-
+   function_decl(v0),
+   _function_has_attribute(v0, v1).

@@ -19,6 +19,20 @@ inline_asm(v0) :-
    _inline_asm(v0).
 
 
+.decl _function(v0:symbol)
+.input _function(IO="file", delimiter="\t", filename="facts/function.dlm")
+
+function(v0) :-
+   _function(v0).
+
+
+.decl _function_decl(v0:symbol)
+.input _function_decl(IO="file", delimiter="\t", filename="facts/function_decl.dlm")
+
+function_decl(v0) :-
+   _function_decl(v0).
+
+
 .decl _add_instruction(v0:symbol)
 .input _add_instruction(IO="file", delimiter="\t", filename="facts/add_instruction.dlm")
 
@@ -178,6 +192,13 @@ store_instruction(e0) :-
 
 fence_instruction(e0) :-
    _fence_instruction(e0).
+
+
+.decl _resume_instruction(v0:symbol)
+.input _resume_instruction(IO="file", delimiter="\t", filename="facts/resume_instruction.dlm")
+
+resume_instruction(e0) :-
+   _resume_instruction(e0).
 
 
 .decl _alloca_instruction(v0:symbol)

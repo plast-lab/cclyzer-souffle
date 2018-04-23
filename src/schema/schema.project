@@ -4,6 +4,7 @@
 #include "type.dl"
 #include "operand.dl"
 #include "asm.dl"
+#include "function.dl"
 
 #include "instruction.dl"
 #include "add-instruction.dl"
@@ -41,4 +42,6 @@
 #include "load-instruction.dl"
 #include "store-instruction.dl"
 #include "fence-instruction.dl"
+#include "landingpad-instruction.dl"
+#include "resume-instruction.dl"
 #include "unreachable-instruction.dl"

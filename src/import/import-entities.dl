@@ -159,6 +159,13 @@ load_instruction(e0) :-
    _load_instruction(e0).
 
 
+.decl _fence_instruction(v0:symbol)
+.input _fence_instruction(IO="file", delimiter="\t", filename="facts/fence_instruction.dlm")
+
+fence_instruction(e0) :-
+   _fence_instruction(e0).
+
+
 .decl _alloca_instruction(v0:symbol)
 .input _alloca_instruction(IO="file", delimiter="\t", filename="facts/alloca_instruction.dlm")
 

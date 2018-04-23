@@ -331,6 +331,13 @@ load_instruction_address(v0, v1) :-
    _load_instruction_address(v0, v1).
 
 
+.decl _fence_instruction_ordering(v0:symbol, v1:symbol)
+.input _fence_instruction_ordering(IO="file", delimiter="\t", filename="facts/fence_instruction-ordering.dlm")
+
+fence_instruction(v0), ordering(v1), fence_instruction_ordering(v0, v1) :-
+   _fence_instruction_ordering(v0, v1).
+
+
 .decl _alloca_instruction_alignment(v0:symbol, v1:number)
 .input _alloca_instruction_alignment(IO="file", delimiter="\t", filename="facts/alloca_instruction-alignment.dlm")
 

@@ -36,3 +36,4 @@
 #include "uitofp-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"
+#include "fence-instruction.dl"

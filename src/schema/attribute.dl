@@ -1,3 +1,7 @@
 // Atribute
 .type Attribute
 .decl attribute(attr:Attribute)
+
+.decl parameter_attribute__byval(attr:Attribute)
+
+attribute("byval"). parameter_attribute__byval("byval").

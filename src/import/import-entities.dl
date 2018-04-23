@@ -304,3 +304,17 @@ uitofp_instruction(e0) :-
 
 unreachable_instruction(e0) :-
    _unreachable_instruction(e0).
+
+
+.decl _trunc_instruction(v0:symbol)
+.input _trunc_instruction(IO="file", delimiter="\t", filename="facts/trunc_instruction.dlm")
+
+trunc_instruction(e0) :-
+   _trunc_instruction(e0).
+
+
+.decl _fptrunc_instruction(v0:symbol)
+.input _fptrunc_instruction(IO="file", delimiter="\t", filename="facts/fptrunc_instruction.dlm")
+
+fptrunc_instruction(e0) :-
+   _fptrunc_instruction(e0).

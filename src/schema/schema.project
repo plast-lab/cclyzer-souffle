@@ -34,6 +34,8 @@
 #include "fptoui-instruction.dl"
 #include "sitofp-instruction.dl"
 #include "uitofp-instruction.dl"
+#include "trunc-instruction.dl"
+#include "fptrunc-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"
 #include "fence-instruction.dl"

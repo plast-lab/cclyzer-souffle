@@ -707,3 +707,39 @@ uitofp_instruction_to_type(v0, v1) :-
     uitofp_instruction(v0),
     type(v1),
     _uitofp_instruction_to_type(v0, v1).
+
+
+.decl _trunc_instruction_from_operand(v0:symbol, v1:symbol)
+.input _trunc_instruction_from_operand(IO="file", delimiter="\t", filename="facts/trunc_instruction-from.dlm")
+
+trunc_instruction_from_operand(v0, v1) :-
+   trunc_instruction(v0),
+   operand(v1),
+   _trunc_instruction_from_operand(v0, v1).
+
+
+.decl _trunc_instruction_to_type(v0:symbol, v1:symbol)
+.input _trunc_instruction_to_type(IO="file", delimiter="\t", filename="facts/trunc_instruction-to_type.dlm")
+
+trunc_instruction_to_type(v0, v1) :-
+    trunc_instruction(v0),
+    type(v1),
+    _trunc_instruction_to_type(v0, v1).
+
+
+.decl _fptrunc_instruction_from_operand(v0:symbol, v1:symbol)
+.input _fptrunc_instruction_from_operand(IO="file", delimiter="\t", filename="facts/fptrunc_instruction-from.dlm")
+
+fptrunc_instruction_from_operand(v0, v1) :-
+   fptrunc_instruction(v0),
+   operand(v1),
+   _fptrunc_instruction_from_operand(v0, v1).
+
+
+.decl _fptrunc_instruction_to_type(v0:symbol, v1:symbol)
+.input _fptrunc_instruction_to_type(IO="file", delimiter="\t", filename="facts/fptrunc_instruction-to_type.dlm")
+
+fptrunc_instruction_to_type(v0, v1) :-
+    fptrunc_instruction(v0),
+    fp_type(v1),
+    _fptrunc_instruction_to_type(v0, v1).

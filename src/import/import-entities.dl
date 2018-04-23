@@ -297,3 +297,10 @@ sitofp_instruction(e0) :-
 
 uitofp_instruction(e0) :-
    _uitofp_instruction(e0).
+
+
+.decl _unreachable_instruction(v0:symbol)
+.input _unreachable_instruction(IO="file", delimiter="\t", filename="facts/unreachable_instruction.dlm")
+
+unreachable_instruction(e0) :-
+   _unreachable_instruction(e0).

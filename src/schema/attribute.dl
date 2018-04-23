@@ -1,0 +1,3 @@
+// Atribute
+.type Attribute
+.decl attribute(attr:Attribute)

@@ -743,3 +743,19 @@ fptrunc_instruction_to_type(v0, v1) :-
     fptrunc_instruction(v0),
     fp_type(v1),
     _fptrunc_instruction_to_type(v0, v1).
+
+
+.decl _inline_asm_text(v0:symbol, v1:symbol)
+.input _inline_asm_text(IO="file", delimiter="\t", filename="facts/inline_asm-text.dlm")
+
+inline_asm_text(v0, v1) :-
+   inline_asm(v0),
+   _inline_asm_text(v0, v1).
+
+
+.decl _inline_asm_constraints(v0:symbol, v1:symbol)
+.input _inline_asm_constraints(IO="file", delimiter="\t", filename="facts/inline_asm-constraints.dlm")
+
+inline_asm_constraints(v0, v1) :-
+   inline_asm(v0),
+   _inline_asm_constraints(v0, v1).

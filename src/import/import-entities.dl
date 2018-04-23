@@ -12,6 +12,13 @@ variable(v0) :-
    _variable(v0).
 
 
+.decl _inline_asm(v0:symbol)
+.input _inline_asm(IO="file", delimiter="\t", filename="facts/inline_asm.dlm")
+
+inline_asm(v0) :-
+   _inline_asm(v0).
+
+
 .decl _add_instruction(v0:symbol)
 .input _add_instruction(IO="file", delimiter="\t", filename="facts/add_instruction.dlm")
 

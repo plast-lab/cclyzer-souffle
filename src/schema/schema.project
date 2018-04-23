@@ -3,6 +3,7 @@
 #include "ordering.dl"
 #include "type.dl"
 #include "operand.dl"
+#include "asm.dl"
 
 #include "instruction.dl"
 #include "add-instruction.dl"

@@ -1,0 +1,54 @@
+//------------------------------------------------------------------------------
+// [Linkage Type], and selectors
+//------------------------------------------------------------------------------
+
+.type LinkageType
+.decl linkage_type(link:LinkageType)
+
+.decl external_linkage_type(link:LinkageType)
+.decl private_linkage_type(link:LinkageType)
+.decl internal_linkage_type(link:LinkageType)
+.decl linkonce_linkage_type(link:LinkageType)
+.decl linker_private_linkage_type(link:LinkageType)
+.decl linkonce_odr_linkage_type(link:LinkageType)
+.decl weak_linkage_type(link:LinkageType)
+.decl weak_odr_linkage_type(link:LinkageType)
+.decl common_linkage_type(link:LinkageType)
+.decl appending_linkage_type(link:LinkageType)
+.decl dllimport_linkage_type(link:LinkageType)
+.decl dllexport_linkage_type(link:LinkageType)
+.decl extern_weak_linkage_type(link:LinkageType)
+.decl linker_private_weak_linkage_type(link:LinkageType)
+.decl available_externally_linkage_type(link:LinkageType)
+
+linkage_type("external"). external_linkage_type("external").
+linkage_type("private"). private_linkage_type("private").
+linkage_type("internal"). internal_linkage_type("internal").
+linkage_type("linkonce"). linkonce_linkage_type("linkonce").
+linkage_type("linker_private"). linker_private_linkage_type("linker_private").
+linkage_type("linkonce_odr"). linkonce_odr_linkage_type("linkonce_odr").
+linkage_type("weak"). weak_linkage_type("weak").
+linkage_type("weak_odr"). weak_odr_linkage_type("weak_odr").
+linkage_type("common"). common_linkage_type("common").
+linkage_type("appending"). appending_linkage_type("appending").
+linkage_type("dllimport"). dllimport_linkage_type("dllimport").
+linkage_type("dllexport"). dllexport_linkage_type("dllexport").
+linkage_type("extern_weak"). extern_weak_linkage_type("extern_weak").
+linkage_type("linker_private_weak"). linker_private_weak_linkage_type("linker_private_weak").
+linkage_type("available_externally"). available_externally_linkage_type("available_externally").
+
+
+//------------------------------------------------------------------------------
+// [Visibility Style]
+//------------------------------------------------------------------------------
+
+.type Visibility
+.decl visibility(vis:Visibility)
+
+.decl default_visibility(vis:Visibility)
+.decl hidden_visibility(vis:Visibility)
+.decl protected_visibility(vis:Visibility)
+
+visibility("default"). default_visibility("default").
+visibility("hidden"). hidden_visibility("hidden").
+visibility("protected"). protected_visibility("protected").

@@ -4,6 +4,7 @@
 #include "type.dl"
 #include "operand.dl"
 #include "asm.dl"
+#include "global.dl"
 #include "function.dl"
 
 #include "instruction.dl"

@@ -550,6 +550,24 @@ inttoptr_instruction_to_type(v0, v1) :-
     _inttoptr_instruction_to_type(v0, v1).
 
 
+.decl _ptrtoint_instruction_from_operand(v0:symbol, v1:symbol)
+.input _ptrtoint_instruction_from_operand(IO="file", delimiter="\t", filename="facts/ptrtoint_instruction-from.dlm")
+
+ptrtoint_instruction_from_operand(v0, v1) :-
+   ptrtoint_instruction(v0),
+   operand(v1),
+   _ptrtoint_instruction_from_operand(v0, v1).
+
+
+.decl _ptrtoint_instruction_to_type(v0:symbol, v1:symbol)
+.input _ptrtoint_instruction_to_type(IO="file", delimiter="\t", filename="facts/ptrtoint_instruction-to_type.dlm")
+
+ptrtoint_instruction_to_type(v0, v1) :-
+    ptrtoint_instruction(v0),
+    type(v1),
+    _ptrtoint_instruction_to_type(v0, v1).
+
+
 .decl _fpext_instruction_from_operand(v0:symbol, v1:symbol)
 .input _fpext_instruction_from_operand(IO="file", delimiter="\t", filename="facts/fpext_instruction-from.dlm")
 

@@ -548,3 +548,57 @@ inttoptr_instruction_to_type(v0, v1) :-
     inttoptr_instruction(v0),
     type(v1),
     _inttoptr_instruction_to_type(v0, v1).
+
+
+.decl _fpext_instruction_from_operand(v0:symbol, v1:symbol)
+.input _fpext_instruction_from_operand(IO="file", delimiter="\t", filename="facts/fpext_instruction-from.dlm")
+
+fpext_instruction_from_operand(v0, v1) :-
+   fpext_instruction(v0),
+   operand(v1),
+   _fpext_instruction_from_operand(v0, v1).
+
+
+.decl _fpext_instruction_to_type(v0:symbol, v1:symbol)
+.input _fpext_instruction_to_type(IO="file", delimiter="\t", filename="facts/fpext_instruction-to_type.dlm")
+
+fpext_instruction_to_type(v0, v1) :-
+    fpext_instruction(v0),
+    type(v1),
+    _fpext_instruction_to_type(v0, v1).
+
+
+.decl _sext_instruction_from_operand(v0:symbol, v1:symbol)
+.input _sext_instruction_from_operand(IO="file", delimiter="\t", filename="facts/sext_instruction-from.dlm")
+
+sext_instruction_from_operand(v0, v1) :-
+   sext_instruction(v0),
+   operand(v1),
+   _sext_instruction_from_operand(v0, v1).
+
+
+.decl _sext_instruction_to_type(v0:symbol, v1:symbol)
+.input _sext_instruction_to_type(IO="file", delimiter="\t", filename="facts/sext_instruction-to_type.dlm")
+
+sext_instruction_to_type(v0, v1) :-
+    sext_instruction(v0),
+    type(v1),
+    _sext_instruction_to_type(v0, v1).
+
+
+.decl _zext_instruction_from_operand(v0:symbol, v1:symbol)
+.input _zext_instruction_from_operand(IO="file", delimiter="\t", filename="facts/zext_instruction-from.dlm")
+
+zext_instruction_from_operand(v0, v1) :-
+   zext_instruction(v0),
+   operand(v1),
+   _zext_instruction_from_operand(v0, v1).
+
+
+.decl _zext_instruction_to_type(v0:symbol, v1:symbol)
+.input _zext_instruction_to_type(IO="file", delimiter="\t", filename="facts/zext_instruction-to_type.dlm")
+
+zext_instruction_to_type(v0, v1) :-
+    zext_instruction(v0),
+    type(v1),
+    _zext_instruction_to_type(v0, v1).

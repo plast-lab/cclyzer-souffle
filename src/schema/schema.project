@@ -26,5 +26,8 @@
 #include "fcmp-instruction.dl"
 #include "bitcast-instruction.dl"
 #include "inttoptr-instruction.dl"
+#include "fpext-instruction.dl"
+#include "sext-instruction.dl"
+#include "zext-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"

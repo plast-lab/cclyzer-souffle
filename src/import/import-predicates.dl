@@ -602,3 +602,75 @@ zext_instruction_to_type(v0, v1) :-
     zext_instruction(v0),
     type(v1),
     _zext_instruction_to_type(v0, v1).
+
+
+.decl _fptosi_instruction_from_operand(v0:symbol, v1:symbol)
+.input _fptosi_instruction_from_operand(IO="file", delimiter="\t", filename="facts/fptosi_instruction-from.dlm")
+
+fptosi_instruction_from_operand(v0, v1) :-
+   fptosi_instruction(v0),
+   operand(v1),
+   _fptosi_instruction_from_operand(v0, v1).
+
+
+.decl _fptosi_instruction_to_type(v0:symbol, v1:symbol)
+.input _fptosi_instruction_to_type(IO="file", delimiter="\t", filename="facts/fptosi_instruction-to_type.dlm")
+
+fptosi_instruction_to_type(v0, v1) :-
+    fptosi_instruction(v0),
+    type(v1),
+    _fptosi_instruction_to_type(v0, v1).
+
+
+.decl _fptoui_instruction_from_operand(v0:symbol, v1:symbol)
+.input _fptoui_instruction_from_operand(IO="file", delimiter="\t", filename="facts/fptoui_instruction-from.dlm")
+
+fptoui_instruction_from_operand(v0, v1) :-
+   fptoui_instruction(v0),
+   operand(v1),
+   _fptoui_instruction_from_operand(v0, v1).
+
+
+.decl _fptoui_instruction_to_type(v0:symbol, v1:symbol)
+.input _fptoui_instruction_to_type(IO="file", delimiter="\t", filename="facts/fptoui_instruction-to_type.dlm")
+
+fptoui_instruction_to_type(v0, v1) :-
+    fptoui_instruction(v0),
+    type(v1),
+    _fptoui_instruction_to_type(v0, v1).
+
+
+.decl _sitofp_instruction_from_operand(v0:symbol, v1:symbol)
+.input _sitofp_instruction_from_operand(IO="file", delimiter="\t", filename="facts/sitofp_instruction-from.dlm")
+
+sitofp_instruction_from_operand(v0, v1) :-
+   sitofp_instruction(v0),
+   operand(v1),
+   _sitofp_instruction_from_operand(v0, v1).
+
+
+.decl _sitofp_instruction_to_type(v0:symbol, v1:symbol)
+.input _sitofp_instruction_to_type(IO="file", delimiter="\t", filename="facts/sitofp_instruction-to_type.dlm")
+
+sitofp_instruction_to_type(v0, v1) :-
+    sitofp_instruction(v0),
+    type(v1),
+    _sitofp_instruction_to_type(v0, v1).
+
+
+.decl _uitofp_instruction_from_operand(v0:symbol, v1:symbol)
+.input _uitofp_instruction_from_operand(IO="file", delimiter="\t", filename="facts/uitofp_instruction-from.dlm")
+
+uitofp_instruction_from_operand(v0, v1) :-
+   uitofp_instruction(v0),
+   operand(v1),
+   _uitofp_instruction_from_operand(v0, v1).
+
+
+.decl _uitofp_instruction_to_type(v0:symbol, v1:symbol)
+.input _uitofp_instruction_to_type(IO="file", delimiter="\t", filename="facts/uitofp_instruction-to_type.dlm")
+
+uitofp_instruction_to_type(v0, v1) :-
+    uitofp_instruction(v0),
+    type(v1),
+    _uitofp_instruction_to_type(v0, v1).

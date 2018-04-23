@@ -255,3 +255,31 @@ sext_instruction(e0) :-
 
 zext_instruction(e0) :-
    _zext_instruction(e0).
+
+
+.decl _fptosi_instruction(v0:symbol)
+.input _fptosi_instruction(IO="file", delimiter="\t", filename="facts/fptosi_instruction.dlm")
+
+fptosi_instruction(e0) :-
+   _fptosi_instruction(e0).
+
+
+.decl _fptoui_instruction(v0:symbol)
+.input _fptoui_instruction(IO="file", delimiter="\t", filename="facts/fptoui_instruction.dlm")
+
+fptoui_instruction(e0) :-
+   _fptoui_instruction(e0).
+
+
+.decl _sitofp_instruction(v0:symbol)
+.input _sitofp_instruction(IO="file", delimiter="\t", filename="facts/sitofp_instruction.dlm")
+
+sitofp_instruction(e0) :-
+   _sitofp_instruction(e0).
+
+
+.decl _uitofp_instruction(v0:symbol)
+.input _uitofp_instruction(IO="file", delimiter="\t", filename="facts/uitofp_instruction.dlm")
+
+uitofp_instruction(e0) :-
+   _uitofp_instruction(e0).

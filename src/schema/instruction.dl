@@ -19,3 +19,14 @@
 instruction_returns_type(Instr, Type) :-
    instruction_assigns_to(Instr, Var),
    variable_has_type(Var, Type).
+
+// Terminator Instruction Subset
+.decl terminator_instruction(instr:Instruction)
+
+
+// Instruction Flags
+.type Flag
+.decl flag(flag:Flag)
+.decl instruction_has_flag(instr:Instruction, flag:Flag)
+
+flag(Flag) :- instruction_has_flag(_, Flag).

@@ -259,6 +259,14 @@ instruction(v0), variable(v1), instruction_assigns_to(v0, v1) :-
    _instruction_assigns_to(v0, v1).
 
 
+.decl _instruction_has_flag(v0:symbol, v1:symbol)
+.input _instruction_has_flag(IO="file", delimiter="\t", filename="facts/instruction-flag.dlm")
+
+instruction_has_flag(v0, v1) :-
+   instruction(v0),
+   _instruction_has_flag(v0, v1).
+
+
 .decl _vector_type_has_component(v0:symbol, v1:symbol)
 .input _vector_type_has_component(IO="file", delimiter="\t", filename="facts/vector_type-component.dlm")
 

@@ -110,6 +110,13 @@ fdiv_instruction(e0) :-
    _fdiv_instruction(e0).
 
 
+.decl _frem_instruction(v0:symbol)
+.input _frem_instruction(IO="file", delimiter="\t", filename="facts/frem_instruction.dlm")
+
+frem_instruction(e0) :-
+   _frem_instruction(e0).
+
+
 .decl _primitive_type(v0:symbol)
 .input _primitive_type(IO="file", delimiter="\t", filename="facts/primitive_type.dlm")
 

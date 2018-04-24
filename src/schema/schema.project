@@ -41,6 +41,7 @@
 #include "uitofp-instruction.dl"
 #include "trunc-instruction.dl"
 #include "fptrunc-instruction.dl"
+#include "br-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"
 #include "store-instruction.dl"

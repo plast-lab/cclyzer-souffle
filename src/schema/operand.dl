@@ -11,6 +11,21 @@
 .decl variable(v:Variable)
 
 .decl variable_has_type(v:Variable, type:Type)
+.decl variable_is_label(v:Variable)
+.decl variable_is_pointer(v:Variable)
+.decl variable_is_firstclass(v:Variable)
+
+variable_is_label(Var) :-
+   variable_has_type(Var, Type),
+   label_type(Type).
+
+variable_is_pointer(Var) :-
+   variable_has_type(Var, Type),
+   pointer_type(Type).
+
+variable_is_firstclass(Var) :-
+   variable_has_type(Var, Type),
+   type_is_firstclass(Type).
 
 
 //------------------------------------------------------------------------------

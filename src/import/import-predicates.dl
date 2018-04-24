@@ -994,3 +994,37 @@ va_arg_instruction_type(v0, v1) :-
     _va_arg_instruction_type(v0, v1).
 
 
+.decl _br_cond_instruction_condition(v0:symbol, v1:symbol)
+.input _br_cond_instruction_condition(IO="file", delimiter="\t", filename="facts/br_cond_instruction-condition")
+
+br_cond_instruction_condition(v0, v1) :-
+   br_cond_instruction(v0),
+   operand(v1),
+   _br_cond_instruction_condition(v0, v1).
+
+
+.decl _br_cond_instruction_iftrue_label(v0:symbol, v1:symbol)
+.input _br_cond_instruction_iftrue_label(IO="file", delimiter="\t", filename="facts/br_cond_instruction-iftrue")
+
+br_cond_instruction_iftrue_label(v0, v1) :-
+   br_cond_instruction(v0),
+   variable(v1),
+   _br_cond_instruction_iftrue_label(v0, v1).
+
+
+.decl _br_cond_instruction_iffalse_label(v0:symbol, v1:symbol)
+.input _br_cond_instruction_iffalse_label(IO="file", delimiter="\t", filename="facts/br_cond_instruction-iffalse")
+
+br_cond_instruction_iffalse_label(v0, v1) :-
+   br_cond_instruction(v0),
+   variable(v1),
+   _br_cond_instruction_iffalse_label(v0, v1).
+
+
+.decl _br_uncond_instruction_dest_label(v0:symbol, v1:symbol)
+.input _br_uncond_instruction_dest_label(IO="file", delimiter="\t", filename="facts/br_uncond_instruction-dest")
+
+br_uncond_instruction_dest_label(v0, v1) :-
+   br_uncond_instruction(v0),
+   variable(v1),
+   _br_uncond_instruction_dest_label(v0, v1).

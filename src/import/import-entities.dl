@@ -367,3 +367,24 @@ fptrunc_instruction(e0) :-
 
 va_arg_instruction(e0) :-
    _va_arg_instruction(e0).
+
+
+.decl _br_instruction(v0:symbol)
+.input _br_instruction(IO="file", delimiter="\t", filename="facts/br_instruction.dlm")
+
+br_instruction(e0) :-
+   _br_instruction(e0).
+
+
+.decl _br_cond_instruction(v0:symbol)
+.input _br_cond_instruction(IO="file", delimiter="\t", filename="facts/br_cond_instruction.dlm")
+
+br_cond_instruction(e0) :-
+   _br_cond_instruction(e0).
+
+
+.decl _br_uncond_instruction(v0:symbol)
+.input _br_uncond_instruction(IO="file", delimiter="\t", filename="facts/br_uncond_instruction.dlm")
+
+br_uncond_instruction(e0) :-
+   _br_uncond_instruction(e0).

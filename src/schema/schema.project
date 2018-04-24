@@ -47,3 +47,4 @@
 #include "landingpad-instruction.dl"
 #include "resume-instruction.dl"
 #include "unreachable-instruction.dl"
+#include "va-arg-instruction.dl"

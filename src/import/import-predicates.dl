@@ -956,3 +956,23 @@ function_param_attribute(v0, v1, v2) :-
 function_has_attribute(v0, v1) :-
    function_decl(v0),
    _function_has_attribute(v0, v1).
+
+
+.decl _va_arg_instruction_va_list(v0:symbol, v1:symbol)
+.input _va_arg_instruction_va_list(IO="file", delimiter="\t", filename="facts/va_arg_instruction-va_list.dlm")
+
+va_arg_instruction_va_list(v0, v1) :-
+   va_arg_instruction(v0),
+   operand(v1),
+   _va_arg_instruction_va_list(v0, v1).
+
+
+.decl _va_arg_instruction_type(v0:symbol, v1:symbol)
+.input _va_arg_instruction_type(IO="file", delimiter="\t", filename="facts/va_arg_instruction-type.dlm")
+
+va_arg_instruction_type(v0, v1) :-
+    va_arg_instruction(v0),
+    type(v1),
+    _va_arg_instruction_type(v0, v1).
+
+

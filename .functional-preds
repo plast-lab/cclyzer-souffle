@@ -101,6 +101,8 @@ resume_instruction resume_instruction_operand
 alloca_instruction alloca_instruction_alignment
 alloca_instruction alloca_instruction_size
 alloca_instruction alloca_instruction_type
+va_arg_instruction va_arg_instruction_va_list
+va_arg_instruction va_arg_instruction_type
 
 
 vector_type vector_type_has_component

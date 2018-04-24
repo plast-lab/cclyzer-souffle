@@ -353,3 +353,10 @@ trunc_instruction(e0) :-
 
 fptrunc_instruction(e0) :-
    _fptrunc_instruction(e0).
+
+
+.decl _va_arg_instruction(v0:symbol)
+.input _va_arg_instruction(IO="file", delimiter="\t", filename="facts/va_arg_instruction.dlm")
+
+va_arg_instruction(e0) :-
+   _va_arg_instruction(e0).

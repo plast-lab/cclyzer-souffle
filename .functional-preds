@@ -7,6 +7,9 @@ operand operand_has_type
 
 instruction instruction_assigns_to
 instruction instruction_returns_type
+instruction next_instruction
+instruction instruction_pos
+instruction instruction_in_function
 
 function function_alignment
 function function_calling_convention

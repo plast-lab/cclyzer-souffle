@@ -1,3 +1,29 @@
+.decl _next_instruction(v0:symbol, v1:symbol)
+.input _next_instruction(IO="file", delimiter="\t", filename="facts/instruction-next.dlm")
+
+next_instruction(e0, e1) :-
+   instruction(e0),
+   instruction(e1),
+   _next_instruction(e0, e1).
+
+
+.decl _instruction_pos(v0:symbol, v1:number, v2:number)
+.input _instruction_pos(IO="file", delimiter="\t", filename="facts/instruction-pos.dlm")
+
+instruction_pos(e0, e1, e2) :-
+   instruction(e0),
+   _instruction_pos(e0, e1, e2).
+
+
+.decl _instruction_in_function(v0:symbol, v1:symbol)
+.input _instruction_in_function(IO="file", delimiter="\t", filename="facts/instruction-function.dlm")
+
+instruction_in_function(e0, e1) :-
+   instruction(e0),
+   function(e1),
+   _instruction_in_function(e0, e1).
+
+
 .decl _function_type_nparams(v0:symbol, v1:number)
 .input _function_type_nparams(IO="file", delimiter="\t", filename="facts/function_type-nparams.dlm")
 

@@ -1061,3 +1061,29 @@ br_uncond_instruction_dest_label(v0, v1) :-
    br_uncond_instruction(v0),
    variable(v1),
    _br_uncond_instruction_dest_label(v0, v1).
+
+
+.decl _indirectbr_instruction_address(v0:symbol, v1:symbol)
+.input _indirectbr_instruction_address(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-address")
+
+indirectbr_instruction_address(v0, v1) :-
+   indirectbr_instruction(v0),
+   operand(v1),
+   _indirectbr_instruction_address(v0, v1).
+
+
+.decl _indirectbr_instruction_label(v0:symbol, v1:number, v2:symbol)
+.input _indirectbr_instruction_label(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-label")
+
+indirectbr_instruction_label(v0, v1, v2) :-
+   indirectbr_instruction(v0),
+   variable(v2),
+   _indirectbr_instruction_label(v0, v1, v2).
+
+
+.decl _indirectbr_instruction_nlabels(v0:symbol, v1:number)
+.input _indirectbr_instruction_nlabels(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-nlabels")
+
+indirectbr_instruction_nlabels(v0, v1) :-
+   indirectbr_instruction(v0),
+   _indirectbr_instruction_nlabels(v0, v1).

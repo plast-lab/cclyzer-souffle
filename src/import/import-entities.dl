@@ -388,3 +388,10 @@ br_cond_instruction(e0) :-
 
 br_uncond_instruction(e0) :-
    _br_uncond_instruction(e0).
+
+
+.decl _indirectbr_instruction(v0:symbol)
+.input _indirectbr_instruction(IO="file", delimiter="\t", filename="facts/indirectbr_instruction.dlm")
+
+indirectbr_instruction(e0) :-
+   _indirectbr_instruction(e0).

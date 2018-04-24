@@ -117,6 +117,13 @@ array_type array_type_has_component
 array_type array_type_has_size
 pointer_type pointer_type_has_component
 pointer_type pointer_type_has_addr_space
+struct_type * struct_type_field
+struct_type struct_type_nfields
+struct_type * struct_type_field_offset
+struct_type * struct_type_field_bit_offset
+struct_type * struct_type_field_name_at_offset
+struct_type * struct_type_inherits_at_offset
+struct_type * struct_type_field_name
 
 null void_type
 null label_type

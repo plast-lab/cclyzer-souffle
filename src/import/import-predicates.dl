@@ -52,6 +52,39 @@ function_type(e0), function_type_has_varargs(e0) :-
    _function_type_has_varargs(e0).
 
 
+.decl _struct_type_nfields(v0:symbol, v1:number)
+.input _struct_type_nfields(IO="file", delimiter="\t", filename="facts/struct_type-nfields.dlm")
+
+struct_type_nfields(e0, e1) :-
+   struct_type(e0),
+   _struct_type_nfields(e0, e1).
+
+
+.decl _struct_type_field(v0:symbol, v1:number, v2:symbol)
+.input _struct_type_field(IO="file", delimiter="\t", filename="facts/struct_type-field.dlm")
+
+struct_type_field(e0, e1, e2) :-
+   struct_type(e0),
+   type(e2),
+   _struct_type_field(e0, e1, e2).
+
+
+.decl _struct_type_field_offset(v0:symbol, v1:number, v2:number)
+.input _struct_type_field_offset(IO="file", delimiter="\t", filename="facts/struct_type-field_offset.dlm")
+
+struct_type_field_offset(e0, e1, e2) :-
+   struct_type(e0),
+   _struct_type_field_offset(e0, e1, e2).
+
+
+.decl _struct_type_field_bit_offset(v0:symbol, v1:number, v2:number)
+.input _struct_type_field_bit_offset(IO="file", delimiter="\t", filename="facts/struct_type-field_bit_offset.dlm")
+
+struct_type_field_bit_offset(e0, e1, e2) :-
+   struct_type(e0),
+   _struct_type_field_bit_offset(e0, e1, e2).
+
+
 .decl _add_instruction_first_operand(v0:symbol, v1:symbol)
 .input _add_instruction_first_operand(IO="file", delimiter="\t", filename="facts/add_instruction-first_operand.dlm")
 

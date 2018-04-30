@@ -127,6 +127,11 @@ struct_type * struct_type_field_name_at_offset
 struct_type * struct_type_inherits_at_offset
 struct_type * struct_type_field_name
 
+basicblock basicblock_of_label
+basicblock basicblock_first_instruction
+basicblock basicblock_last_instruction
+instruction instruction_in_basicblock
+
 null void_type
 null label_type
 null metadata_type

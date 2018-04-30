@@ -9,6 +9,7 @@
 #include "function.dl"
 
 #include "instruction.dl"
+#include "basic-block.dl"
 #include "add-instruction.dl"
 #include "sub-instruction.dl"
 #include "mul-instruction.dl"

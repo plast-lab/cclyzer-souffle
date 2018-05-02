@@ -395,3 +395,10 @@ br_uncond_instruction(e0) :-
 
 indirectbr_instruction(e0) :-
    _indirectbr_instruction(e0).
+
+
+.decl _phi_instruction(v0:symbol)
+.input _phi_instruction(IO="file", delimiter="\t", filename="facts/phi_instruction.dlm")
+
+phi_instruction(e0) :-
+   _phi_instruction(e0).

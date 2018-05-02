@@ -1048,7 +1048,7 @@ va_arg_instruction_type(v0, v1) :-
 
 
 .decl _br_cond_instruction_condition(v0:symbol, v1:symbol)
-.input _br_cond_instruction_condition(IO="file", delimiter="\t", filename="facts/br_cond_instruction-condition")
+.input _br_cond_instruction_condition(IO="file", delimiter="\t", filename="facts/br_cond_instruction-condition.dlm")
 
 br_cond_instruction_condition(v0, v1) :-
    br_cond_instruction(v0),
@@ -1057,7 +1057,7 @@ br_cond_instruction_condition(v0, v1) :-
 
 
 .decl _br_cond_instruction_iftrue_label(v0:symbol, v1:symbol)
-.input _br_cond_instruction_iftrue_label(IO="file", delimiter="\t", filename="facts/br_cond_instruction-iftrue")
+.input _br_cond_instruction_iftrue_label(IO="file", delimiter="\t", filename="facts/br_cond_instruction-iftrue.dlm")
 
 br_cond_instruction_iftrue_label(v0, v1) :-
    br_cond_instruction(v0),
@@ -1066,7 +1066,7 @@ br_cond_instruction_iftrue_label(v0, v1) :-
 
 
 .decl _br_cond_instruction_iffalse_label(v0:symbol, v1:symbol)
-.input _br_cond_instruction_iffalse_label(IO="file", delimiter="\t", filename="facts/br_cond_instruction-iffalse")
+.input _br_cond_instruction_iffalse_label(IO="file", delimiter="\t", filename="facts/br_cond_instruction-iffalse.dlm")
 
 br_cond_instruction_iffalse_label(v0, v1) :-
    br_cond_instruction(v0),
@@ -1075,7 +1075,7 @@ br_cond_instruction_iffalse_label(v0, v1) :-
 
 
 .decl _br_uncond_instruction_dest_label(v0:symbol, v1:symbol)
-.input _br_uncond_instruction_dest_label(IO="file", delimiter="\t", filename="facts/br_uncond_instruction-dest")
+.input _br_uncond_instruction_dest_label(IO="file", delimiter="\t", filename="facts/br_uncond_instruction-dest.dlm")
 
 br_uncond_instruction_dest_label(v0, v1) :-
    br_uncond_instruction(v0),
@@ -1084,7 +1084,7 @@ br_uncond_instruction_dest_label(v0, v1) :-
 
 
 .decl _indirectbr_instruction_address(v0:symbol, v1:symbol)
-.input _indirectbr_instruction_address(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-address")
+.input _indirectbr_instruction_address(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-address.dlm")
 
 indirectbr_instruction_address(v0, v1) :-
    indirectbr_instruction(v0),
@@ -1093,7 +1093,7 @@ indirectbr_instruction_address(v0, v1) :-
 
 
 .decl _indirectbr_instruction_label(v0:symbol, v1:number, v2:symbol)
-.input _indirectbr_instruction_label(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-label")
+.input _indirectbr_instruction_label(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-label.dlm")
 
 indirectbr_instruction_label(v0, v1, v2) :-
    indirectbr_instruction(v0),
@@ -1102,8 +1102,39 @@ indirectbr_instruction_label(v0, v1, v2) :-
 
 
 .decl _indirectbr_instruction_nlabels(v0:symbol, v1:number)
-.input _indirectbr_instruction_nlabels(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-nlabels")
+.input _indirectbr_instruction_nlabels(IO="file", delimiter="\t", filename="facts/indirectbr_instruction-nlabels.dlm")
 
 indirectbr_instruction_nlabels(v0, v1) :-
    indirectbr_instruction(v0),
    _indirectbr_instruction_nlabels(v0, v1).
+
+
+.decl _phi_instruction_type(v0:symbol, v1:symbol)
+.input _phi_instruction_type(IO="file", delimiter="\t", filename="facts/phi_instruction-type.dlm")
+
+phi_instruction_type(v0, v1) :-
+    phi_instruction(v0),
+    type(v1),
+    _phi_instruction_type(v0, v1).
+
+
+.decl _phi_instruction_npairs(v0:symbol, v1:number)
+.input _phi_instruction_npairs(IO="file", delimiter="\t", filename="facts/phi_instruction-npairs.dlm")
+
+phi_instruction_npairs(v0, v1) :-
+   phi_instruction(v0),
+   _phi_instruction_npairs(v0, v1).
+
+
+.decl _phi_instruction_pair_label(v0:symbol, v1:number, v2:symbol)
+.decl _phi_instruction_pair_value(v0:symbol, v1:number, v2:symbol)
+.input _phi_instruction_pair_label(IO="file", delimiter="\t", filename="facts/phi_instruction-pair-label.dlm")
+.input _phi_instruction_pair_value(IO="file", delimiter="\t", filename="facts/phi_instruction-pair-value.dlm")
+
+
+phi_instruction_pair(v0, v1, [v2, v3]) :-
+   phi_instruction(v0),
+   operand(v2),
+   variable(v3),
+   _phi_instruction_pair_value(v0, v1, v2),
+   _phi_instruction_pair_label(v0, v1, v3).

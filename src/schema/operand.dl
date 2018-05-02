@@ -40,6 +40,7 @@ variable_is_firstclass(Var) :-
 .decl constant(c:Constant)
 
 .decl constant_has_type(c:Constant, type:Type)
+.decl constants_equal(c1:Constant, c2:Constant)
 
 
 //--------------------------------------------------

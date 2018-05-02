@@ -45,6 +45,7 @@
 #include "br-instruction.dl"
 #include "indirectbr-instruction.dl"
 #include "phi-instruction.dl"
+#include "switch-instruction.dl"
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"
 #include "store-instruction.dl"

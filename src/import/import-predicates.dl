@@ -1138,3 +1138,43 @@ phi_instruction_pair(v0, v1, [v2, v3]) :-
    variable(v3),
    _phi_instruction_pair_value(v0, v1, v2),
    _phi_instruction_pair_label(v0, v1, v3).
+
+
+.decl _switch_instruction_operand(v0:symbol, v1:symbol)
+.input _switch_instruction_operand(IO="file", delimiter="\t", filename="facts/switch_instruction-operand.dlm")
+
+switch_instruction_operand(v0, v1) :-
+    switch_instruction(v0),
+    operand(v1),
+    _switch_instruction_operand(v0, v1).
+
+
+.decl _switch_instruction_default_label(v0:symbol, v1:symbol)
+.input _switch_instruction_default_label(IO="file", delimiter="\t", filename="facts/switch_instruction-default_label.dlm")
+
+switch_instruction_default_label(v0, v1) :-
+    switch_instruction(v0),
+    variable(v1),
+    _switch_instruction_default_label(v0, v1).
+
+
+.decl _switch_instruction_ncases(v0:symbol, v1:number)
+.input _switch_instruction_ncases(IO="file", delimiter="\t", filename="facts/switch_instruction-ncases.dlm")
+
+switch_instruction_ncases(v0, v1) :-
+   switch_instruction(v0),
+   _switch_instruction_ncases(v0, v1).
+
+
+.decl _switch_instruction_case_label(v0:symbol, v1:number, v2:symbol)
+.decl _switch_instruction_case_value(v0:symbol, v1:number, v2:symbol)
+.input _switch_instruction_case_label(IO="file", delimiter="\t", filename="facts/switch_instruction-case-label.dlm")
+.input _switch_instruction_case_value(IO="file", delimiter="\t", filename="facts/switch_instruction-case-value.dlm")
+
+
+switch_instruction_case(v0, v1, [v2, v3]) :-
+   switch_instruction(v0),
+   constant(v2),
+   variable(v3),
+   _switch_instruction_case_value(v0, v1, v2),
+   _switch_instruction_case_label(v0, v1, v3).

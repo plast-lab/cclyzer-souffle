@@ -402,3 +402,10 @@ indirectbr_instruction(e0) :-
 
 phi_instruction(e0) :-
    _phi_instruction(e0).
+
+
+.decl _switch_instruction(v0:symbol)
+.input _switch_instruction(IO="file", delimiter="\t", filename="facts/switch_instruction.dlm")
+
+switch_instruction(e0) :-
+   _switch_instruction(e0).

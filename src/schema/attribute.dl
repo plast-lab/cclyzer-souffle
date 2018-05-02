@@ -1,6 +1,7 @@
 // Atribute
 .type Attribute
 .decl attribute(attr:Attribute)
+.decl target_dependent_attribute(attr:Attribute)
 
 // Parameter Attributes
 .decl parameter_attribute__zeroext(attr:Attribute)
@@ -14,6 +15,9 @@
 .decl parameter_attribute__nest(attr:Attribute)
 .decl parameter_attribute__returned(attr:Attribute)
 .decl parameter_attribute__nonnull(attr:Attribute)
+.decl parameter_attribute__dereferenceable(attr:Attribute)
+.decl parameter_attribute__dereferenceable_or_null(attr:Attribute)
+.decl parameter_attribute__align(attr:Attribute)
 
 
 attribute("zeroext"). parameter_attribute__zeroext("zeroext").
@@ -28,6 +32,14 @@ attribute("nest"). parameter_attribute__nest("nest").
 attribute("returned"). parameter_attribute__returned("returned").
 attribute("nonnull"). parameter_attribute__nonnull("nonnull").
 
+parameter_attribute__dereferenceable(Attr) :-
+   attribute(Attr), match("dereferenceable(.*)", Attr).
+
+parameter_attribute__dereferenceable_or_null(Attr) :-
+   attribute(Attr), match("dereferenceable_or_null(.*)", Attr).
+
+parameter_attribute__align(Attr) :-
+   attribute(Attr), match("align .*", Attr).
 
 
 // Function Attributes
@@ -64,6 +76,7 @@ attribute("nonnull"). parameter_attribute__nonnull("nonnull").
 .decl function_attribute__sspreq(attr:Attribute)
 .decl function_attribute__sspstrong(attr:Attribute)
 .decl function_attribute__uwtable(attr:Attribute)
+.decl function_attribute__alignstack(attr:Attribute)
 
 
 attribute("alwaysinline"). function_attribute__alwaysinline("alwaysinline").
@@ -100,3 +113,6 @@ attribute("ssp"). function_attribute__ssp("ssp").
 attribute("sspreq"). function_attribute__sspreq("sspreq").
 attribute("sspstrong"). function_attribute__sspstrong("sspstrong").
 attribute("uwtable"). function_attribute__uwtable("uwtable").
+
+function_attribute__alignstack(Attr) :-
+   attribute(Attr), match("alignstack(.*)", Attr).

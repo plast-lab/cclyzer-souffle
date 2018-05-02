@@ -1,3 +1,10 @@
+.decl _target_dependent_attribute(v0:symbol)
+.input _target_dependent_attribute(IO="file", delimiter="\t", filename="facts/target_dependent_attribute.dlm")
+
+attribute(e0), target_dependent_attribute(e0) :-
+   _target_dependent_attribute(e0).
+
+
 .decl _next_instruction(v0:symbol, v1:symbol)
 .input _next_instruction(IO="file", delimiter="\t", filename="facts/instruction-next.dlm")
 

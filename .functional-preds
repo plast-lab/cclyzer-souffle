@@ -119,6 +119,7 @@ switch_instruction switch_instruction_operand
 switch_instruction switch_instruction_default_label
 switch_instruction switch_instruction_ncases
 switch_instruction * switch_instruction_case
+ret_instruction ret_instruction_value
 
 vector_type vector_type_has_component
 vector_type vector_type_has_size

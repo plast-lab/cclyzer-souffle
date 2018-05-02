@@ -1178,3 +1178,20 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
    variable(v3),
    _switch_instruction_case_value(v0, v1, v2),
    _switch_instruction_case_label(v0, v1, v3).
+
+
+.decl _ret_instruction_value(v0:symbol, v1:symbol)
+.input _ret_instruction_value(IO="file", delimiter="\t", filename="facts/ret_instruction-value.dlm")
+
+ret_instruction_value(v0, v1) :-
+    ret_instruction(v0),
+    operand(v1),
+    _ret_instruction_value(v0, v1).
+
+
+.decl _void_ret_instruction(v0:symbol)
+.input _void_ret_instruction(IO="file", delimiter="\t", filename="facts/ret_instruction-void.dlm")
+
+void_ret_instruction(v0) :-
+    ret_instruction(v0),
+    _void_ret_instruction(v0).

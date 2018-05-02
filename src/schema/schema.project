@@ -49,6 +49,7 @@
 #include "alloca-instruction.dl"
 #include "load-instruction.dl"
 #include "store-instruction.dl"
+#include "ret-instruction.dl"
 #include "fence-instruction.dl"
 #include "landingpad-instruction.dl"
 #include "resume-instruction.dl"

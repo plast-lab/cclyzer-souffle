@@ -409,3 +409,10 @@ phi_instruction(e0) :-
 
 switch_instruction(e0) :-
    _switch_instruction(e0).
+
+
+.decl _ret_instruction(v0:symbol)
+.input _ret_instruction(IO="file", delimiter="\t", filename="facts/ret_instruction.dlm")
+
+ret_instruction(e0) :-
+   _ret_instruction(e0).

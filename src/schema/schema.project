@@ -53,6 +53,7 @@
 #include "fence-instruction.dl"
 #include "landingpad-instruction.dl"
 #include "resume-instruction.dl"
+#include "extractelement-instruction.dl"
 #include "unreachable-instruction.dl"
 #include "va-arg-instruction.dl"
 

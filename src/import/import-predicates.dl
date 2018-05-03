@@ -1202,3 +1202,21 @@ ret_instruction_value(v0, v1) :-
 void_ret_instruction(v0) :-
     ret_instruction(v0),
     _void_ret_instruction(v0).
+
+
+.decl _extractelement_instruction_base(v0:symbol, v1:symbol)
+.input _extractelement_instruction_base(IO="file", delimiter="\t", filename="facts/extractelement_instruction-base.dlm")
+
+extractelement_instruction_base(v0, v1) :-
+    extractelement_instruction(v0),
+    operand(v1),
+    _extractelement_instruction_base(v0, v1).
+
+
+.decl _extractelement_instruction_index(v0:symbol, v1:symbol)
+.input _extractelement_instruction_index(IO="file", delimiter="\t", filename="facts/extractelement_instruction-index.dlm")
+
+extractelement_instruction_index(v0, v1) :-
+    extractelement_instruction(v0),
+    operand(v1),
+    _extractelement_instruction_index(v0, v1).

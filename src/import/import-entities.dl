@@ -416,3 +416,10 @@ switch_instruction(e0) :-
 
 ret_instruction(e0) :-
    _ret_instruction(e0).
+
+
+.decl _extractelement_instruction(v0:symbol)
+.input _extractelement_instruction(IO="file", delimiter="\t", filename="facts/extractelement_instruction.dlm")
+
+extractelement_instruction(e0) :-
+   _extractelement_instruction(e0).

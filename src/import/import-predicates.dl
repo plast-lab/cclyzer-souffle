@@ -1247,3 +1247,30 @@ insertelement_instruction_value(v0, v1) :-
     insertelement_instruction(v0),
     operand(v1),
     _insertelement_instruction_value(v0, v1).
+
+
+.decl _shufflevector_instruction_first_vector(v0:symbol, v1:symbol)
+.input _shufflevector_instruction_first_vector(IO="file", delimiter="\t", filename="facts/shufflevector_instruction-first_vector.dlm")
+
+shufflevector_instruction_first_vector(v0, v1) :-
+    shufflevector_instruction(v0),
+    operand(v1),
+    _shufflevector_instruction_first_vector(v0, v1).
+
+
+.decl _shufflevector_instruction_second_vector(v0:symbol, v1:symbol)
+.input _shufflevector_instruction_second_vector(IO="file", delimiter="\t", filename="facts/shufflevector_instruction-second_vector.dlm")
+
+shufflevector_instruction_second_vector(v0, v1) :-
+    shufflevector_instruction(v0),
+    operand(v1),
+    _shufflevector_instruction_second_vector(v0, v1).
+
+
+.decl _shufflevector_instruction_mask(v0:symbol, v1:symbol)
+.input _shufflevector_instruction_mask(IO="file", delimiter="\t", filename="facts/shufflevector_instruction-mask.dlm")
+
+shufflevector_instruction_mask(v0, v1) :-
+    shufflevector_instruction(v0),
+    constant(v1),
+    _shufflevector_instruction_mask(v0, v1).

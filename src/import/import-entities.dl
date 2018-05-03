@@ -430,3 +430,10 @@ extractelement_instruction(e0) :-
 
 insertelement_instruction(e0) :-
    _insertelement_instruction(e0).
+
+
+.decl _shufflevector_instruction(v0:symbol)
+.input _shufflevector_instruction(IO="file", delimiter="\t", filename="facts/shufflevector_instruction.dlm")
+
+shufflevector_instruction(e0) :-
+   _shufflevector_instruction(e0).

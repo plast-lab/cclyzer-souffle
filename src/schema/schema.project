@@ -55,6 +55,7 @@
 #include "resume-instruction.dl"
 #include "extractelement-instruction.dl"
 #include "insertelement-instruction.dl"
+#include "shufflevector-instruction.dl"
 #include "unreachable-instruction.dl"
 #include "va-arg-instruction.dl"
 

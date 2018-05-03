@@ -437,3 +437,10 @@ insertelement_instruction(e0) :-
 
 shufflevector_instruction(e0) :-
    _shufflevector_instruction(e0).
+
+
+.decl _getelementptr_instruction(v0:symbol)
+.input _getelementptr_instruction(IO="file", delimiter="\t", filename="facts/getelementptr_instruction.dlm")
+
+getelementptr_instruction(e0) :-
+   _getelementptr_instruction(e0).

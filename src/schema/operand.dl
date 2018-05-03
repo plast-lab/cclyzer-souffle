@@ -43,6 +43,10 @@ variable_is_firstclass(Var) :-
 .decl constants_equal(c1:Constant, c2:Constant)
 
 
+//  Handy Conversions
+.decl constant_to_int(c:Constant, val:number)
+
+
 //--------------------------------------------------
 // [Operands] as union of {variable, constant}
 //--------------------------------------------------
@@ -50,11 +54,8 @@ variable_is_firstclass(Var) :-
 .type Operand = Constant | Variable
 .decl operand(op:Operand)
 
-operand(c) :-
-   constant(c).
-
-operand(v) :-
-   variable(v).
+operand(c) :- constant(c).
+operand(v) :- variable(v).
 
 
 // Type predicate

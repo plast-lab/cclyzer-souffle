@@ -1274,3 +1274,37 @@ shufflevector_instruction_mask(v0, v1) :-
     shufflevector_instruction(v0),
     constant(v1),
     _shufflevector_instruction_mask(v0, v1).
+
+
+.decl _getelementptr_instruction_base(v0:symbol, v1:symbol)
+.input _getelementptr_instruction_base(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-base.dlm")
+
+getelementptr_instruction_base(v0, v1) :-
+    getelementptr_instruction(v0),
+    operand(v1),
+    _getelementptr_instruction_base(v0, v1).
+
+
+.decl _getelementptr_instruction_nindices(v0:symbol, v1:number)
+.input _getelementptr_instruction_nindices(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-nindices.dlm")
+
+getelementptr_instruction_nindices(v0, v1) :-
+    getelementptr_instruction(v0),
+    _getelementptr_instruction_nindices(v0, v1).
+
+
+.decl _getelementptr_instruction_index(v0:symbol, v1:number, v2:symbol)
+.input _getelementptr_instruction_index(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-index.dlm")
+
+getelementptr_instruction_index(v0, v1, v2) :-
+   getelementptr_instruction(v0),
+   operand(v2),
+    _getelementptr_instruction_index(v0, v1, v2).
+
+
+.decl _getelementptr_instruction_is_inbounds(v0:symbol)
+.input _getelementptr_instruction_is_inbounds(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-inbounds.dlm")
+
+getelementptr_instruction_is_inbounds(v0) :-
+    getelementptr_instruction(v0),
+    _getelementptr_instruction_is_inbounds(v0).

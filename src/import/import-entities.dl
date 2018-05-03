@@ -423,3 +423,10 @@ ret_instruction(e0) :-
 
 extractelement_instruction(e0) :-
    _extractelement_instruction(e0).
+
+
+.decl _insertelement_instruction(v0:symbol)
+.input _insertelement_instruction(IO="file", delimiter="\t", filename="facts/insertelement_instruction.dlm")
+
+insertelement_instruction(e0) :-
+   _insertelement_instruction(e0).

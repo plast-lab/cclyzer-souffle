@@ -1220,3 +1220,30 @@ extractelement_instruction_index(v0, v1) :-
     extractelement_instruction(v0),
     operand(v1),
     _extractelement_instruction_index(v0, v1).
+
+
+.decl _insertelement_instruction_base(v0:symbol, v1:symbol)
+.input _insertelement_instruction_base(IO="file", delimiter="\t", filename="facts/insertelement_instruction-base.dlm")
+
+insertelement_instruction_base(v0, v1) :-
+    insertelement_instruction(v0),
+    operand(v1),
+    _insertelement_instruction_base(v0, v1).
+
+
+.decl _insertelement_instruction_index(v0:symbol, v1:symbol)
+.input _insertelement_instruction_index(IO="file", delimiter="\t", filename="facts/insertelement_instruction-index.dlm")
+
+insertelement_instruction_index(v0, v1) :-
+    insertelement_instruction(v0),
+    operand(v1),
+    _insertelement_instruction_index(v0, v1).
+
+
+.decl _insertelement_instruction_value(v0:symbol, v1:symbol)
+.input _insertelement_instruction_value(IO="file", delimiter="\t", filename="facts/insertelement_instruction-value.dlm")
+
+insertelement_instruction_value(v0, v1) :-
+    insertelement_instruction(v0),
+    operand(v1),
+    _insertelement_instruction_value(v0, v1).

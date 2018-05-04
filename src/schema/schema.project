@@ -58,6 +58,7 @@
 #include "insertelement-instruction.dl"
 #include "shufflevector-instruction.dl"
 #include "getelementptr-instruction.dl"
+#include "extractvalue-instruction.dl"
 #include "unreachable-instruction.dl"
 #include "va-arg-instruction.dl"
 

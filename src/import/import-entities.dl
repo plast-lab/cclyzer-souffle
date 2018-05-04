@@ -1,446 +1,66 @@
-.decl _constant(v0:symbol)
-.input _constant(IO="file", delimiter="\t", filename="facts/constant.dlm")
-
-constant(v0) :-
-   _constant(v0).
-
-
-.decl _variable(v0:symbol)
-.input _variable(IO="file", delimiter="\t", filename="facts/variable.dlm")
-
-variable(v0) :-
-   _variable(v0).
-
-
-.decl _inline_asm(v0:symbol)
-.input _inline_asm(IO="file", delimiter="\t", filename="facts/inline_asm.dlm")
-
-inline_asm(v0) :-
-   _inline_asm(v0).
-
-
-.decl _function(v0:symbol)
-.input _function(IO="file", delimiter="\t", filename="facts/function.dlm")
-
-function(v0) :-
-   _function(v0).
-
-
-.decl _function_decl(v0:symbol)
-.input _function_decl(IO="file", delimiter="\t", filename="facts/function_decl.dlm")
-
-function_decl(v0) :-
-   _function_decl(v0).
-
-
-.decl _add_instruction(v0:symbol)
-.input _add_instruction(IO="file", delimiter="\t", filename="facts/add_instruction.dlm")
-
-add_instruction(e0) :-
-   _add_instruction(e0).
-
-
-.decl _sub_instruction(v0:symbol)
-.input _sub_instruction(IO="file", delimiter="\t", filename="facts/sub_instruction.dlm")
-
-sub_instruction(e0) :-
-   _sub_instruction(e0).
-
-
-.decl _mul_instruction(v0:symbol)
-.input _mul_instruction(IO="file", delimiter="\t", filename="facts/mul_instruction.dlm")
-
-mul_instruction(e0) :-
-   _mul_instruction(e0).
-
-
-.decl _sdiv_instruction(v0:symbol)
-.input _sdiv_instruction(IO="file", delimiter="\t", filename="facts/sdiv_instruction.dlm")
-
-sdiv_instruction(e0) :-
-   _sdiv_instruction(e0).
-
-
-.decl _srem_instruction(v0:symbol)
-.input _srem_instruction(IO="file", delimiter="\t", filename="facts/srem_instruction.dlm")
-
-srem_instruction(e0) :-
-   _srem_instruction(e0).
-
-
-.decl _udiv_instruction(v0:symbol)
-.input _udiv_instruction(IO="file", delimiter="\t", filename="facts/udiv_instruction.dlm")
-
-udiv_instruction(e0) :-
-   _udiv_instruction(e0).
-
-
-.decl _urem_instruction(v0:symbol)
-.input _urem_instruction(IO="file", delimiter="\t", filename="facts/urem_instruction.dlm")
-
-urem_instruction(e0) :-
-   _urem_instruction(e0).
-
-
-.decl _fadd_instruction(v0:symbol)
-.input _fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
-
-fadd_instruction(e0) :-
-   _fadd_instruction(e0).
-
-
-.decl _fsub_instruction(v0:symbol)
-.input _fsub_instruction(IO="file", delimiter="\t", filename="facts/fsub_instruction.dlm")
-
-fsub_instruction(e0) :-
-   _fsub_instruction(e0).
-
-
-.decl _fmul_instruction(v0:symbol)
-.input _fmul_instruction(IO="file", delimiter="\t", filename="facts/fmul_instruction.dlm")
-
-fmul_instruction(e0) :-
-   _fmul_instruction(e0).
-
-
-.decl _fdiv_instruction(v0:symbol)
-.input _fdiv_instruction(IO="file", delimiter="\t", filename="facts/fdiv_instruction.dlm")
-
-fdiv_instruction(e0) :-
-   _fdiv_instruction(e0).
-
-
-.decl _frem_instruction(v0:symbol)
-.input _frem_instruction(IO="file", delimiter="\t", filename="facts/frem_instruction.dlm")
-
-frem_instruction(e0) :-
-   _frem_instruction(e0).
-
-
-.decl _primitive_type(v0:symbol)
-.input _primitive_type(IO="file", delimiter="\t", filename="facts/primitive_type.dlm")
-
-primitive_type(e0) :-
-   _primitive_type(e0).
-
-
-.decl _integer_type(v0:symbol)
-.input _integer_type(IO="file", delimiter="\t", filename="facts/integer_type.dlm")
-
-integer_type(e0) :-
-   _integer_type(e0).
-
-
-.decl _fp_type(v0:symbol)
-.input _fp_type(IO="file", delimiter="\t", filename="facts/fp_type.dlm")
-
-fp_type(e0) :-
-   _fp_type(e0).
-
-
-.decl _function_type(v0:symbol)
-.input _function_type(IO="file", delimiter="\t", filename="facts/function_type.dlm")
-
-function_type(e0) :-
-   _function_type(e0).
-
-
-.decl _pointer_type(v0:symbol)
-.input _pointer_type(IO="file", delimiter="\t", filename="facts/pointer_type.dlm")
-
-pointer_type(e0) :-
-   _pointer_type(e0).
-
-
-.decl _array_type(v0:symbol)
-.input _array_type(IO="file", delimiter="\t", filename="facts/array_type.dlm")
-
-array_type(e0) :-
-   _array_type(e0).
-
-
-.decl _vector_type(v0:symbol)
-.input _vector_type(IO="file", delimiter="\t", filename="facts/vector_type.dlm")
-
-vector_type(e0) :-
-   _vector_type(e0).
-
-
-.decl _struct_type(v0:symbol)
-.input _struct_type(IO="file", delimiter="\t", filename="facts/struct_type.dlm")
-
-struct_type(e0) :-
-   _struct_type(e0).
-
-
-.decl _opaque_struct_type(v0:symbol)
-.input _opaque_struct_type(IO="file", delimiter="\t", filename="facts/opaque_struct_type.dlm")
-
-opaque_struct_type(e0) :-
-   _opaque_struct_type(e0).
-
-
-.decl _load_instruction(v0:symbol)
-.input _load_instruction(IO="file", delimiter="\t", filename="facts/load_instruction.dlm")
-
-load_instruction(e0) :-
-   _load_instruction(e0).
-
-
-.decl _store_instruction(v0:symbol)
-.input _store_instruction(IO="file", delimiter="\t", filename="facts/store_instruction.dlm")
-
-store_instruction(e0) :-
-   _store_instruction(e0).
-
-
-.decl _fence_instruction(v0:symbol)
-.input _fence_instruction(IO="file", delimiter="\t", filename="facts/fence_instruction.dlm")
-
-fence_instruction(e0) :-
-   _fence_instruction(e0).
-
-
-.decl _resume_instruction(v0:symbol)
-.input _resume_instruction(IO="file", delimiter="\t", filename="facts/resume_instruction.dlm")
-
-resume_instruction(e0) :-
-   _resume_instruction(e0).
-
-
-.decl _alloca_instruction(v0:symbol)
-.input _alloca_instruction(IO="file", delimiter="\t", filename="facts/alloca_instruction.dlm")
-
-alloca_instruction(e0) :-
-   _alloca_instruction(e0).
-
-
-.decl _and_instruction(v0:symbol)
-.input _and_instruction(IO="file", delimiter="\t", filename="facts/and_instruction.dlm")
-
-and_instruction(e0) :-
-   _and_instruction(e0).
-
-
-.decl _or_instruction(v0:symbol)
-.input _or_instruction(IO="file", delimiter="\t", filename="facts/or_instruction.dlm")
-
-or_instruction(e0) :-
-   _or_instruction(e0).
-
-
-.decl _xor_instruction(v0:symbol)
-.input _xor_instruction(IO="file", delimiter="\t", filename="facts/xor_instruction.dlm")
-
-xor_instruction(e0) :-
-   _xor_instruction(e0).
-
-
-.decl _ashr_instruction(v0:symbol)
-.input _ashr_instruction(IO="file", delimiter="\t", filename="facts/ashr_instruction.dlm")
-
-ashr_instruction(e0) :-
-   _ashr_instruction(e0).
-
-
-.decl _lshr_instruction(v0:symbol)
-.input _lshr_instruction(IO="file", delimiter="\t", filename="facts/lshr_instruction.dlm")
-
-lshr_instruction(e0) :-
-   _lshr_instruction(e0).
-
-
-.decl _shl_instruction(v0:symbol)
-.input _shl_instruction(IO="file", delimiter="\t", filename="facts/shl_instruction.dlm")
-
-shl_instruction(e0) :-
-   _shl_instruction(e0).
-
-
-.decl _icmp_instruction(v0:symbol)
-.input _icmp_instruction(IO="file", delimiter="\t", filename="facts/icmp_instruction.dlm")
-
-icmp_instruction(e0) :-
-   _icmp_instruction(e0).
-
-
-.decl _fcmp_instruction(v0:symbol)
-.input _fcmp_instruction(IO="file", delimiter="\t", filename="facts/fcmp_instruction.dlm")
-
-fcmp_instruction(e0) :-
-   _fcmp_instruction(e0).
-
-
-.decl _bitcast_instruction(v0:symbol)
-.input _bitcast_instruction(IO="file", delimiter="\t", filename="facts/bitcast_instruction.dlm")
-
-bitcast_instruction(e0) :-
-   _bitcast_instruction(e0).
-
-
-.decl _inttoptr_instruction(v0:symbol)
-.input _inttoptr_instruction(IO="file", delimiter="\t", filename="facts/inttoptr_instruction.dlm")
-
-inttoptr_instruction(e0) :-
-   _inttoptr_instruction(e0).
-
-
-.decl _ptrtoint_instruction(v0:symbol)
-.input _ptrtoint_instruction(IO="file", delimiter="\t", filename="facts/ptrtoint_instruction.dlm")
-
-ptrtoint_instruction(e0) :-
-   _ptrtoint_instruction(e0).
-
-
-.decl _fpext_instruction(v0:symbol)
-.input _fpext_instruction(IO="file", delimiter="\t", filename="facts/fpext_instruction.dlm")
-
-fpext_instruction(e0) :-
-   _fpext_instruction(e0).
-
-
-.decl _sext_instruction(v0:symbol)
-.input _sext_instruction(IO="file", delimiter="\t", filename="facts/sext_instruction.dlm")
-
-sext_instruction(e0) :-
-   _sext_instruction(e0).
-
-
-.decl _zext_instruction(v0:symbol)
-.input _zext_instruction(IO="file", delimiter="\t", filename="facts/zext_instruction.dlm")
-
-zext_instruction(e0) :-
-   _zext_instruction(e0).
-
-
-.decl _fptosi_instruction(v0:symbol)
-.input _fptosi_instruction(IO="file", delimiter="\t", filename="facts/fptosi_instruction.dlm")
-
-fptosi_instruction(e0) :-
-   _fptosi_instruction(e0).
-
-
-.decl _fptoui_instruction(v0:symbol)
-.input _fptoui_instruction(IO="file", delimiter="\t", filename="facts/fptoui_instruction.dlm")
-
-fptoui_instruction(e0) :-
-   _fptoui_instruction(e0).
-
-
-.decl _sitofp_instruction(v0:symbol)
-.input _sitofp_instruction(IO="file", delimiter="\t", filename="facts/sitofp_instruction.dlm")
-
-sitofp_instruction(e0) :-
-   _sitofp_instruction(e0).
-
-
-.decl _uitofp_instruction(v0:symbol)
-.input _uitofp_instruction(IO="file", delimiter="\t", filename="facts/uitofp_instruction.dlm")
-
-uitofp_instruction(e0) :-
-   _uitofp_instruction(e0).
-
-
-.decl _unreachable_instruction(v0:symbol)
-.input _unreachable_instruction(IO="file", delimiter="\t", filename="facts/unreachable_instruction.dlm")
-
-unreachable_instruction(e0) :-
-   _unreachable_instruction(e0).
-
-
-.decl _trunc_instruction(v0:symbol)
-.input _trunc_instruction(IO="file", delimiter="\t", filename="facts/trunc_instruction.dlm")
-
-trunc_instruction(e0) :-
-   _trunc_instruction(e0).
-
-
-.decl _fptrunc_instruction(v0:symbol)
-.input _fptrunc_instruction(IO="file", delimiter="\t", filename="facts/fptrunc_instruction.dlm")
-
-fptrunc_instruction(e0) :-
-   _fptrunc_instruction(e0).
-
-
-.decl _va_arg_instruction(v0:symbol)
-.input _va_arg_instruction(IO="file", delimiter="\t", filename="facts/va_arg_instruction.dlm")
-
-va_arg_instruction(e0) :-
-   _va_arg_instruction(e0).
-
-
-.decl _br_instruction(v0:symbol)
-.input _br_instruction(IO="file", delimiter="\t", filename="facts/br_instruction.dlm")
-
-br_instruction(e0) :-
-   _br_instruction(e0).
-
-
-.decl _br_cond_instruction(v0:symbol)
-.input _br_cond_instruction(IO="file", delimiter="\t", filename="facts/br_cond_instruction.dlm")
-
-br_cond_instruction(e0) :-
-   _br_cond_instruction(e0).
-
-
-.decl _br_uncond_instruction(v0:symbol)
-.input _br_uncond_instruction(IO="file", delimiter="\t", filename="facts/br_uncond_instruction.dlm")
-
-br_uncond_instruction(e0) :-
-   _br_uncond_instruction(e0).
-
-
-.decl _indirectbr_instruction(v0:symbol)
-.input _indirectbr_instruction(IO="file", delimiter="\t", filename="facts/indirectbr_instruction.dlm")
-
-indirectbr_instruction(e0) :-
-   _indirectbr_instruction(e0).
-
-
-.decl _phi_instruction(v0:symbol)
-.input _phi_instruction(IO="file", delimiter="\t", filename="facts/phi_instruction.dlm")
-
-phi_instruction(e0) :-
-   _phi_instruction(e0).
-
-
-.decl _switch_instruction(v0:symbol)
-.input _switch_instruction(IO="file", delimiter="\t", filename="facts/switch_instruction.dlm")
-
-switch_instruction(e0) :-
-   _switch_instruction(e0).
-
-
-.decl _ret_instruction(v0:symbol)
-.input _ret_instruction(IO="file", delimiter="\t", filename="facts/ret_instruction.dlm")
-
-ret_instruction(e0) :-
-   _ret_instruction(e0).
-
-
-.decl _extractelement_instruction(v0:symbol)
-.input _extractelement_instruction(IO="file", delimiter="\t", filename="facts/extractelement_instruction.dlm")
-
-extractelement_instruction(e0) :-
-   _extractelement_instruction(e0).
-
-
-.decl _insertelement_instruction(v0:symbol)
-.input _insertelement_instruction(IO="file", delimiter="\t", filename="facts/insertelement_instruction.dlm")
-
-insertelement_instruction(e0) :-
-   _insertelement_instruction(e0).
-
-
-.decl _shufflevector_instruction(v0:symbol)
-.input _shufflevector_instruction(IO="file", delimiter="\t", filename="facts/shufflevector_instruction.dlm")
-
-shufflevector_instruction(e0) :-
-   _shufflevector_instruction(e0).
-
-
-.decl _getelementptr_instruction(v0:symbol)
-.input _getelementptr_instruction(IO="file", delimiter="\t", filename="facts/getelementptr_instruction.dlm")
-
-getelementptr_instruction(e0) :-
-   _getelementptr_instruction(e0).
+.input constant(IO="file", delimiter="\t", filename="facts/constant.dlm")
+.input variable(IO="file", delimiter="\t", filename="facts/variable.dlm")
+.input inline_asm(IO="file", delimiter="\t", filename="facts/inline_asm.dlm")
+.input function(IO="file", delimiter="\t", filename="facts/function.dlm")
+.input function_decl(IO="file", delimiter="\t", filename="facts/function_decl.dlm")
+
+.input primitive_type(IO="file", delimiter="\t", filename="facts/primitive_type.dlm")
+.input integer_type(IO="file", delimiter="\t", filename="facts/integer_type.dlm")
+.input fp_type(IO="file", delimiter="\t", filename="facts/fp_type.dlm")
+.input function_type(IO="file", delimiter="\t", filename="facts/function_type.dlm")
+.input pointer_type(IO="file", delimiter="\t", filename="facts/pointer_type.dlm")
+.input array_type(IO="file", delimiter="\t", filename="facts/array_type.dlm")
+.input vector_type(IO="file", delimiter="\t", filename="facts/vector_type.dlm")
+.input struct_type(IO="file", delimiter="\t", filename="facts/struct_type.dlm")
+.input opaque_struct_type(IO="file", delimiter="\t", filename="facts/opaque_struct_type.dlm")
+
+.input add_instruction(IO="file", delimiter="\t", filename="facts/add_instruction.dlm")
+.input sub_instruction(IO="file", delimiter="\t", filename="facts/sub_instruction.dlm")
+.input mul_instruction(IO="file", delimiter="\t", filename="facts/mul_instruction.dlm")
+.input sdiv_instruction(IO="file", delimiter="\t", filename="facts/sdiv_instruction.dlm")
+.input srem_instruction(IO="file", delimiter="\t", filename="facts/srem_instruction.dlm")
+.input udiv_instruction(IO="file", delimiter="\t", filename="facts/udiv_instruction.dlm")
+.input urem_instruction(IO="file", delimiter="\t", filename="facts/urem_instruction.dlm")
+.input fadd_instruction(IO="file", delimiter="\t", filename="facts/fadd_instruction.dlm")
+.input fsub_instruction(IO="file", delimiter="\t", filename="facts/fsub_instruction.dlm")
+.input fmul_instruction(IO="file", delimiter="\t", filename="facts/fmul_instruction.dlm")
+.input fdiv_instruction(IO="file", delimiter="\t", filename="facts/fdiv_instruction.dlm")
+.input frem_instruction(IO="file", delimiter="\t", filename="facts/frem_instruction.dlm")
+.input load_instruction(IO="file", delimiter="\t", filename="facts/load_instruction.dlm")
+.input store_instruction(IO="file", delimiter="\t", filename="facts/store_instruction.dlm")
+.input fence_instruction(IO="file", delimiter="\t", filename="facts/fence_instruction.dlm")
+.input resume_instruction(IO="file", delimiter="\t", filename="facts/resume_instruction.dlm")
+.input alloca_instruction(IO="file", delimiter="\t", filename="facts/alloca_instruction.dlm")
+.input and_instruction(IO="file", delimiter="\t", filename="facts/and_instruction.dlm")
+.input or_instruction(IO="file", delimiter="\t", filename="facts/or_instruction.dlm")
+.input xor_instruction(IO="file", delimiter="\t", filename="facts/xor_instruction.dlm")
+.input ashr_instruction(IO="file", delimiter="\t", filename="facts/ashr_instruction.dlm")
+.input lshr_instruction(IO="file", delimiter="\t", filename="facts/lshr_instruction.dlm")
+.input shl_instruction(IO="file", delimiter="\t", filename="facts/shl_instruction.dlm")
+.input icmp_instruction(IO="file", delimiter="\t", filename="facts/icmp_instruction.dlm")
+.input fcmp_instruction(IO="file", delimiter="\t", filename="facts/fcmp_instruction.dlm")
+.input bitcast_instruction(IO="file", delimiter="\t", filename="facts/bitcast_instruction.dlm")
+.input inttoptr_instruction(IO="file", delimiter="\t", filename="facts/inttoptr_instruction.dlm")
+.input ptrtoint_instruction(IO="file", delimiter="\t", filename="facts/ptrtoint_instruction.dlm")
+.input fpext_instruction(IO="file", delimiter="\t", filename="facts/fpext_instruction.dlm")
+.input sext_instruction(IO="file", delimiter="\t", filename="facts/sext_instruction.dlm")
+.input zext_instruction(IO="file", delimiter="\t", filename="facts/zext_instruction.dlm")
+.input fptosi_instruction(IO="file", delimiter="\t", filename="facts/fptosi_instruction.dlm")
+.input fptoui_instruction(IO="file", delimiter="\t", filename="facts/fptoui_instruction.dlm")
+.input sitofp_instruction(IO="file", delimiter="\t", filename="facts/sitofp_instruction.dlm")
+.input uitofp_instruction(IO="file", delimiter="\t", filename="facts/uitofp_instruction.dlm")
+.input unreachable_instruction(IO="file", delimiter="\t", filename="facts/unreachable_instruction.dlm")
+.input trunc_instruction(IO="file", delimiter="\t", filename="facts/trunc_instruction.dlm")
+.input fptrunc_instruction(IO="file", delimiter="\t", filename="facts/fptrunc_instruction.dlm")
+.input va_arg_instruction(IO="file", delimiter="\t", filename="facts/va_arg_instruction.dlm")
+.input br_instruction(IO="file", delimiter="\t", filename="facts/br_instruction.dlm")
+.input br_cond_instruction(IO="file", delimiter="\t", filename="facts/br_cond_instruction.dlm")
+.input br_uncond_instruction(IO="file", delimiter="\t", filename="facts/br_uncond_instruction.dlm")
+.input indirectbr_instruction(IO="file", delimiter="\t", filename="facts/indirectbr_instruction.dlm")
+.input phi_instruction(IO="file", delimiter="\t", filename="facts/phi_instruction.dlm")
+.input switch_instruction(IO="file", delimiter="\t", filename="facts/switch_instruction.dlm")
+.input ret_instruction(IO="file", delimiter="\t", filename="facts/ret_instruction.dlm")
+.input extractelement_instruction(IO="file", delimiter="\t", filename="facts/extractelement_instruction.dlm")
+.input insertelement_instruction(IO="file", delimiter="\t", filename="facts/insertelement_instruction.dlm")
+.input shufflevector_instruction(IO="file", delimiter="\t", filename="facts/shufflevector_instruction.dlm")
+.input getelementptr_instruction(IO="file", delimiter="\t", filename="facts/getelementptr_instruction.dlm")

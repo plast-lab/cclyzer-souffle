@@ -3,6 +3,8 @@
 .decl attribute(attr:Attribute)
 .decl target_dependent_attribute(attr:Attribute)
 
+attribute(attr) :- target_dependent_attribute(attr).
+
 // Parameter Attributes
 .decl parameter_attribute__zeroext(attr:Attribute)
 .decl parameter_attribute__signext(attr:Attribute)

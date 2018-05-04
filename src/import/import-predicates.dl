@@ -193,3 +193,6 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input getelementptr_instruction_nindices(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-nindices.dlm")
 .input getelementptr_instruction_index(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-index.dlm")
 .input getelementptr_instruction_is_inbounds(IO="file", delimiter="\t", filename="facts/getelementptr_instruction-inbounds.dlm")
+.input select_instruction_first_operand(IO="file", delimiter="\t", filename="facts/select_instruction-first_operand.dlm")
+.input select_instruction_second_operand(IO="file", delimiter="\t", filename="facts/select_instruction-second_operand.dlm")
+.input select_instruction_condition(IO="file", delimiter="\t", filename="facts/select_instruction-condition.dlm")

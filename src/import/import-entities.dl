@@ -59,6 +59,7 @@
 .input indirectbr_instruction(IO="file", delimiter="\t", filename="facts/indirectbr_instruction.dlm")
 .input phi_instruction(IO="file", delimiter="\t", filename="facts/phi_instruction.dlm")
 .input switch_instruction(IO="file", delimiter="\t", filename="facts/switch_instruction.dlm")
+.input select_instruction(IO="file", delimiter="\t", filename="facts/select_instruction.dlm")
 .input ret_instruction(IO="file", delimiter="\t", filename="facts/ret_instruction.dlm")
 .input extractelement_instruction(IO="file", delimiter="\t", filename="facts/extractelement_instruction.dlm")
 .input insertelement_instruction(IO="file", delimiter="\t", filename="facts/insertelement_instruction.dlm")

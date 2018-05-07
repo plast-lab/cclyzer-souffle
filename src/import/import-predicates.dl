@@ -203,3 +203,8 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input insertvalue_instruction_value(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-value.dlm")
 .input insertvalue_instruction_nindices(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-nindices.dlm")
 .input insertvalue_instruction_index(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-index.dlm")
+.input atomicrmw_instruction_ordering(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-ordering.dlm")
+.input atomicrmw_instruction_is_volatile(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-volatile.dlm")
+.input atomicrmw_instruction_address(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-address.dlm")
+.input atomicrmw_instruction_value(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-value.dlm")
+.input atomicrmw_instruction_operation(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-operation.dlm")

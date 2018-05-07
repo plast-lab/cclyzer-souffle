@@ -67,3 +67,4 @@
 .input getelementptr_instruction(IO="file", delimiter="\t", filename="facts/getelementptr_instruction.dlm")
 .input extractvalue_instruction(IO="file", delimiter="\t", filename="facts/extractvalue_instruction.dlm")
 .input insertvalue_instruction(IO="file", delimiter="\t", filename="facts/insertvalue_instruction.dlm")
+.input atomicrmw_instruction(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction.dlm")

@@ -199,3 +199,7 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input extractvalue_instruction_base(IO="file", delimiter="\t", filename="facts/extractvalue_instruction-base.dlm")
 .input extractvalue_instruction_nindices(IO="file", delimiter="\t", filename="facts/extractvalue_instruction-nindices.dlm")
 .input extractvalue_instruction_index(IO="file", delimiter="\t", filename="facts/extractvalue_instruction-index.dlm")
+.input insertvalue_instruction_base(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-base.dlm")
+.input insertvalue_instruction_value(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-value.dlm")
+.input insertvalue_instruction_nindices(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-nindices.dlm")
+.input insertvalue_instruction_index(IO="file", delimiter="\t", filename="facts/insertvalue_instruction-index.dlm")

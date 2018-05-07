@@ -66,3 +66,4 @@
 .input shufflevector_instruction(IO="file", delimiter="\t", filename="facts/shufflevector_instruction.dlm")
 .input getelementptr_instruction(IO="file", delimiter="\t", filename="facts/getelementptr_instruction.dlm")
 .input extractvalue_instruction(IO="file", delimiter="\t", filename="facts/extractvalue_instruction.dlm")
+.input insertvalue_instruction(IO="file", delimiter="\t", filename="facts/insertvalue_instruction.dlm")

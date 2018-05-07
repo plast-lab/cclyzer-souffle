@@ -208,3 +208,8 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input atomicrmw_instruction_address(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-address.dlm")
 .input atomicrmw_instruction_value(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-value.dlm")
 .input atomicrmw_instruction_operation(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction-operation.dlm")
+.input cmpxchg_instruction_address(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-address.dlm")
+.input cmpxchg_instruction_cmp_value(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-cmp.dlm")
+.input cmpxchg_instruction_new_value(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-new.dlm")
+.input cmpxchg_instruction_ordering(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-ordering.dlm")
+.input cmpxchg_instruction_is_volatile(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-volatile.dlm")

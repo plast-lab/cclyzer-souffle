@@ -68,3 +68,4 @@
 .input extractvalue_instruction(IO="file", delimiter="\t", filename="facts/extractvalue_instruction.dlm")
 .input insertvalue_instruction(IO="file", delimiter="\t", filename="facts/insertvalue_instruction.dlm")
 .input atomicrmw_instruction(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction.dlm")
+.input cmpxchg_instruction(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction.dlm")

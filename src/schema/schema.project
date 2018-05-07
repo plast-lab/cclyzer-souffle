@@ -51,6 +51,7 @@
 #include "load-instruction.dl"
 #include "store-instruction.dl"
 #include "atomicrmw-instruction.dl"
+#include "cmpxchg-instruction.dl"
 #include "ret-instruction.dl"
 #include "fence-instruction.dl"
 #include "landingpad-instruction.dl"

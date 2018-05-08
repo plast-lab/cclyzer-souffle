@@ -7,6 +7,7 @@
 #include "asm.dl"
 #include "global.dl"
 #include "function.dl"
+#include "constants.dl"
 
 #include "instruction.dl"
 #include "basic-block.dl"
@@ -53,6 +54,7 @@
 #include "atomicrmw-instruction.dl"
 #include "cmpxchg-instruction.dl"
 #include "ret-instruction.dl"
+#include "invoke-instruction.dl"
 #include "fence-instruction.dl"
 #include "landingpad-instruction.dl"
 #include "resume-instruction.dl"

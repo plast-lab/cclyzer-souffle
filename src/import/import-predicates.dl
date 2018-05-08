@@ -213,3 +213,16 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input cmpxchg_instruction_new_value(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-new.dlm")
 .input cmpxchg_instruction_ordering(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-ordering.dlm")
 .input cmpxchg_instruction_is_volatile(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-volatile.dlm")
+.input landingpad_instruction_is_cleanup(IO="file", delimiter="\t", filename="facts/landingpad_instruction-cleanup.dlm")
+.input landingpad_instruction_nclauses(IO="file", delimiter="\t", filename="facts/landingpad_instruction-nclauses.dlm")
+.input landingpad_instruction_type(IO="file", delimiter="\t", filename="facts/landingpad_instruction-type.dlm")
+.decl _landingpad_instruction_clause_catch_tmp(v0:symbol, v1:number, v2:symbol)
+.decl _landingpad_instruction_clause_filter_tmp(v0:symbol, v1:number, v2:symbol)
+.input _landingpad_instruction_clause_catch_tmp(IO="file", delimiter="\t", filename="facts/landingpad_instruction-clause-catch_tmp.dlm")
+.input _landingpad_instruction_clause_filter_tmp(IO="file", delimiter="\t", filename="facts/landingpad_instruction-clause-filter_tmp.dlm")
+
+catch_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
+   _landingpad_instruction_clause_catch_tmp(v0, v1, v2).
+
+filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
+   _landingpad_instruction_clause_filter_tmp(v0, v1, v2).

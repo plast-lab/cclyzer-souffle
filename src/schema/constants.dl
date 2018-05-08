@@ -1,0 +1,54 @@
+// For constraints
+.decl schema_invalid_constant(c:Constant, file:File, line:Line)
+
+
+//--------------------------------------
+// Constant that references function
+//--------------------------------------
+
+.type FunctionConstant = Constant
+.decl function_constant(fc:FunctionConstant)
+
+constant(c) :- function_constant(c).
+
+.decl function_constant_fname(fc:FunctionConstant, name:symbol)
+
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   function_constant(Constant),
+   !function_constant_fname(Constant, _).
+
+
+//--------------------------------------------------------------------
+// [Constant Expressions Hierarchy]
+//--------------------------------------------------------------------
+
+.type ConstantExpression = Constant
+.type BitcastConstantExpression = ConstantExpression
+.decl constant_expression(c:ConstantExpression)
+.decl bitcast_constant_expression(c:BitcastConstantExpression)
+
+constant(c) :- constant_expression(c).
+constant_expression(c) :- bitcast_constant_expression(c).
+
+
+//--------------------------------------
+// Bitcast Constant Expression
+//--------------------------------------
+
+.decl bitcast_constant_expression_from(cexpr:BitcastConstantExpression, val:Constant)
+.decl bitcast_constant_expression_to_type(cexpr:BitcastConstantExpression, type:Type)
+
+bitcast_constant_expression_to_type(CExpr, Type) :-
+   bitcast_constant_expression(CExpr),
+   constant_has_type(CExpr, Type).
+
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   bitcast_constant_expression(Constant),
+   !bitcast_constant_expression_from(Constant, _).
+
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   bitcast_constant_expression(Constant),
+   !bitcast_constant_expression_to_type(Constant, _).

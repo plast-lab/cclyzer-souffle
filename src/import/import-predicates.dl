@@ -226,3 +226,20 @@ catch_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 
 filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
    _landingpad_instruction_clause_filter_tmp(v0, v1, v2).
+
+
+.input function_constant_fname(IO="file", delimiter="\t", filename="facts/function_constant-function_name.dlm")
+.input global_variable_constant_name(IO="file", delimiter="\t", filename="facts/global_variable_constant-name.dlm")
+.input constant_array_index(IO="file", delimiter="\t", filename="facts/constant_array-index.dlm")
+.input constant_array_has_size(IO="file", delimiter="\t", filename="facts/constant_array-size.dlm")
+.input constant_struct_index(IO="file", delimiter="\t", filename="facts/constant_struct-index.dlm")
+.input constant_struct_has_size(IO="file", delimiter="\t", filename="facts/constant_struct-size.dlm")
+.input constant_vector_index(IO="file", delimiter="\t", filename="facts/constant_vector-index.dlm")
+.input constant_vector_has_size(IO="file", delimiter="\t", filename="facts/constant_vector-size.dlm")
+.input bitcast_constant_expression_from(IO="file", delimiter="\t", filename="facts/bitcast_constant_expression-from.dlm")
+.input inttoptr_constant_expression_from(IO="file", delimiter="\t", filename="facts/inttoptr_constant_expression-from.dlm")
+.input ptrtoint_constant_expression_from(IO="file", delimiter="\t", filename="facts/ptrtoint_constant_expression-from.dlm")
+.input getelementptr_constant_expression_base(IO="file", delimiter="\t", filename="facts/getelementptr_constant_expression-base.dlm")
+.input getelementptr_constant_expression_index(IO="file", delimiter="\t", filename="facts/getelementptr_constant_expression-index.dlm")
+.input getelementptr_constant_expression_nindices(IO="file", delimiter="\t", filename="facts/getelementptr_constant_expression-nindices.dlm")
+.input constant_to_int(IO="file", delimiter="\t", filename="facts/constant-to_int.dlm")

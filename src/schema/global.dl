@@ -1,3 +1,10 @@
+// http://llvm.org/docs/LangRef.html#global-variables
+
+.type GlobalVariable
+.decl global_variable(gv:GlobalVariable)
+.decl global_variable_has_type(gv:GlobalVariable, type:Type)
+.decl global_variable_has_name(gv:GlobalVariable, name:symbol)
+
 //------------------------------------------------------------------------------
 // [Linkage Type], and selectors
 //------------------------------------------------------------------------------

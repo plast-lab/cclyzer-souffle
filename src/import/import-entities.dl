@@ -70,3 +70,18 @@
 .input atomicrmw_instruction(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction.dlm")
 .input cmpxchg_instruction(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction.dlm")
 .input landingpad_instruction(IO="file", delimiter="\t", filename="facts/landingpad_instruction.dlm")
+
+
+.input integer_constant(IO="file", delimiter="\t", filename="facts/integer_constant.dlm")
+.input fp_constant(IO="file", delimiter="\t", filename="facts/fp_constant.dlm")
+.input nullptr_constant(IO="file", delimiter="\t", filename="facts/nullptr_constant.dlm")
+.input function_constant(IO="file", delimiter="\t", filename="facts/function_constant.dlm")
+.input global_variable_constant(IO="file", delimiter="\t", filename="facts/global_variable_constant.dlm")
+.input constant_array(IO="file", delimiter="\t", filename="facts/constant_array.dlm")
+.input constant_vector(IO="file", delimiter="\t", filename="facts/constant_vector.dlm")
+.input constant_struct(IO="file", delimiter="\t", filename="facts/constant_struct.dlm")
+.input constant_expression(IO="file", delimiter="\t", filename="facts/constant_expression.dlm")
+.input bitcast_constant_expression(IO="file", delimiter="\t", filename="facts/bitcast_constant_expression.dlm")
+.input inttoptr_constant_expression(IO="file", delimiter="\t", filename="facts/inttoptr_constant_expression.dlm")
+.input ptrtoint_constant_expression(IO="file", delimiter="\t", filename="facts/ptrtoint_constant_expression.dlm")
+.input getelementptr_constant_expression(IO="file", delimiter="\t", filename="facts/getelementptr_constant_expression.dlm")

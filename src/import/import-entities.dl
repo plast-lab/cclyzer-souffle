@@ -70,6 +70,8 @@
 .input atomicrmw_instruction(IO="file", delimiter="\t", filename="facts/atomicrmw_instruction.dlm")
 .input cmpxchg_instruction(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction.dlm")
 .input landingpad_instruction(IO="file", delimiter="\t", filename="facts/landingpad_instruction.dlm")
+.input call_instruction(IO="file", delimiter="\t", filename="facts/call_instruction.dlm")
+.input invoke_instruction(IO="file", delimiter="\t", filename="facts/invoke_instruction.dlm")
 
 
 .input integer_constant(IO="file", delimiter="\t", filename="facts/integer_constant.dlm")

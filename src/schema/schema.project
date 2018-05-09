@@ -54,6 +54,7 @@
 #include "atomicrmw-instruction.dl"
 #include "cmpxchg-instruction.dl"
 #include "ret-instruction.dl"
+#include "call-instruction.dl"
 #include "invoke-instruction.dl"
 #include "fence-instruction.dl"
 #include "landingpad-instruction.dl"

@@ -12,7 +12,7 @@ attribute(attr) :- target_dependent_attribute(attr).
 .decl parameter_attribute__byval(attr:Attribute)
 .decl parameter_attribute__inalloca(attr:Attribute)
 .decl parameter_attribute__sret(attr:Attribute)
-.decl parameter_attribute__noallias(attr:Attribute)
+.decl parameter_attribute__noalias(attr:Attribute)
 .decl parameter_attribute__nocapture(attr:Attribute)
 .decl parameter_attribute__nest(attr:Attribute)
 .decl parameter_attribute__returned(attr:Attribute)
@@ -28,7 +28,7 @@ attribute("inreg"). parameter_attribute__inreg("inreg").
 attribute("byval"). parameter_attribute__byval("byval").
 attribute("inalloca"). parameter_attribute__inalloca("inalloca").
 attribute("sret"). parameter_attribute__sret("sret").
-attribute("noalias"). parameter_attribute__noallias("noalias").
+attribute("noalias"). parameter_attribute__noalias("noalias").
 attribute("nocapture"). parameter_attribute__nocapture("nocapture").
 attribute("nest"). parameter_attribute__nest("nest").
 attribute("returned"). parameter_attribute__returned("returned").

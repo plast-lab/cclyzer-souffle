@@ -213,6 +213,13 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input cmpxchg_instruction_new_value(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-new.dlm")
 .input cmpxchg_instruction_ordering(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-ordering.dlm")
 .input cmpxchg_instruction_is_volatile(IO="file", delimiter="\t", filename="facts/cmpxchg_instruction-volatile.dlm")
+.input call_instruction_arg(IO="file", delimiter="\t", filename="facts/call_instruction-arg.dlm")
+.input call_instruction_calling_convention(IO="file", delimiter="\t", filename="facts/call_instruction-calling_convention.dlm")
+.input call_instruction_param_attribute(IO="file", delimiter="\t", filename="facts/call_instruction-param_attribute.dlm")
+.input call_instruction_return_attribute(IO="file", delimiter="\t", filename="facts/call_instruction-return_attribute.dlm")
+.input call_instruction_fn_attribute(IO="file", delimiter="\t", filename="facts/call_instruction-fn_attribute.dlm")
+.input call_instruction_is_tail_opt(IO="file", delimiter="\t", filename="facts/call_instruction-tail.dlm")
+.input call_instruction_fn_operand(IO="file", delimiter="\t", filename="facts/call_instruction-__function.dlm")
 .input landingpad_instruction_is_cleanup(IO="file", delimiter="\t", filename="facts/landingpad_instruction-cleanup.dlm")
 .input landingpad_instruction_nclauses(IO="file", delimiter="\t", filename="facts/landingpad_instruction-nclauses.dlm")
 .input landingpad_instruction_type(IO="file", delimiter="\t", filename="facts/landingpad_instruction-type.dlm")
@@ -228,7 +235,7 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
    _landingpad_instruction_clause_filter_tmp(v0, v1, v2).
 
 
-.input function_constant_fname(IO="file", delimiter="\t", filename="facts/function_constant-function_name.dlm")
+.input function_constant_fn_name(IO="file", delimiter="\t", filename="facts/function_constant-function_name.dlm")
 .input global_variable_constant_name(IO="file", delimiter="\t", filename="facts/global_variable_constant-name.dlm")
 .input constant_array_index(IO="file", delimiter="\t", filename="facts/constant_array-index.dlm")
 .input constant_array_has_size(IO="file", delimiter="\t", filename="facts/constant_array-size.dlm")

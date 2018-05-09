@@ -1,4 +1,7 @@
 .type InvokeInstruction = Instruction
+.decl invoke_instruction(instr:InvokeInstruction)
+
+instruction(v) :- invoke_instruction(v).
 
 // Placeholder
 .decl invoke_instruction_exception_label(instr:InvokeInstruction, exc:Variable)

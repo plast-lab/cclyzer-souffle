@@ -57,12 +57,12 @@ constant_expression(c) :-
 // Constant that references function
 //--------------------------------------
 
-.decl function_constant_fname(fc:FunctionConstant, name:symbol)
+.decl function_constant_fn_name(fc:FunctionConstant, name:symbol)
 
 schema_invalid_constant(Constant, __FILE__, __LINE__) :-
    schema_sanity(),
    function_constant(Constant),
-   !function_constant_fname(Constant, _).
+   !function_constant_fn_name(Constant, _).
 
 
 //---------------------------------------------

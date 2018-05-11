@@ -8,7 +8,7 @@ all:
 
 module.logic   := logic
 module.facts   := fact-generator
-# module.jsonast := json-ast-exporter
+module.jsonast := json-ast-exporter
 modules        := $(module.logic) $(module.facts) # $(module.imports) $(module.jsonast)
 modules.clean  := $(addsuffix .clean,$(modules))
 
@@ -19,8 +19,7 @@ include $(LEVEL)/src/common.mk
 
 $(addsuffix _PATH, $(module.logic))   := src/logic
 $(addsuffix _PATH, $(module.facts))   := tools/fact-generator
-# $(addsuffix _PATH, $(module.imports)) := tools/import-generator
-# $(addsuffix _PATH, $(module.jsonast)) := tools/json-ast-exporter
+$(addsuffix _PATH, $(module.jsonast)) := tools/json-ast-exporter
 
 
 # Accumulating Rules
@@ -31,9 +30,6 @@ $(modules):
 $(modules.clean): %.clean:
 	$(MAKE) --directory=$($*_PATH) clean
 
-# export PATH := $(abspath $(OUTDIR)/import-generator):$(PATH)
-# schema-import: $(module.logic) $(module.imports)
-# 	$(MAKE) --directory=$($<_PATH) import.src
 
 # Phony targets
 
@@ -60,65 +56,60 @@ install:
 #-----------------------------------------
 
 
-# # Overwrite build directory for tests
-# OUTDIR = $(BUILDDIR)/tests
+# Overwrite build directory for tests
+OUTDIR = $(BUILDDIR)/tests
 
-# # List of our coreutils benchmarks
-# coreutils_dir    := tests/coreutils-8.24
-# coreutils_outdir := $(OUTDIR)/coreutils-8.24
-# coreutils_files  := $(wildcard $(coreutils_dir)/*.bc)
-# coreutils_tests  := $(coreutils_files:$(coreutils_dir)/%.bc=%)
+# List of our coreutils benchmarks
+coreutils_dir    := tests/coreutils-8.24
+coreutils_outdir := $(OUTDIR)/coreutils-8.24
+coreutils_files  := $(wildcard $(coreutils_dir)/*.bc)
+coreutils_tests  := $(coreutils_files:$(coreutils_dir)/%.bc=%)
 
-# $(coreutils_outdir): | $(OUTDIR)
-# 	$(MKDIR) $@
+$(coreutils_outdir): | $(OUTDIR)
+	$(MKDIR) $@
 
-# # Load LogicBlox functions
-# ifneq "$(MAKECMDGOALS)" "install"
-#   include $(LEVEL)/src/logic/blox.mk
-# endif
-
-# # Phony testing targets that apply to all benchmarks
-# .PHONY: tests.setup tests.run tests.clean
+# Phony testing targets that apply to all benchmarks
+.PHONY: tests.setup tests.run tests.clean
 
 
-# #----------------------------
-# # Benchmark Template
-# #----------------------------
+#----------------------------
+# Benchmark Template
+#----------------------------
 
-# define coreutils_template
+define coreutils_template
 
-# $1.file   := $(coreutils_dir)/$1.bc
-# $1.outdir := $(coreutils_outdir)/$1
-
-
-# # Create subdirectories
-
-# $$($1.outdir): | $(coreutils_outdir)
-# 	$(MKDIR) $$@
+$1.file   := $(coreutils_dir)/$1.bc
+$1.outdir := $(coreutils_outdir)/$1
 
 
-# # Run target
+# Create subdirectories
 
-# test-$1: tests.setup
-# 	@echo Analyzing $1 ...
-# 	$(CCLYZER) analyze -o $$($1.outdir) $(CCLYZER_OPTS) $$($1.file)
-
-
-# # Cleaning target
-
-# .PHONY: test-$1.clean
-# test-$1-clean:
-# 	$(RM) -r $$($1.outdir)/
+$$($1.outdir): | $(coreutils_outdir)
+	$(MKDIR) $$@
 
 
-# # Phony targets dependencies
+# Run target
 
-# tests.setup  : $(targets)
-# tests.run    : test-$1
-# tests.clean  : test-$1-clean
-
-# endef
+test-$1: tests.setup
+	@echo Analyzing $1 ...
+	$(CCLYZER) analyze -o $$($1.outdir) $(CCLYZER_OPTS) $$($1.file)
 
 
-# # !! Generate rules per benchmark !!
-# $(foreach benchmark,$(coreutils_tests),$(eval $(call coreutils_template,$(benchmark))))
+# Cleaning target
+
+.PHONY: test-$1.clean
+test-$1-clean:
+	$(RM) -r $$($1.outdir)/
+
+
+# Phony targets dependencies
+
+tests.setup  : $(targets)
+tests.run    : test-$1
+tests.clean  : test-$1-clean
+
+endef
+
+
+# !! Generate rules per benchmark !!
+$(foreach benchmark,$(coreutils_tests),$(eval $(call coreutils_template,$(benchmark))))

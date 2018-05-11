@@ -87,3 +87,6 @@
 .input inttoptr_constant_expression(IO="file", delimiter="\t", filename="facts/inttoptr_constant_expression.dlm")
 .input ptrtoint_constant_expression(IO="file", delimiter="\t", filename="facts/ptrtoint_constant_expression.dlm")
 .input getelementptr_constant_expression(IO="file", delimiter="\t", filename="facts/getelementptr_constant_expression.dlm")
+
+.input alias(IO="file", delimiter="\t", filename="facts/alias.dlm")
+.input global_variable(IO="file", delimiter="\t", filename="facts/global_variable.dlm")

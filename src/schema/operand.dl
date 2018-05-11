@@ -40,11 +40,43 @@ variable_is_firstclass(Var) :-
 .decl constant(c:Constant)
 
 .decl constant_has_type(c:Constant, type:Type)
-.decl constants_equal(c1:Constant, c2:Constant)
+.decl constant_has_value(c:Constant, val:symbol)
+// .decl constants_equal(c1:Constant, c2:Constant)
 
+// Precomputed hash-codes for constant values
+.decl constant_hashes_to(c:Constant, hashcode:number)
+
+// Previously derived. Now implemented as a macro
+#define constants_equal(X, Y)  \
+      (constant_has_value(X, CCLYZER_SOME_MACRO_VALUE__), \
+       constant_has_value(Y, CCLYZER_SOME_MACRO_VALUE__))
 
 //  Handy Conversions
 .decl constant_to_int(c:Constant, val:number)
+
+// For constraints
+.decl schema_invalid_constant(c:Constant, file:File, line:Line)
+
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   constant(Constant),
+   !constant_has_type(Constant, _).
+
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   constant(Constant),
+   !constant_has_value(Constant, _).
+
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   constant(Constant),
+   !constant_hashes_to(Constant, _).
+
+// Constants cannot be labels
+schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+   schema_sanity(),
+   constant_has_type(Constant, Type),
+   label_type(Type).
 
 
 //--------------------------------------------------

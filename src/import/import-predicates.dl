@@ -275,3 +275,6 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input alias_has_type(IO="file", delimiter="\t", filename="facts/alias-type.dlm")
 .input alias_has_linkage_type(IO="file", delimiter="\t", filename="facts/alias-linkage_type.dlm")
 .input alias_has_visibility(IO="file", delimiter="\t", filename="facts/alias-visibility.dlm")
+
+.input constant_hashes_to(IO="file", delimiter="\t", filename="facts/constant-hash.dlm")
+.input constant_has_value(IO="file", delimiter="\t", filename="facts/constant-value.dlm")

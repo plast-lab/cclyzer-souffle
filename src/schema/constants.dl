@@ -1,7 +1,3 @@
-// For constraints
-.decl schema_invalid_constant(c:Constant, file:File, line:Line)
-
-
 //--------------------------------------------------------------------
 // [Constant and Constant Expression Hierarchy]
 //--------------------------------------------------------------------

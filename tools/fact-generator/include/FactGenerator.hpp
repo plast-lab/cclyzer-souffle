@@ -49,8 +49,6 @@ class cclyzer::FactGenerator
     /* Common type aliases */
     typedef boost::unordered_map<std::string, const llvm::Type *> type_cache_t;
     typedef predicates::pred_t pred_t;
-    typedef predicates::entity_pred_t entity_pred_t;
-    typedef predicates::operand_pred_t operand_pred_t;
 
     /* Constructor must initialize output file streams */
     FactGenerator(FactWriter &writer)

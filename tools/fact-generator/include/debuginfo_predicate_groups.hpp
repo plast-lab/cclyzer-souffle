@@ -14,12 +14,12 @@ namespace cclyzer { namespace predicates
 
     // scope entries
     struct di_scope_entry : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
     };
 
     // variable entries
     struct di_variable : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
         struct type {
             static pred_t node;
@@ -31,14 +31,14 @@ namespace cclyzer { namespace predicates
     };
 
     struct di_local_var : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t arg_num;
         static pred_t flag;
         static pred_t variable;
     };
 
     struct di_global_var : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t variable;
         static pred_t linkage_name;
         static pred_t is_definition;
@@ -48,14 +48,14 @@ namespace cclyzer { namespace predicates
 
     // file entries
     struct di_file : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t filename;
         static pred_t directory;
     };
 
     // namespace entries
     struct di_namespace : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
         static pred_t file;
         static pred_t line;
@@ -64,7 +64,7 @@ namespace cclyzer { namespace predicates
 
     // lexical block entries
     struct di_lex_block : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t file;
         static pred_t line;
         static pred_t column;
@@ -73,7 +73,7 @@ namespace cclyzer { namespace predicates
 
     // lexical block file entries
     struct di_lex_block_file : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t file;
         static pred_t discriminator;
         static pred_t scope;
@@ -81,7 +81,7 @@ namespace cclyzer { namespace predicates
 
     // subprogram entries
     struct di_subprogram : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
         static pred_t linkage_name;
         static pred_t file;
@@ -110,7 +110,7 @@ namespace cclyzer { namespace predicates
 
     // type entries
     struct di_type : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
         static pred_t line;
         static pred_t flag;
@@ -125,11 +125,11 @@ namespace cclyzer { namespace predicates
     };
 
     struct di_basic_type : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
     };
 
     struct di_composite_type : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t file;
         static pred_t abi_id;
         static pred_t field;
@@ -149,15 +149,15 @@ namespace cclyzer { namespace predicates
 
         // Kinds of composite types
         static pred_t kind;
-        static entity_pred_t structures;
-        static entity_pred_t classes;
-        static entity_pred_t arrays;
-        static entity_pred_t unions;
-        static entity_pred_t enumerations;
+        static pred_t structures;
+        static pred_t classes;
+        static pred_t arrays;
+        static pred_t unions;
+        static pred_t enumerations;
     };
 
     struct di_derived_type : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t kind;
         static pred_t file;
 
@@ -168,14 +168,14 @@ namespace cclyzer { namespace predicates
     };
 
     struct di_subroutine_type : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t type_elem;
         static pred_t raw_type_elem;
     };
 
     // template parameter entries
     struct di_template_param : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
 
         struct type {
@@ -185,32 +185,32 @@ namespace cclyzer { namespace predicates
     };
 
     struct di_template_type_param : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
     };
 
     struct di_template_value_param : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t value;
         static pred_t elements;
     };
 
     // enumerator entries
     struct di_enumerator : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
         static pred_t value;
     };
 
     // subrange entries
     struct di_subrange : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t lower_bound;
         static pred_t count;
     };
 
     // imported entity entries
     struct di_imported_entity : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t name;
         static pred_t line;
         static pred_t scope;
@@ -228,7 +228,7 @@ namespace cclyzer { namespace predicates
 
     // location entries
     struct di_location : public predicate_group {
-        static entity_pred_t id;
+        static pred_t id;
         static pred_t line;
         static pred_t column;
         static pred_t scope;

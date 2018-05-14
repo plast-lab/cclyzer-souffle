@@ -173,7 +173,7 @@ class cclyzer::InstructionVisitor
     //--------------------------------------------------------------------------
 
     // Record instruction entity and generate refmode
-    refmode_t recordInstruction(const predicates::entity_pred_t &,
+    refmode_t recordInstruction(const predicates::pred_t &,
                                 const llvm::Instruction &);
 
     // Record value and generate refmode
@@ -181,18 +181,9 @@ class cclyzer::InstructionVisitor
 
 
     // Record instruction operand and generate refmode
-    refmode_t writeInstrOperand(const predicates::operand_pred_t &predicate,
-                                const refmode_t &instr,
-                                const llvm::Value *Operand);
-
     refmode_t writeInstrOperand(const predicates::pred_t &predicate,
                                 const refmode_t &instr,
-                                const llvm::Value *Value);
-
-    refmode_t writeInstrOperand(const predicates::operand_pred_t &predicate,
-                                const refmode_t &instr,
-                                const llvm::Value *Operand,
-                                int index);
+                                const llvm::Value *Operand);
 
     refmode_t writeInstrOperand(const predicates::pred_t &predicate,
                                 const refmode_t &instr,

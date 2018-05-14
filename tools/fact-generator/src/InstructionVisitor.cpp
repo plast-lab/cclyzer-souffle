@@ -11,8 +11,6 @@ namespace pred = cclyzer::predicates;
 
 using cclyzer::InstructionVisitor;
 using pred::pred_t;
-using pred::entity_pred_t;
-using pred::operand_pred_t;
 using llvm::dyn_cast;
 using llvm::isa;
 using std::string;
@@ -25,7 +23,7 @@ using std::string;
 
 cclyzer::refmode_t
 InstructionVisitor::recordInstruction(
-    const entity_pred_t &pred, const llvm::Instruction &instr)
+    const pred_t &pred, const llvm::Instruction &instr)
 {
     // Get refmode of enclosing instruction
     refmode_t iref = gen.refmode<llvm::Instruction>(instr);
@@ -93,51 +91,6 @@ InstructionVisitor::writeInstrOperand(
 
     // Write value fact
     gen.writeFact(predicate, instr, index, refmode);
-
-    return refmode;
-}
-
-
-cclyzer::refmode_t
-InstructionVisitor::writeInstrOperand(
-    const operand_pred_t &predicate, // the operand predicate
-    const refmode_t &instr,          // the instruction refmode
-    const llvm::Value *operand)      // the operand value
-{
-    refmode_t refmode = recordValue(operand);
-
-    // Predicate name
-    const pred_t &pred = (
-        isa<llvm::Constant>(operand) ||
-        isa<llvm::InlineAsm>(operand))
-        ? predicate.asConstant()
-        : predicate.asVariable();
-
-    // Write operand fact
-    gen.writeFact(pred, instr, refmode);
-
-    return refmode;
-}
-
-
-cclyzer::refmode_t
-InstructionVisitor::writeInstrOperand(
-    const operand_pred_t &predicate, // the operand predicate
-    const refmode_t &instr,          // the instruction refmode
-    const llvm::Value *operand,      // the operand value
-    int index)                       // the operand index
-{
-    refmode_t refmode = recordValue(operand);
-
-    // Predicate name
-    const pred_t &pred = (
-        isa<llvm::Constant>(operand) ||
-        isa<llvm::InlineAsm>(operand))
-        ? predicate.asConstant()
-        : predicate.asVariable();
-
-    // Write operand fact
-    gen.writeFact(pred, instr, index, refmode);
 
     return refmode;
 }

@@ -9,8 +9,6 @@ using cclyzer::FactWriter;
 using cclyzer::csv_writer;
 
 using pred::pred_t;
-using pred::entity_pred_t;
-using pred::operand_pred_t;
 
 
 //-------------------------------------------------------------------
@@ -110,19 +108,7 @@ FactWriter::init_writers()
          it != end; ++it)
     {
         const pred_t *pred = *it;
-        const operand_pred_t *operand_pred =
-            dynamic_cast< const operand_pred_t*>(pred);
-
-        if (operand_pred) {
-            const pred_t &cpred = operand_pred->asConstant();
-            const pred_t &vpred = operand_pred->asVariable();
-
-            getWriter(cpred);
-            getWriter(vpred);
-        }
-        else {
-            getWriter(*pred);
-        }
+        getWriter(*pred);
     }
 
     // TODO: Consider closing streams and opening them lazily, so as

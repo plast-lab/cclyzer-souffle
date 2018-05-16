@@ -9,7 +9,7 @@ all:
 module.logic   := logic
 module.facts   := fact-generator
 module.jsonast := json-ast-exporter
-modules        := $(module.logic) $(module.facts) # $(module.jsonast)
+modules        := $(module.logic) $(module.facts) $(module.jsonast)
 modules.clean  := $(addsuffix .clean,$(modules))
 
 include $(LEVEL)/src/common.mk

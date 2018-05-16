@@ -385,6 +385,7 @@ pred_t variable::type("variable:type");
 pred_t variable::source_name("variable:debug:source_name");
 pred_t variable::pos("variable:debug:decl_pos");
 pred_t variable::in_function("variable:in_function");
+pred_t variable::name("variable:name");
 
 pred_t constant::id("constant");
 pred_t constant::type("constant:type");

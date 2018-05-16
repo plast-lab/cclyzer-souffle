@@ -556,6 +556,7 @@ namespace cclyzer
             static pred_t source_name;
             static pred_t pos;
             static pred_t in_function;
+            static pred_t name;
         };
 
         struct constant : predicate_group {

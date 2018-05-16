@@ -1,29 +1,3 @@
-// //----------------------------
-// // Refmode Parsing
-// //----------------------------
-
-// constant:path[Constant] = Token <-
-//    constant:id(Constant:Id), string:split[Id, ":", 0] = Token.
-
-// constant:__token1[Constant] = Token <-
-//    constant:id(Constant:Id), string:split[Id, ":", 1] = Token.
-
-// variable:id_tokens[Var, Index] = Token <-
-//    variable:id(Var:Id), string:split[Id, ":", Index] = Token.
-
-// // Group variable properties into single predicate
-
-// variable:descriptor(Var, Path, Func, Type, Name) ->
-//    variable(Var), string(Path), string(Func), type(Type), string(Name).
-
-// variable:descriptor(Var, Path, Func, Type, Name) <-
-//    variable:id_tokens[Var, 0] = Path,
-//    variable:id_tokens[Var, 1] = Fn,
-//    variable:id_tokens[Var, 2] = Name,
-//    variable:type[Var] = Type,
-//    Func = "@" + Fn.
-
-
 //------------------------------------------------------------------------------
 // [Variables]
 //

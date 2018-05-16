@@ -32,6 +32,10 @@ namespace cclyzer {
         void enterModule(const llvm::Module& Mod, const std::string& path);
         void exitModule();
 
+        // Context querying methods
+        const llvm::Function *functionContext();
+        const llvm::Module   *moduleContext();
+
         // Compute refmode for obj, given some context state
         template<typename T>
         refmode_t refmode(const T& obj) const;

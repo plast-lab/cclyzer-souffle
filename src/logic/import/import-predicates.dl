@@ -278,3 +278,16 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 
 .input constant_hashes_to(IO="file", delimiter="\t", filename="facts/constant-hash.dlm")
 .input constant_has_value(IO="file", delimiter="\t", filename="facts/constant-value.dlm")
+
+.decl _constant_in_function(v0:symbol, v1:symbol)
+.decl _variable_in_function(v0:symbol, v1:symbol)
+.input _constant_in_function(IO="file", delimiter="\t", filename="facts/constant-in_function.dlm")
+.input _variable_in_function(IO="file", delimiter="\t", filename="facts/variable-in_function.dlm")
+
+constant_in_function(Constant, Function) :-
+   _constant_in_function(Constant, FuncName),
+   function_has_name(Function, FuncName).
+
+variable_in_function(Variable, Function) :-
+   _variable_in_function(Variable, FuncName),
+   function_has_name(Function, FuncName).

@@ -11,23 +11,9 @@ namespace pred = cclyzer::predicates;
 
 
 void
-FactGenerator::writeOperands(const llvm::DataLayout &layout)
+FactGenerator::writeTypes(const llvm::DataLayout &layout)
 {
     using llvm_utils::TypeAccumulator;
-    typedef type_cache_t::iterator operand_iterator;
-
-    // Record every variable encountered so far
-    for (operand_iterator
-             it = variableTypes.begin(), end = variableTypes.end();
-         it != end; ++it)
-    {
-        refmode_t varId = it->first;
-        const llvm::Type *type = it->second;
-
-        // Record variable entity with its type
-        writeFact(pred::variable::id, varId);
-        writeFact(pred::variable::type, varId, recordType(type));
-    }
 
     // Add basic primitive types
     writeFact(pred::primitive_type::id, "void");

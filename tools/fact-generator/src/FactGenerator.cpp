@@ -84,6 +84,7 @@ FactGenerator::processModule(const llvm::Module &Mod, const std::string& path)
             // Record basic block entry as a label
             writeFact(pred::variable::id, bbRef);
             writeFact(pred::variable::type, bbRef, "label");
+            writeFact(pred::variable::in_function, bbRef, func.getName().str());
 
             // Record basic block predecessors
             for (llvm::const_pred_iterator
@@ -153,6 +154,8 @@ FactGenerator::processModule(const llvm::Module &Mod, const std::string& path)
 
             }
         }
+
+        writeLocalVariables();
     }
 
     // Process any existing debug information

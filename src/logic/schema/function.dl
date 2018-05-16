@@ -47,20 +47,8 @@ schema_invalid_function(Func, __FILE__, __LINE__) :-
 // Variables and Constants contained
 //----------------------------------------
 
-// TODO
-// constant:in_function[Constant] = Function <-
-//    constant:__token1[Constant] = Fn,
-//    function:by_name["@" + Fn] = Function.
-
-// variable:in_function[Var] = Function <-
-//    variable:descriptor(Var, _, FuncName, _, _),
-//    function:by_name[FuncName] = Function.
-
-// // Mandatory property (variable only, since constants may be global)
-
-// variable(Var)
-//  ->
-//    variable:in_function[Var] = _.
+.decl constant_in_function(c:Constant, func:Function)
+.decl variable_in_function(v:Variable, func:Function)
 
 
 //-----------------------------------------------------------------

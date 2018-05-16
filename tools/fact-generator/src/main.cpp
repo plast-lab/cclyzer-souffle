@@ -63,7 +63,7 @@ cclyzer::factgen(FileIt firstFile, FileIt endFile,
         const llvm::DataLayout &layout = module->getDataLayout();
 
         // Write types
-        gen.writeOperands(layout);
+        gen.writeTypes(layout);
     }
 }
 

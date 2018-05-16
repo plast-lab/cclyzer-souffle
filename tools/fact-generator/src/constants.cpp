@@ -27,6 +27,13 @@ FactGenerator::writeConstant(const llvm::Constant &c)
     writeFact(pred::constant::id, id);
     writeFact(pred::constant::type, id, recordType(c.getType()));
 
+    // Record containing function
+    const llvm::Function *containingFunction = functionContext();
+    if (containingFunction) {
+        const std::string funcname = "@" + containingFunction->getName().str();
+        writeFact(pred::constant::in_function, id, funcname);
+    }
+
     // Record constant value
     std::string rv;
     raw_string_ostream rso(rv);

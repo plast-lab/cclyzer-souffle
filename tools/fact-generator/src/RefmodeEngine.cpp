@@ -204,6 +204,16 @@ void RefmodeEngine::exitModule() {
     impl->exitModule();
 }
 
+const llvm::Function*
+RefmodeEngine::functionContext() {
+    return impl->functionContext();
+}
+
+const llvm::Module*
+RefmodeEngine::moduleContext() {
+    return impl->moduleContext();
+}
+
 //------------------------------------------------------------------------------
 // Explicit template instantiations
 //------------------------------------------------------------------------------

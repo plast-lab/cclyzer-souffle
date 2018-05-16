@@ -45,7 +45,7 @@ namespace cclyzer
         typedef std::vector<context>::const_reverse_iterator const_reverse_iterator;
 
         ContextManager(const llvm::Module& module, const std::string& path)
-            : mod(module), instrIndex(0), constantIndex(0)
+            :  iFunctionCtx(-1), mod(module), instrIndex(0), constantIndex(0)
         {
             // Compute global prefix for this module
             std::stringstream prefix;
@@ -73,6 +73,7 @@ namespace cclyzer
             if (const llvm::Function *fctx = llvm::dyn_cast<llvm::Function>(&ctx)) {
                 prefix = fctx->getName();
                 instrIndex = 0;
+                iFunctionCtx = contexts.size();
             }
             else if (const llvm::BasicBlock *bbctx = llvm::dyn_cast<llvm::BasicBlock>(&ctx)) {
                 prefix = bbctx->getName();
@@ -87,6 +88,10 @@ namespace cclyzer
 
         /// Record that a local context has been exited.
         void popContext() {
+
+            if (contexts.back().isFunction)
+                iFunctionCtx = -1;
+
             contexts.pop_back();
         }
 
@@ -106,9 +111,22 @@ namespace cclyzer
         inline unsigned constantCount() { return constantIndex++; }
         inline const llvm::Module& module() const { return mod; }
 
+        inline const context *functionContext() const
+        {
+            if (iFunctionCtx < 0) {
+                return nullptr;
+            }
+
+            const context& functionCtx = contexts[iFunctionCtx];
+            return functionCtx.isFunction ? &functionCtx : nullptr;
+        }
+
       private:
         // Tracking local contexts
         std::vector<Context> contexts;
+
+        // The vector index containing a function context
+        int iFunctionCtx;
 
         // Current module and path
         const llvm::Module& mod;

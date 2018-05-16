@@ -37,6 +37,19 @@ class cclyzer::RefmodeEngine::Impl
 
     void exitModule() {}
 
+    const llvm::Function *functionContext()
+    {
+        if (ctx->functionContext()) {
+            return llvm::dyn_cast<llvm::Function>(
+                ctx->functionContext()->anchor);
+        }
+        return nullptr;
+    }
+
+    const llvm::Module *moduleContext() {
+        return &ctx->module();
+    }
+
   protected:
 
     // Methods that compute refmodes for various LLVM types

@@ -43,7 +43,8 @@ class cclyzer::FactGenerator
     refmode_t writeAsm(const llvm::InlineAsm&);
 
     void processModule(const llvm::Module &Mod, const std::string& path);
-    void writeOperands(const llvm::DataLayout &layout);
+    void writeLocalVariables();
+    void writeTypes(const llvm::DataLayout &layout);
 
   protected:
     /* Common type aliases */

@@ -555,6 +555,7 @@ namespace cclyzer
             static pred_t type;
             static pred_t source_name;
             static pred_t pos;
+            static pred_t in_function;
         };
 
         struct constant : predicate_group {
@@ -564,6 +565,7 @@ namespace cclyzer
             static pred_t hash;
             static pred_t expr;
             static pred_t to_integer;
+            static pred_t in_function;
         };
 
         // Constant hierarchy

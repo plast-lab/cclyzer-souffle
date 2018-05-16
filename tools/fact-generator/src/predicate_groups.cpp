@@ -384,11 +384,13 @@ pred_t variable::id("variable");
 pred_t variable::type("variable:type");
 pred_t variable::source_name("variable:debug:source_name");
 pred_t variable::pos("variable:debug:decl_pos");
+pred_t variable::in_function("variable:in_function");
 
 pred_t constant::id("constant");
 pred_t constant::type("constant:type");
 pred_t constant::value("constant:value");
 pred_t constant::hash("constant:hash");
+pred_t constant::in_function("constant:in_function");
 
 pred_t constant::expr("constant_expression");
 pred_t constant::to_integer("constant:to_int");

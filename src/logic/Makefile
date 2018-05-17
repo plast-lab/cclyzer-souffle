@@ -49,18 +49,14 @@ all: $(OUTDIR)/__init__.py
 $(OUTDIR)/__init__.py:
 	touch $@
 
+
 #-----------------------------------
-# Predicate Lists
+# Output Logic
 #-----------------------------------
 
-ALL_PREDS   := all-predicates.txt~
-INPUT_PREDS := input-predicates.txt~
+OUTPUT_LOGIC := generate-output.dl
 
-$(ALL_PREDS):
-	grep -Rhe '^\.decl' | sed 's/.decl \(.*\)(.*)/\1/' | sort -u > $@
+all: $(OUTPUT_LOGIC)
 
-$(INPUT_PREDS):
-	grep -Rhe '^\.input' | sed 's/.input \(.*\)(.*)/\1/' | sort -u > $@
-
-generate-output.dl: $(ALL_PREDS) $(INPUT_PREDS)
-	comm -3 $(ALL_PREDS) $(INPUT_PREDS) | sed -e 's/^/.output /' > $@
+$(OUTPUT_LOGIC): $(filter-out %/$(OUTPUT_LOGIC), $(LOGIC_FILES))
+	$(SCRIPTDIR)/codegen-export-logic.py . $@

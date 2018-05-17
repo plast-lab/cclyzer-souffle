@@ -16,10 +16,11 @@ PROTOC      := /usr/bin/protoc
 # Directory Tree
 #--------------------
 
-BINDIR   = $(LEVEL)/bin
-LIBDIR   = $(LEVEL)/lib
-BUILDDIR = $(LEVEL)/build
-OUTDIR   = $(BUILDDIR)/$(notdir $(CURDIR))
+BINDIR    = $(LEVEL)/bin
+LIBDIR    = $(LEVEL)/lib
+BUILDDIR  = $(LEVEL)/build
+SCRIPTDIR = $(LEVEL)/scripts
+OUTDIR    = $(BUILDDIR)/$(notdir $(CURDIR))
 
 
 # Create build directory

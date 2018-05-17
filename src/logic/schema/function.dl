@@ -35,12 +35,12 @@ function_decl(Func) :- function(Func).
 schema_invalid_function(Func, __FILE__, __LINE__) :-
    schema_sanity(),
    function_decl(Func),
-   function_has_type(Func, _).
+   !function_has_type(Func, _).
 
 schema_invalid_function(Func, __FILE__, __LINE__) :-
    schema_sanity(),
    function_decl(Func),
-   function_has_name(Func, _).
+   !function_has_name(Func, _).
 
 
 //----------------------------------------
@@ -144,6 +144,7 @@ schema_invalid_function(Func, __FILE__, __LINE__) :-
 
 schema_invalid_function(Func, __FILE__, __LINE__) :-
    schema_sanity(),
+   function(Func),
    function_has_type(Func, Type),
    function_type_param(Type, Index, _),
    !function_param(Func, Index, _).

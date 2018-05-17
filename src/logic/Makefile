@@ -59,4 +59,4 @@ OUTPUT_LOGIC := generate-output.dl
 all: $(OUTPUT_LOGIC)
 
 $(OUTPUT_LOGIC): $(filter-out %/$(OUTPUT_LOGIC), $(LOGIC_FILES))
-	$(SCRIPTDIR)/codegen-export-logic.py . $@
+	$(SCRIPTDIR)/codegen-export-logic.py . -o $@

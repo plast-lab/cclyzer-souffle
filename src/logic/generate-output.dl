@@ -41,7 +41,6 @@
 .output cold_calling_convention
 .output common_linkage_type
 .output constant_in_function
-.output constants_equal
 .output default_visibility
 .output derived_type
 .output direct_call_instruction

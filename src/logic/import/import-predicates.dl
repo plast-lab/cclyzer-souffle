@@ -27,21 +27,21 @@
 .input _basicblock_preds(IO="file", delimiter="\t", filename="facts/basicblock-pred_aux.dlm")
 
 basicblock_predecessors(bb0, bb1) :-
+   _basicblock_preds(e0, e1),
    variable_is_label(e0),
    variable_is_label(e1),
    basicblock_of_label(bb0, e0),
-   basicblock_of_label(bb1, e1),
-   _basicblock_preds(e0, e1).
+   basicblock_of_label(bb1, e1).
 
 
 .decl _instruction_bb_entry(v0:symbol, v1:symbol)
 .input _instruction_bb_entry(IO="file", delimiter="\t", filename="facts/instruction-bb_entry.dlm")
 
 instruction_in_basicblock(e0, bb) :-
+   _instruction_bb_entry(e0, e1),
    instruction(e0),
    variable_is_label(e1),
-   basicblock_of_label(bb, e1),
-   _instruction_bb_entry(e0, e1).
+   basicblock_of_label(bb, e1).
 
 
 .input load_instruction_ordering(IO="file", delimiter="\t", filename="facts/load_instruction-ordering.dlm")
@@ -158,11 +158,11 @@ instruction_in_basicblock(e0, bb) :-
 .input _phi_instruction_pair_value(IO="file", delimiter="\t", filename="facts/phi_instruction-pair-value.dlm")
 
 phi_instruction_pair(v0, v1, [v2, v3]) :-
+   _phi_instruction_pair_value(v0, v1, v2),
    phi_instruction(v0),
    operand(v2),
-   variable(v3),
-   _phi_instruction_pair_value(v0, v1, v2),
-   _phi_instruction_pair_label(v0, v1, v3).
+   _phi_instruction_pair_label(v0, v1, v3),
+   variable(v3).
 
 .input switch_instruction_operand(IO="file", delimiter="\t", filename="facts/switch_instruction-operand.dlm")
 .input switch_instruction_default_label(IO="file", delimiter="\t", filename="facts/switch_instruction-default_label.dlm")
@@ -173,11 +173,11 @@ phi_instruction_pair(v0, v1, [v2, v3]) :-
 .input _switch_instruction_case_value(IO="file", delimiter="\t", filename="facts/switch_instruction-case-value.dlm")
 
 switch_instruction_case(v0, v1, [v2, v3]) :-
+   _switch_instruction_case_value(v0, v1, v2),
    switch_instruction(v0),
    constant(v2),
-   variable(v3),
-   _switch_instruction_case_value(v0, v1, v2),
-   _switch_instruction_case_label(v0, v1, v3).
+   _switch_instruction_case_label(v0, v1, v3),
+   variable(v3).
 
 .input ret_instruction_value(IO="file", delimiter="\t", filename="facts/ret_instruction-value.dlm")
 .input void_ret_instruction(IO="file", delimiter="\t", filename="facts/ret_instruction-void.dlm")

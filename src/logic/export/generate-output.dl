@@ -35,8 +35,6 @@
 .output call_instruction_fn_type
 .output call_instruction_return_type
 .output calling_convention
-.output catch_clause
-.output clause
 .output cmpxchg_instruction_cmp_value_type
 .output cold_calling_convention
 .output common_linkage_type
@@ -76,7 +74,6 @@
 .output fcmp_condition__uno
 .output fcmp_instruction_from_type
 .output fcmp_instruction_to_type
-.output filter_clause
 .output flag
 .output float_type
 .output fp128_type
@@ -172,7 +169,6 @@
 .output invoke_instruction_return_type
 .output label_type
 .output landingpad
-.output landingpad_instruction_clause
 .output landingpad_instruction_pers_fn
 .output linkage_type
 .output linker_private_linkage_type
@@ -206,7 +202,6 @@
 .output parameter_attribute__signext
 .output parameter_attribute__sret
 .output parameter_attribute__zeroext
-.output phi_instruction_pair
 .output pointer_type_to_firstclass
 .output pointer_vector_type
 .output ppc_fp128_type
@@ -236,7 +231,6 @@
 .output struct_type_field_name
 .output struct_type_field_name_at_offset
 .output struct_type_inherits_at_offset
-.output switch_instruction_case
 .output terminator_instruction
 .output threadlocal_mode
 .output trunc_instruction_from_type

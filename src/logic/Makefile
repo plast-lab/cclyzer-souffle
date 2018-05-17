@@ -54,7 +54,7 @@ $(OUTDIR)/__init__.py:
 # Output Logic
 #-----------------------------------
 
-OUTPUT_LOGIC := generate-output.dl
+OUTPUT_LOGIC := export/generate-output.dl
 
 all: $(OUTPUT_LOGIC)
 

@@ -22,6 +22,16 @@ def extract_predicates(path, keyword='.decl'):
 
 
 def generate_output_logic(path, predicates):
+    exportdir = os.path.dirname(path)
+
+    for logicfile in [os.path.join(exportdir, f) for f in os.listdir(exportdir)]:
+        if logicfile == path:
+            continue
+        if os.path.isfile(logicfile) and is_logic_file(logicfile):
+            for predicate in extract_predicates(logicfile):
+                if predicate.startswith('_'):
+                    predicates.remove(predicate[1:])
+
     with open(path, 'w') as out:
         for predicate in sorted(predicates):
             out.write('.output {}\n'.format(predicate))

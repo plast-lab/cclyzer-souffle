@@ -346,8 +346,8 @@ namespace cclyzer
         struct cmpxchg : public predicate_group {
             static pred_t instr;
             static pred_t address;
-            static pred_t cmp;
-            static pred_t new_;
+            static pred_t cmp_value;
+            static pred_t new_value;
             static pred_t ordering;
             static pred_t type;
             static pred_t isvolatile;

@@ -15,7 +15,7 @@ using pred::pred_t;
 // Constant Definitions
 //-------------------------------------------------------------------
 
-const std::string  FactWriter::FILE_EXTENSION = ".dlm";
+const std::string  FactWriter::FILE_EXTENSION = ".csv";
 
 
 //-------------------------------------------------------------------

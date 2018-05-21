@@ -16,7 +16,7 @@ instruction(v) :- landingpad_instruction(v).
 landingpad_instruction_pers_fn(Instr, PersFunction) :-
    landingpad_instruction(Instr),
    instruction_in_function(Instr, EnclosingFunction),
-   function_pers_fn(EnclosingFunction, FnConstant),
+   function_with_pers_fn(EnclosingFunction, FnConstant),
    function_constant(FnConstant),
    function_constant_fn_name(FnConstant, PersFnName),
    function_has_name(PersFunction, PersFnName).
@@ -24,7 +24,7 @@ landingpad_instruction_pers_fn(Instr, PersFunction) :-
 landingpad_instruction_pers_fn(Instr, PersFunction) :-
    landingpad_instruction(Instr),
    instruction_in_function(Instr, EnclosingFunction),
-   function_pers_fn(EnclosingFunction, BitcastConstant),
+   function_with_pers_fn(EnclosingFunction, BitcastConstant),
    bitcast_constant_expression_from(BitcastConstant, FnConstant),
    function_constant(FnConstant),
    function_constant_fn_name(FnConstant, PersFnName),

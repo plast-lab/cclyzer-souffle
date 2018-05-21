@@ -478,8 +478,8 @@ InstructionVisitor::visitAtomicCmpXchgInst(const llvm::AtomicCmpXchgInst &AXI)
     refmode_t iref = recordInstruction(pred::cmpxchg::instr, AXI);
 
     writeInstrOperand(pred::cmpxchg::address, iref, AXI.getPointerOperand());
-    writeInstrOperand(pred::cmpxchg::cmp, iref, AXI.getCompareOperand());
-    writeInstrOperand(pred::cmpxchg::new_, iref, AXI.getNewValOperand());
+    writeInstrOperand(pred::cmpxchg::cmp_value, iref, AXI.getCompareOperand());
+    writeInstrOperand(pred::cmpxchg::new_value, iref, AXI.getNewValOperand());
 
     if (AXI.isVolatile())
         gen.writeFact(pred::cmpxchg::isvolatile, iref);

@@ -15,8 +15,8 @@ terminator_instruction(v) :- invoke_instruction(v).
 
 // If none is specified, the invoke defaults to using C
 // calling conventions.
-.decl invoke_instruction_calling_convention(instr:InvokeInstruction, cc:CallingConvention)
-calling_convention(cc) :- invoke_instruction_calling_convention(_, cc).
+.decl invoke_instruction_with_calling_convention(instr:InvokeInstruction, cc:CallingConvention)
+calling_convention(cc) :- invoke_instruction_with_calling_convention(_, cc).
 
 
 //---------------------------------------------------------------
@@ -44,13 +44,13 @@ indirect_invoke_instruction(Instr) :-
 //--------------------------------------------------
 
 .decl invoke_instruction_arg(instr:InvokeInstruction, i:number, arg:Operand)
-.decl invoke_instruction_return_attribute(instr:InvokeInstruction, attr:Attribute)
-.decl invoke_instruction_param_attribute(instr:InvokeInstruction, i:number, attr:Attribute)
-.decl invoke_instruction_fn_attribute(instr:InvokeInstruction, attr:Attribute)
+.decl invoke_instruction_with_return_attribute(instr:InvokeInstruction, attr:Attribute)
+.decl invoke_instruction_with_param_attribute(instr:InvokeInstruction, i:number, attr:Attribute)
+.decl invoke_instruction_with_fn_attribute(instr:InvokeInstruction, attr:Attribute)
 
-attribute(Attr) :- invoke_instruction_fn_attribute(_, Attr).
-attribute(Attr) :- invoke_instruction_return_attribute(_, Attr).
-attribute(Attr) :- invoke_instruction_param_attribute(_, _, Attr).
+attribute(Attr) :- invoke_instruction_with_fn_attribute(_, Attr).
+attribute(Attr) :- invoke_instruction_with_return_attribute(_, Attr).
+attribute(Attr) :- invoke_instruction_with_param_attribute(_, _, Attr).
 
 
 //-----------------------------
@@ -123,7 +123,7 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 // attribute compatibility
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
-   invoke_instruction_return_attribute(Instr, Attr),
+   invoke_instruction_with_return_attribute(Instr, Attr),
    !parameter_attribute__zeroext(Attr),
    !parameter_attribute__signext(Attr),
    !parameter_attribute__inreg(Attr),
@@ -132,7 +132,7 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
-   invoke_instruction_fn_attribute(Instr, Attr),
+   invoke_instruction_with_fn_attribute(Instr, Attr),
    !function_attribute__noreturn(Attr),
    !function_attribute__nounwind(Attr),
    !function_attribute__readonly(Attr),

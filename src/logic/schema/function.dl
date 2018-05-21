@@ -56,23 +56,23 @@ schema_invalid_function(Func, __FILE__, __LINE__) :-
 // definitions)
 //-----------------------------------------------------------------
 
-.decl function_linkage_type(func:FunctionDecl, link:LinkageType)
-.decl function_visibility(func:FunctionDecl, vis:Visibility)
-.decl function_calling_convention(func:FunctionDecl, cc:CallingConvention)
-.decl function_with_unnamed_addr(func:FunctionDecl)
 .decl function_alignment(func:FunctionDecl, alignment:number)
-.decl function_gc(func:FunctionDecl, collector:symbol)
-.decl function_pers_fn(func:FunctionDecl, persfn:Constant)
+.decl function_has_linkage_type(func:FunctionDecl, link:LinkageType)
+.decl function_has_visibility(func:FunctionDecl, vis:Visibility)
+.decl function_with_calling_convention(func:FunctionDecl, cc:CallingConvention)
+.decl function_with_unnamed_addr(func:FunctionDecl)
+.decl function_with_gc(func:FunctionDecl, collector:symbol)
+.decl function_with_pers_fn(func:FunctionDecl, persfn:Constant)
 
-calling_convention(cc) :- function_calling_convention(_, cc).
-linkage_type(link) :- function_linkage_type(_, link).
-visibility(vis) :- function_visibility(_, vis).
+calling_convention(cc) :- function_with_calling_convention(_, cc).
+linkage_type(link) :- function_has_linkage_type(_, link).
+visibility(vis) :- function_has_visibility(_, vis).
 
 //-----------------------------------------------------------------
 // Optional function attributes (only for definitions)
 //-----------------------------------------------------------------
 
-.decl function_section(func:Function, section:symbol)
+.decl function_in_section(func:Function, section:symbol)
 
 
 //----------------------------------
@@ -107,20 +107,20 @@ function_nparams(Func, Total) :-
 // If multiple parameter attributes are needed, they are space separated.
 //------------------------------------------------------------------------------
 
-.decl function_has_attribute(func:FunctionDecl, attr:Attribute)
-.decl function_return_attribute(func:FunctionDecl, attr:Attribute)
-.decl function_param_attribute(func:FunctionDecl, index:number, attr:Attribute)
+.decl function_with_attribute(func:FunctionDecl, attr:Attribute)
+.decl function_with_return_attribute(func:FunctionDecl, attr:Attribute)
+.decl function_with_param_attribute(func:FunctionDecl, index:number, attr:Attribute)
 
-attribute(Attr) :- function_has_attribute(_, Attr).
-attribute(Attr) :- function_return_attribute(_, Attr).
-attribute(Attr) :- function_param_attribute(_, _, Attr).
+attribute(Attr) :- function_with_attribute(_, Attr).
+attribute(Attr) :- function_with_return_attribute(_, Attr).
+attribute(Attr) :- function_with_param_attribute(_, _, Attr).
 
 // Parameter is passed by value
 .decl function_param_by_value(func:Function, index:number)
 
 function_param_by_value(Func, Index) :-
    function_param(Func, Index, _),
-   function_param_attribute(Func, Index, ByValueAttr),
+   function_with_param_attribute(Func, Index, ByValueAttr),
    parameter_attribute__byval(ByValueAttr).
 
 

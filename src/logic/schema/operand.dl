@@ -11,6 +11,7 @@
 .decl variable(v:Variable)
 
 .decl variable_has_type(v:Variable, type:Type)
+.decl variable_has_name(v:Variable, name:symbol)
 .decl variable_is_label(v:Variable)
 .decl variable_is_pointer(v:Variable)
 .decl variable_is_firstclass(v:Variable)

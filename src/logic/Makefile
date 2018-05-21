@@ -30,11 +30,11 @@ LOGIC_FILES  := $(shell find ./ -type f -name '*.dl')
 HEADER_FILES := $(shell find ./ -type f -name '*.project')
 MODULES      := $(patsubst ./%/,%,$(dir $(HEADER_FILES)))
 
-LOGIC_CXX_OUT := cclyzer-analyze
+LOGIC_CXX_OUT := $(OUTDIR)/cclyzer-analyze
 
 
 $(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-	souffle -c master.project
+	souffle -c --profile=cclyzer.log -o $@ master.project
 
 
 all: $(LOGIC_CXX_OUT)

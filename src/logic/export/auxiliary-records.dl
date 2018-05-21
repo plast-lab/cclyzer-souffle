@@ -9,6 +9,10 @@ _phi_instruction_pair(Instr, Idx, Value, Label) :-
 .decl _catch_clause(c:Constant)
 .decl _filter_clause(c:Constant)
 .decl _landingpad_instruction_clause(instr:LandingPadInstruction, i:number, c:Constant)
+.output _clause(IO="file", delimiter="\t", filename="clause.csv")
+.output _catch_clause(IO="file", delimiter="\t", filename="catch_clause.csv")
+.output _filter_clause(IO="file", delimiter="\t", filename="filter_clause.csv")
+.output _landingpad_instruction_clause(IO="file", delimiter="\t", filename="landingpad_instruction_clause.csv")
 _clause(Constant) :- clause(Clause), Clause = [Constant].
 _catch_clause(Constant)  :- catch_clause(Clause), Clause = [Constant].
 _filter_clause(Constant) :- filter_clause(Clause), Clause = [Constant].
@@ -17,5 +21,6 @@ _landingpad_instruction_clause(Instr, Idx, Constant) :-
 
 
 .decl _switch_instruction_case(instr:SwitchInstruction, index:number, c:Constant, label:Variable)
+.output _switch_instruction_case(IO="file", delimiter="\t", filename="switch_instruction_case.csv")
 _switch_instruction_case(Instr, Idx, Constant, Label) :-
    switch_instruction_case(Instr, Idx, Case), Case = [Constant, Label].

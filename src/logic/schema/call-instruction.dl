@@ -18,8 +18,8 @@ instruction(v) :- call_instruction(v).
 
 // If none is specified, the call defaults to using C
 // calling conventions.
-.decl call_instruction_calling_convention(instr:CallInstruction, cc:CallingConvention)
-calling_convention(cc) :- call_instruction_calling_convention(_, cc).
+.decl call_instruction_with_calling_convention(instr:CallInstruction, cc:CallingConvention)
+calling_convention(cc) :- call_instruction_with_calling_convention(_, cc).
 
 
 //---------------------------------------------------------------
@@ -52,13 +52,13 @@ asm_call_instruction(Instr) :-
 //--------------------------------------------------
 
 .decl call_instruction_arg(instr:CallInstruction, i:number, arg:Operand)
-.decl call_instruction_return_attribute(instr:CallInstruction, attr:Attribute)
-.decl call_instruction_param_attribute(instr:CallInstruction, i:number, attr:Attribute)
-.decl call_instruction_fn_attribute(instr:CallInstruction, attr:Attribute)
+.decl call_instruction_with_return_attribute(instr:CallInstruction, attr:Attribute)
+.decl call_instruction_with_param_attribute(instr:CallInstruction, i:number, attr:Attribute)
+.decl call_instruction_with_fn_attribute(instr:CallInstruction, attr:Attribute)
 
-attribute(Attr) :- call_instruction_fn_attribute(_, Attr).
-attribute(Attr) :- call_instruction_return_attribute(_, Attr).
-attribute(Attr) :- call_instruction_param_attribute(_, _, Attr).
+attribute(Attr) :- call_instruction_with_fn_attribute(_, Attr).
+attribute(Attr) :- call_instruction_with_return_attribute(_, Attr).
+attribute(Attr) :- call_instruction_with_param_attribute(_, _, Attr).
 
 
 //-----------------------------
@@ -110,7 +110,7 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 // attribute compatibility
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
-   call_instruction_return_attribute(Instr, Attr),
+   call_instruction_with_return_attribute(Instr, Attr),
    !parameter_attribute__zeroext(Attr),
    !parameter_attribute__signext(Attr),
    !parameter_attribute__inreg(Attr),
@@ -119,7 +119,7 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
-   call_instruction_fn_attribute(Instr, Attr),
+   call_instruction_with_fn_attribute(Instr, Attr),
    !function_attribute__noreturn(Attr),
    !function_attribute__nounwind(Attr),
    !function_attribute__readonly(Attr),
@@ -138,8 +138,8 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 // schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 //    schema_sanity(),
 //    call_instruction_fn_target(Instr, Func),
-//    call_instruction_calling_convention(Instr, CConv),
-//    !function_calling_convention(Func, CConv). // c2
+//    call_instruction_with_calling_convention(Instr, CConv),
+//    !function_with_calling_convention(Func, CConv). // c2
 
 // Signature conformance
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-

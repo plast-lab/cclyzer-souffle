@@ -1,6 +1,7 @@
 .output acq_rel_ordering
 .output acquire_ordering
 .output aggregate_type
+.output aliased_constants
 .output appending_linkage_type
 .output arm_aapcs_calling_convention
 .output arm_aapcs_vfp_calling_convention
@@ -39,6 +40,8 @@
 .output cold_calling_convention
 .output common_linkage_type
 .output constant_in_function
+.output constant_references_function
+.output constant_references_variable
 .output default_visibility
 .output derived_type
 .output direct_call_instruction
@@ -117,6 +120,7 @@
 .output function_attribute__sspreq
 .output function_attribute__sspstrong
 .output function_attribute__uwtable
+.output function_decl_to_defn
 .output function_is_illformed
 .output function_is_wellformed
 .output function_nparams

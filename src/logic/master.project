@@ -1,3 +1,4 @@
 #include "schema/schema.project"
 #include "import/import.project"
+#include "symbol-lookup/symbol-lookup.project"
 #include "export/export.project"

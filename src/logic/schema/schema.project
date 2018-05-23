@@ -69,3 +69,6 @@
 #include "va-arg-instruction.dl"
 
 #include "activate-sanity.dl"
+
+#include "debuginfo/tag.dl"
+#include "debuginfo/entry.dl"

@@ -449,150 +449,150 @@ pred_t attribute::target_dependent("target_dependent_attribute");
 //------------------------------------------------------------------------------
 
 // Scope Entry
-pred_t di_scope_entry::id("di:scope");
+pred_t di_scope_entry::id("debuginfo/scope");
 
 // File Entry
-pred_t di_file::id("di:file");
-pred_t di_file::filename("di:file:filename");
-pred_t di_file::directory("di:file:directory");
+pred_t di_file::id("debuginfo/file");
+pred_t di_file::filename("debuginfo/file:filename");
+pred_t di_file::directory("debuginfo/file:directory");
 
 // Namespace Entry
-pred_t di_namespace::id("di:namespace");
-pred_t di_namespace::name("di:namespace:name");
-pred_t di_namespace::file("di:namespace:file");
-pred_t di_namespace::line("di:namespace:line");
-pred_t di_namespace::scope("di:namespace:scope");
+pred_t di_namespace::id("debuginfo/namespace");
+pred_t di_namespace::name("debuginfo/namespace:name");
+pred_t di_namespace::file("debuginfo/namespace:file");
+pred_t di_namespace::line("debuginfo/namespace:line");
+pred_t di_namespace::scope("debuginfo/namespace:scope");
 
 // Lexical Block Entry
-pred_t di_lex_block::id("di:lexical_block");
-pred_t di_lex_block::file("di:lexical_block:file");
-pred_t di_lex_block::line("di:lexical_block:line");
-pred_t di_lex_block::column("di:lexical_block:column");
-pred_t di_lex_block::scope("di:lexical_block:scope");
+pred_t di_lex_block::id("debuginfo/lexical_block");
+pred_t di_lex_block::file("debuginfo/lexical_block:file");
+pred_t di_lex_block::line("debuginfo/lexical_block:line");
+pred_t di_lex_block::column("debuginfo/lexical_block:column");
+pred_t di_lex_block::scope("debuginfo/lexical_block:scope");
 
 // Lexical Block File Entry
-pred_t di_lex_block_file::id("di:lexical_block_file");
-pred_t di_lex_block_file::file("di:lexical_block_file:file");
-pred_t di_lex_block_file::discriminator("di:lexical_block_file:discrim");
-pred_t di_lex_block_file::scope("di:lexical_block_file:scope");
+pred_t di_lex_block_file::id("debuginfo/lexical_block_file");
+pred_t di_lex_block_file::file("debuginfo/lexical_block_file:file");
+pred_t di_lex_block_file::discriminator("debuginfo/lexical_block_file:discrim");
+pred_t di_lex_block_file::scope("debuginfo/lexical_block_file:scope");
 
 // Subprogram Entry
-pred_t di_subprogram::id("di:subprogram");
-pred_t di_subprogram::name("di:subprogram:name");
-pred_t di_subprogram::linkage_name("di:subprogram:linkage_name");
-pred_t di_subprogram::file("di:subprogram:file");
-pred_t di_subprogram::line("di:subprogram:line");
-pred_t di_subprogram::scope::node("di:subprogram:scope");
-pred_t di_subprogram::scope::raw("di:subprogram:raw_scope");
-pred_t di_subprogram::scope_line("di:subprogram:scope_line");
-pred_t di_subprogram::type("di:subprogram:type");
-pred_t di_subprogram::containing_type::node("di:subprogram:containing_type");
-pred_t di_subprogram::containing_type::raw("di:subprogram:raw_containing_type");
-pred_t di_subprogram::declaration("di:subprogram:declaration");
-pred_t di_subprogram::virtuality("di:subprogram:virtuality");
-pred_t di_subprogram::virtual_index("di:subprogram:virtual_index");
-pred_t di_subprogram::flag("di:subprogram:flag");
-pred_t di_subprogram::template_param("di:subprogram:template_param");
-pred_t di_subprogram::variable("di:subprogram:variable");
-pred_t di_subprogram::is_definition("di:subprogram:is_definition");
-pred_t di_subprogram::is_local_to_unit("di:subprogram:is_local_to_unit");
-pred_t di_subprogram::is_optimized("di:subprogram:is_optimized");
-pred_t di_subprogram::function("di:subprogram:function");
+pred_t di_subprogram::id("debuginfo/subprogram");
+pred_t di_subprogram::name("debuginfo/subprogram:name");
+pred_t di_subprogram::linkage_name("debuginfo/subprogram:linkage_name");
+pred_t di_subprogram::file("debuginfo/subprogram:file");
+pred_t di_subprogram::line("debuginfo/subprogram:line");
+pred_t di_subprogram::scope::node("debuginfo/subprogram:scope");
+pred_t di_subprogram::scope::raw("debuginfo/subprogram:raw_scope");
+pred_t di_subprogram::scope_line("debuginfo/subprogram:scope_line");
+pred_t di_subprogram::type("debuginfo/subprogram:type");
+pred_t di_subprogram::containing_type::node("debuginfo/subprogram:containing_type");
+pred_t di_subprogram::containing_type::raw("debuginfo/subprogram:raw_containing_type");
+pred_t di_subprogram::declaration("debuginfo/subprogram:declaration");
+pred_t di_subprogram::virtuality("debuginfo/subprogram:virtuality");
+pred_t di_subprogram::virtual_index("debuginfo/subprogram:virtual_index");
+pred_t di_subprogram::flag("debuginfo/subprogram:flag");
+pred_t di_subprogram::template_param("debuginfo/subprogram:template_param");
+pred_t di_subprogram::variable("debuginfo/subprogram:variable");
+pred_t di_subprogram::is_definition("debuginfo/subprogram:is_definition");
+pred_t di_subprogram::is_local_to_unit("debuginfo/subprogram:is_local_to_unit");
+pred_t di_subprogram::is_optimized("debuginfo/subprogram:is_optimized");
+pred_t di_subprogram::function("debuginfo/subprogram:function");
 
 // Type Entry
-pred_t di_type::id("di:type_entry");
-pred_t di_type::name("di:type_entry:name");
-pred_t di_type::line("di:type_entry:line");
-pred_t di_type::scope::node("di:type_entry:scope");
-pred_t di_type::scope::raw("di:type_entry:raw_scope");
-pred_t di_type::flag("di:type_entry:flag");
-pred_t di_type::bitsize("di:type_entry:bit_size");
-pred_t di_type::bitalign("di:type_entry:bit_align");
-pred_t di_type::bitoffset("di:type_entry:bit_offset");
+pred_t di_type::id("debuginfo/type_entry");
+pred_t di_type::name("debuginfo/type_entry:name");
+pred_t di_type::line("debuginfo/type_entry:line");
+pred_t di_type::scope::node("debuginfo/type_entry:scope");
+pred_t di_type::scope::raw("debuginfo/type_entry:raw_scope");
+pred_t di_type::flag("debuginfo/type_entry:flag");
+pred_t di_type::bitsize("debuginfo/type_entry:bit_size");
+pred_t di_type::bitalign("debuginfo/type_entry:bit_align");
+pred_t di_type::bitoffset("debuginfo/type_entry:bit_offset");
 
-pred_t di_basic_type::id("di:basic_type_entry");
+pred_t di_basic_type::id("debuginfo/basic_type_entry");
 
-pred_t di_composite_type::id("di:composite_type_entry");
-pred_t di_composite_type::file("di:composite_type_entry:file");
-pred_t di_composite_type::abi_id("di:composite_type_entry:abi_id");
-pred_t di_composite_type::field("di:composite_type_entry:field");
-pred_t di_composite_type::enumerator("di:composite_type_entry:enumerator");
-pred_t di_composite_type::subrange("di:composite_type_entry:subrange");
-pred_t di_composite_type::template_param("di:composite_type_entry:template_param");
-pred_t di_composite_type::vtable::node("di:composite_type_entry:vtable");
-pred_t di_composite_type::vtable::raw("di:composite_type_entry:raw_vtable");
-pred_t di_composite_type::basetype::node("di:composite_type_entry:base_type");
-pred_t di_composite_type::basetype::raw("di:composite_type_entry:raw_base_type");
-pred_t di_composite_type::kind("di:composite_type_entry:kind");
-pred_t di_composite_type::structures("di:structure_type_entry");
-pred_t di_composite_type::classes("di:class_type_entry");
-pred_t di_composite_type::arrays("di:array_type_entry");
-pred_t di_composite_type::unions("di:union_type_entry");
-pred_t di_composite_type::enumerations("di:enum_type_entry");
+pred_t di_composite_type::id("debuginfo/composite_type_entry");
+pred_t di_composite_type::file("debuginfo/composite_type_entry:file");
+pred_t di_composite_type::abi_id("debuginfo/composite_type_entry:abi_id");
+pred_t di_composite_type::field("debuginfo/composite_type_entry:field");
+pred_t di_composite_type::enumerator("debuginfo/composite_type_entry:enumerator");
+pred_t di_composite_type::subrange("debuginfo/composite_type_entry:subrange");
+pred_t di_composite_type::template_param("debuginfo/composite_type_entry:template_param");
+pred_t di_composite_type::vtable::node("debuginfo/composite_type_entry:vtable");
+pred_t di_composite_type::vtable::raw("debuginfo/composite_type_entry:raw_vtable");
+pred_t di_composite_type::basetype::node("debuginfo/composite_type_entry:base_type");
+pred_t di_composite_type::basetype::raw("debuginfo/composite_type_entry:raw_base_type");
+pred_t di_composite_type::kind("debuginfo/composite_type_entry:kind");
+pred_t di_composite_type::structures("debuginfo/structure_type_entry");
+pred_t di_composite_type::classes("debuginfo/class_type_entry");
+pred_t di_composite_type::arrays("debuginfo/array_type_entry");
+pred_t di_composite_type::unions("debuginfo/union_type_entry");
+pred_t di_composite_type::enumerations("debuginfo/enum_type_entry");
 
-pred_t di_derived_type::id("di:derived_type_entry");
-pred_t di_derived_type::kind("di:derived_type_entry:kind");
-pred_t di_derived_type::file("di:derived_type_entry:file");
-pred_t di_derived_type::basetype::node("di:derived_type_entry:base_type");
-pred_t di_derived_type::basetype::raw("di:derived_type_entry:raw_base_type");
+pred_t di_derived_type::id("debuginfo/derived_type_entry");
+pred_t di_derived_type::kind("debuginfo/derived_type_entry:kind");
+pred_t di_derived_type::file("debuginfo/derived_type_entry:file");
+pred_t di_derived_type::basetype::node("debuginfo/derived_type_entry:base_type");
+pred_t di_derived_type::basetype::raw("debuginfo/derived_type_entry:raw_base_type");
 
-pred_t di_subroutine_type::id("di:subroutine_type_entry");
-pred_t di_subroutine_type::type_elem("di:subroutine_type_entry:type_elem");
-pred_t di_subroutine_type::raw_type_elem("di:subroutine_type_entry:raw_type_elem");
+pred_t di_subroutine_type::id("debuginfo/subroutine_type_entry");
+pred_t di_subroutine_type::type_elem("debuginfo/subroutine_type_entry:type_elem");
+pred_t di_subroutine_type::raw_type_elem("debuginfo/subroutine_type_entry:raw_type_elem");
 
 // Template Parameter Entry
-pred_t di_template_param::id("di:template_param");
-pred_t di_template_param::name("di:template_param:name");
-pred_t di_template_param::type::node("di:template_param:type");
-pred_t di_template_param::type::raw("di:template_param:raw_type");
+pred_t di_template_param::id("debuginfo/template_param");
+pred_t di_template_param::name("debuginfo/template_param:name");
+pred_t di_template_param::type::node("debuginfo/template_param:type");
+pred_t di_template_param::type::raw("debuginfo/template_param:raw_type");
 
-pred_t di_template_type_param::id("di:template_type_param");
-pred_t di_template_value_param::id("di:template_value_param");
-pred_t di_template_value_param::value("di:template_value_param:value");
-pred_t di_template_value_param::elements("di:template_value_param:elements");
+pred_t di_template_type_param::id("debuginfo/template_type_param");
+pred_t di_template_value_param::id("debuginfo/template_value_param");
+pred_t di_template_value_param::value("debuginfo/template_value_param:value");
+pred_t di_template_value_param::elements("debuginfo/template_value_param:elements");
 
 // Variable Entry
-pred_t di_variable::id("di:variable");
-pred_t di_variable::name("di:variable:name");
-pred_t di_variable::file("di:variable:file");
-pred_t di_variable::line("di:variable:line");
-pred_t di_variable::scope("di:variable:scope");
-pred_t di_variable::type::node("di:variable:type");
-pred_t di_variable::type::raw("di:variable:raw_type");
+pred_t di_variable::id("debuginfo/variable");
+pred_t di_variable::name("debuginfo/variable:name");
+pred_t di_variable::file("debuginfo/variable:file");
+pred_t di_variable::line("debuginfo/variable:line");
+pred_t di_variable::scope("debuginfo/variable:scope");
+pred_t di_variable::type::node("debuginfo/variable:type");
+pred_t di_variable::type::raw("debuginfo/variable:raw_type");
 
-pred_t di_local_var::id("di:local_variable");
-pred_t di_local_var::arg_num("di:local_variable:arg_num");
-pred_t di_local_var::flag("di:local_variable:flag");
-pred_t di_local_var::variable("di:local_variable_declaration");
+pred_t di_local_var::id("debuginfo/local_variable");
+pred_t di_local_var::arg_num("debuginfo/local_variable:arg_num");
+pred_t di_local_var::flag("debuginfo/local_variable:flag");
+pred_t di_local_var::variable("debuginfo/local_variable_declaration");
 
-pred_t di_global_var::id("di:global_variable");
-pred_t di_global_var::variable("di:global_variable:resolved_name");
-pred_t di_global_var::linkage_name("di:global_variable:linkage_name");
-pred_t di_global_var::is_definition("di:global_variable:is_definition");
-pred_t di_global_var::is_local_to_unit("di:global_variable:is_local_to_unit");
-pred_t di_global_var::static_data_member_decl("di:global_variable:static_data_member_decl");
+pred_t di_global_var::id("debuginfo/global_variable");
+pred_t di_global_var::variable("debuginfo/global_variable:resolved_name");
+pred_t di_global_var::linkage_name("debuginfo/global_variable:linkage_name");
+pred_t di_global_var::is_definition("debuginfo/global_variable:is_definition");
+pred_t di_global_var::is_local_to_unit("debuginfo/global_variable:is_local_to_unit");
+pred_t di_global_var::static_data_member_decl("debuginfo/global_variable:static_data_member_decl");
 
 // Enumerator Entry
-pred_t di_enumerator::id("di:enumerator");
-pred_t di_enumerator::name("di:enumerator:name");
-pred_t di_enumerator::value("di:enumerator:value");
+pred_t di_enumerator::id("debuginfo/enumerator");
+pred_t di_enumerator::name("debuginfo/enumerator:name");
+pred_t di_enumerator::value("debuginfo/enumerator:value");
 
 // Subrange Entry
-pred_t di_subrange::id("di:subrange");
-pred_t di_subrange::lower_bound("di:subrange:lower_bound");
-pred_t di_subrange::count("di:subrange:count");
+pred_t di_subrange::id("debuginfo/subrange");
+pred_t di_subrange::lower_bound("debuginfo/subrange:lower_bound");
+pred_t di_subrange::count("debuginfo/subrange:count");
 
 // Imported Entity Entry
-pred_t di_imported_entity::id("di:imported_entity");
-pred_t di_imported_entity::name("di:imported_entity:name");
-pred_t di_imported_entity::line("di:imported_entity:line");
-pred_t di_imported_entity::scope("di:imported_entity:scope");
-pred_t di_imported_entity::entity::node("di:imported_entity:entity");
-pred_t di_imported_entity::entity::raw("di:imported_entity:raw_entity");
+pred_t di_imported_entity::id("debuginfo/imported_entity");
+pred_t di_imported_entity::name("debuginfo/imported_entity:name");
+pred_t di_imported_entity::line("debuginfo/imported_entity:line");
+pred_t di_imported_entity::scope("debuginfo/imported_entity:scope");
+pred_t di_imported_entity::entity::node("debuginfo/imported_entity:entity");
+pred_t di_imported_entity::entity::raw("debuginfo/imported_entity:raw_entity");
 
 // Location Entry
-pred_t di_location::id("di:location");
-pred_t di_location::line("di:location:line");
-pred_t di_location::column("di:location:column");
-pred_t di_location::scope("di:location:scope");
-pred_t di_location::inlined_at("di:location:inlined_at");
+pred_t di_location::id("debuginfo/location");
+pred_t di_location::line("debuginfo/location:line");
+pred_t di_location::column("debuginfo/location:column");
+pred_t di_location::scope("debuginfo/location:scope");
+pred_t di_location::inlined_at("debuginfo/location:inlined_at");

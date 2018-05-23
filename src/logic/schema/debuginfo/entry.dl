@@ -1,0 +1,89 @@
+// Flag to mark that debug information has been loaded
+.decl debuginfo_is_loaded()
+
+//--------------------------------------------------------
+// Debug Information Entry - Type Hierarchy
+//--------------------------------------------------------
+
+.type DIEntry
+
+.type DIScope = DIEntry
+.type DINamespace = DIScope
+.type DIFile = DIScope
+.type DILocalScope = DIScope
+.type DISubprogram = DILocalScope
+.type DILexicalBlock = DILocalScope
+.type DILexicalBlockFile = DILocalScope
+
+.type DITypeEntry = DIScope
+.type DIBasicTypeEntry = DITypeEntry
+.type DICompositeTypeEntry = DITypeEntry
+.type DIDerivedTypeEntry = DITypeEntry
+.type DISubroutineTypeEntry = DITypeEntry
+
+.type DIVariable = DIEntry
+.type DILocalVariable = DIVariable
+.type DIGlobalVariable = DIVariable
+
+.type DITemplateParam = DIEntry
+.type DIEnumerator = DIEntry
+.type DISubrange = DIEntry
+.type DIImportedEntity = DIEntry
+
+
+.decl di?entry(entry:DIEntry)
+
+// Scopes
+.decl di?scope(entry:DIScope)
+.decl di?namespace(entry:DINamespace)
+.decl di?file(entry:DIFile)
+.decl di?local_scope(entry:DILocalScope)
+.decl di?subprogram(entry:DISubprogram)
+.decl di?lexical_block(entry:DILexicalBlock)
+.decl di?lexical_block_file(entry:DILexicalBlockFile)
+
+// Types
+.decl di?type_entry(entry:DITypeEntry)
+.decl di?basic_type_entry(entry:DIBasicTypeEntry)
+.decl di?composite_type_entry(entry:DICompositeTypeEntry)
+.decl di?derived_type_entry(entry:DIDerivedTypeEntry)
+.decl di?subroutine_type_entry(entry:DISubroutineTypeEntry)
+
+// Variables
+.decl di?variable(entry:DIVariable)
+.decl di?local_variable(entry:DILocalVariable)
+.decl di?global_variable(entry:DIGlobalVariable)
+
+// Miscellaneous
+.decl di?template_param(entry:DITemplateParam)
+.decl di?enumerator(entry:DIEnumerator)
+.decl di?subrange(entry:DISubrange)
+.decl di?imported_entity(entry:DIImportedEntity)
+
+
+//--------------------------------------------------------
+// Enforce predicate subtyping
+//--------------------------------------------------------
+
+di?entry(e) :- di?scope(e).
+di?scope(e) :- di?namespace(e).
+di?scope(e) :- di?file(e).
+di?scope(e) :- di?local_scope(e).
+di?local_scope(e) :- di?subprogram(e).
+di?local_scope(e) :- di?lexical_block(e).
+di?local_scope(e) :- di?lexical_block_file(e).
+
+di?scope(e) :- di?type_entry(e).
+di?type_entry(e) :- di?basic_type_entry(e).
+di?type_entry(e) :- di?composite_type_entry(e).
+di?type_entry(e) :- di?derived_type_entry(e).
+di?type_entry(e) :- di?subroutine_type_entry(e).
+
+di?entry(e) :- di?variable(e).
+di?variable(e) :- di?local_variable(e).
+di?variable(e) :- di?global_variable(e).
+
+di?entry(e) :- di?template_param(e).
+di?entry(e) :- di?enumerator(e).
+di?entry(e) :- di?subrange(e).
+di?entry(e) :- di?imported_entity(e).

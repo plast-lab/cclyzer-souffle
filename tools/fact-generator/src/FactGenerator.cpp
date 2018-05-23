@@ -87,7 +87,7 @@ FactGenerator::processModule(const llvm::Module &Mod, const std::string& path)
             writeFact(pred::variable::in_function, bbRef, func.getName().str());
 
             // Record variable name part
-            size_t idx = bbRef.find_last_of("%");
+            size_t idx = bbRef.find_last_of("%!");
             std::string bbVarName = bbRef.substr(idx);
             writeFact(pred::variable::name, bbRef, bbVarName);
 

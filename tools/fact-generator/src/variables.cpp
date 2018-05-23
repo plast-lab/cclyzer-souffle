@@ -28,7 +28,7 @@ FactGenerator::writeLocalVariables()
         writeFact(pred::variable::in_function, varId, funcname);
 
         // Record variable name part
-        size_t idx = varId.find_last_of("%");
+        size_t idx = varId.find_last_of("%!");
         std::string varName = varId.substr(idx);
         writeFact(pred::variable::name, varId, varName);
     }

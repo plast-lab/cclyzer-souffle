@@ -29,6 +29,11 @@ variable_is_firstclass(Var) :-
    type_is_firstclass(Type).
 
 
+// Debug-level information from source code (DWARF)
+.decl variable_has_debug_source_name(v:Variable, name:symbol)
+.decl variable_has_debug_decl_pos(v:Variable, line:number, column:number)
+
+
 //------------------------------------------------------------------------------
 // [Constants]
 //

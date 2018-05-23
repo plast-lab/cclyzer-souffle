@@ -292,3 +292,6 @@ constant_in_function(Constant, Function) :-
 variable_in_function(Variable, Function) :-
    _variable_in_function(Variable, FuncName),
    function_has_name(Function, FuncName).
+
+.input variable_has_debug_source_name(IO="file", delimiter="\t", filename="variable_has_debug_source_name.csv")
+.input variable_has_debug_decl_pos(IO="file", delimiter="\t", filename="variable_has_debug_decl_pos.csv")

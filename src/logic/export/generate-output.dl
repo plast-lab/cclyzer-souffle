@@ -42,10 +42,14 @@
 .output constant_in_function
 .output constant_references_function
 .output constant_references_variable
+.output debuginfo_invalid_entry
 .output debuginfo_is_loaded
 .output default_visibility
 .output derived_type
 .output di?entry
+.output di?file_directory
+.output di?file_filename
+.output di?file_path
 .output di?local_scope
 .output di?tag
 .output di?tag_array_type

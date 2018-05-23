@@ -87,3 +87,7 @@ di?entry(e) :- di?template_param(e).
 di?entry(e) :- di?enumerator(e).
 di?entry(e) :- di?subrange(e).
 di?entry(e) :- di?imported_entity(e).
+
+
+// For constraints
+.decl debuginfo_invalid_entry(e:DIEntry, file:File, line:Line)

@@ -70,5 +70,7 @@
 
 #include "activate-sanity.dl"
 
+// DWARF-like Debug Metadata Info Extensions
 #include "debuginfo/tag.dl"
 #include "debuginfo/entry.dl"
+#include "debuginfo/file.dl"

@@ -1,0 +1,35 @@
+//-----------------------------------------------------------
+// Debug Info - Source Files
+//-----------------------------------------------------------
+
+.type path
+
+.decl di?file_filename(entry:DIFile, name:path)
+.decl di?file_directory(entry:DIFile, directory:path)
+.decl di?file_path(entry:DIFile, path:path)
+
+
+// Path computation
+
+di?file_path(DIFile, Path) :-
+   di?file_filename(DIFile, File),
+   di?file_directory(DIFile, Dir),
+   !match("/.*", File),
+   Path = cat(cat(Dir, "/"), File).
+
+di?file_path(DIFile, File) :-
+   di?file_filename(DIFile, File),
+   match("/.*", File).
+
+
+// Constraints
+
+debuginfo_invalid_entry(Entry, __FILE__, __LINE__) :-
+   schema_sanity(),
+   di?file(Entry),
+   !di?file_filename(Entry, _).
+
+debuginfo_invalid_entry(Entry, __FILE__, __LINE__) :-
+   schema_sanity(),
+   di?file(Entry),
+   !di?file_directory(Entry, _).

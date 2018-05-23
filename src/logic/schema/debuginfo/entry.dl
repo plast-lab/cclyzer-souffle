@@ -7,6 +7,7 @@
 
 .type DIEntry
 
+// Scopes
 .type DIScope = DIEntry
 .type DINamespace = DIScope
 .type DIFile = DIScope
@@ -15,16 +16,19 @@
 .type DILexicalBlock = DILocalScope
 .type DILexicalBlockFile = DILocalScope
 
+// Types
 .type DITypeEntry = DIScope
 .type DIBasicTypeEntry = DITypeEntry
 .type DICompositeTypeEntry = DITypeEntry
 .type DIDerivedTypeEntry = DITypeEntry
 .type DISubroutineTypeEntry = DITypeEntry
 
+// Variables
 .type DIVariable = DIEntry
 .type DILocalVariable = DIVariable
 .type DIGlobalVariable = DIVariable
 
+// Miscellaneous
 .type DITemplateParam = DIEntry
 .type DIEnumerator = DIEntry
 .type DISubrange = DIEntry
@@ -35,8 +39,6 @@
 
 // Scopes
 .decl di?scope(entry:DIScope)
-.decl di?namespace(entry:DINamespace)
-.decl di?file(entry:DIFile)
 .decl di?local_scope(entry:DILocalScope)
 .decl di?subprogram(entry:DISubprogram)
 .decl di?lexical_block(entry:DILexicalBlock)
@@ -56,7 +58,6 @@
 
 // Miscellaneous
 .decl di?template_param(entry:DITemplateParam)
-.decl di?enumerator(entry:DIEnumerator)
 .decl di?subrange(entry:DISubrange)
 .decl di?imported_entity(entry:DIImportedEntity)
 
@@ -66,8 +67,6 @@
 //--------------------------------------------------------
 
 di?entry(e) :- di?scope(e).
-di?scope(e) :- di?namespace(e).
-di?scope(e) :- di?file(e).
 di?scope(e) :- di?local_scope(e).
 di?local_scope(e) :- di?subprogram(e).
 di?local_scope(e) :- di?lexical_block(e).
@@ -84,7 +83,6 @@ di?variable(e) :- di?local_variable(e).
 di?variable(e) :- di?global_variable(e).
 
 di?entry(e) :- di?template_param(e).
-di?entry(e) :- di?enumerator(e).
 di?entry(e) :- di?subrange(e).
 di?entry(e) :- di?imported_entity(e).
 

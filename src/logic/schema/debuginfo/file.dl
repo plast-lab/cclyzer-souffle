@@ -3,10 +3,12 @@
 //-----------------------------------------------------------
 
 .type path
-
+.decl di?file(entry:DIFile)
 .decl di?file_filename(entry:DIFile, name:path)
 .decl di?file_directory(entry:DIFile, directory:path)
 .decl di?file_path(entry:DIFile, path:path)
+
+di?scope(e) :- di?file(e).
 
 
 // Path computation

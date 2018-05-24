@@ -44,13 +44,6 @@
 .decl di?lexical_block(entry:DILexicalBlock)
 .decl di?lexical_block_file(entry:DILexicalBlockFile)
 
-// Types
-.decl di?type_entry(entry:DITypeEntry)
-.decl di?basic_type_entry(entry:DIBasicTypeEntry)
-.decl di?composite_type_entry(entry:DICompositeTypeEntry)
-.decl di?derived_type_entry(entry:DIDerivedTypeEntry)
-.decl di?subroutine_type_entry(entry:DISubroutineTypeEntry)
-
 // Variables
 .decl di?variable(entry:DIVariable)
 .decl di?local_variable(entry:DILocalVariable)
@@ -71,12 +64,6 @@ di?scope(e) :- di?local_scope(e).
 di?local_scope(e) :- di?subprogram(e).
 di?local_scope(e) :- di?lexical_block(e).
 di?local_scope(e) :- di?lexical_block_file(e).
-
-di?scope(e) :- di?type_entry(e).
-di?type_entry(e) :- di?basic_type_entry(e).
-di?type_entry(e) :- di?composite_type_entry(e).
-di?type_entry(e) :- di?derived_type_entry(e).
-di?type_entry(e) :- di?subroutine_type_entry(e).
 
 di?entry(e) :- di?variable(e).
 di?variable(e) :- di?local_variable(e).

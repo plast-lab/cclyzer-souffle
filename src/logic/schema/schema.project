@@ -76,3 +76,4 @@
 #include "debuginfo/file.dl"
 #include "debuginfo/namespace.dl"
 #include "debuginfo/enumerators.dl"
+#include "debuginfo/types.dl"

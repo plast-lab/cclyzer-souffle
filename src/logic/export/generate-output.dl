@@ -43,6 +43,7 @@
 .output constant_references_function
 .output constant_references_variable
 .output debuginfo_invalid_entry
+.output debuginfo_invalid_location
 .output debuginfo_is_loaded
 .output default_visibility
 .output derived_type

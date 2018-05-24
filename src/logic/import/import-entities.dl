@@ -109,6 +109,6 @@
 .input di?scope(IO="file", delimiter="\t", filename="debuginfo/scope.csv")
 .input di?type_entry(IO="file", delimiter="\t", filename="debuginfo/type_entry.csv")
 .input di?variable(IO="file", delimiter="\t", filename="debuginfo/variable.csv")
-// .input di?location(IO="file", delimiter="\t", filename="debuginfo/location.dlm")
+.input di?location(IO="file", delimiter="\t", filename="debuginfo/location.csv")
 // .input di?template_type_param(IO="file", delimiter="\t", filename="debuginfo/template_type_param.dlm")
 // .input di?template_value_param(IO="file", delimiter="\t", filename="debuginfo/template_value_param.dlm")

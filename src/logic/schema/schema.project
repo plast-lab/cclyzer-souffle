@@ -78,3 +78,4 @@
 #include "debuginfo/namespace.dl"
 #include "debuginfo/enumerators.dl"
 #include "debuginfo/types.dl"
+#include "debuginfo/imports.dl"

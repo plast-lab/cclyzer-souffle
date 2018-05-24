@@ -51,7 +51,6 @@
 
 // Miscellaneous
 .decl di?template_param(entry:DITemplateParam)
-.decl di?imported_entity(entry:DIImportedEntity)
 
 
 //--------------------------------------------------------
@@ -69,7 +68,6 @@ di?variable(e) :- di?local_variable(e).
 di?variable(e) :- di?global_variable(e).
 
 di?entry(e) :- di?template_param(e).
-di?entry(e) :- di?imported_entity(e).
 
 
 // For constraints

@@ -78,5 +78,6 @@
 #include "debuginfo/namespace.dl"
 #include "debuginfo/enumerators.dl"
 #include "debuginfo/types.dl"
+#include "debuginfo/templates.dl"
 #include "debuginfo/imports.dl"
 #include "debuginfo/location.dl"

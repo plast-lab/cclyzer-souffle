@@ -348,3 +348,8 @@ variable_in_function(Variable, Function) :-
 .input di?location_column(IO="file", delimiter="\t", filename="debuginfo/location_column.csv")
 .input di?location_inlined_at(IO="file", delimiter="\t", filename="debuginfo/location_inlined_at.csv")
 .input di?location_scope(IO="file", delimiter="\t", filename="debuginfo/location_scope.csv")
+.input di?template_param_name(IO="file", delimiter="\t", filename="debuginfo/template_param_name.csv")
+.input di?template_param_type(IO="file", delimiter="\t", filename="debuginfo/template_param_type.csv")
+.input di?template_param_raw_type(IO="file", delimiter="\t", filename="debuginfo/template_param_raw_type.csv")
+.input di?template_value_param_value(IO="file", delimiter="\t", filename="debuginfo/template_value_param_value.csv")
+.input di?template_value_param_elements(IO="file", delimiter="\t", filename="debuginfo/template_value_param_elements.csv")

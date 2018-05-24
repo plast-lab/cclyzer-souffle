@@ -28,8 +28,12 @@
 .type DILocalVariable = DIVariable
 .type DIGlobalVariable = DIVariable
 
-// Miscellaneous
+// Template Parameters
 .type DITemplateParam = DIEntry
+.type DITemplateTypeParam = DITemplateParam
+.type DITemplateValueParam = DITemplateParam
+
+// Miscellaneous
 .type DIEnumerator = DIEntry
 .type DISubrange = DIEntry
 .type DIImportedEntity = DIEntry
@@ -49,9 +53,6 @@
 .decl di?local_variable(entry:DILocalVariable)
 .decl di?global_variable(entry:DIGlobalVariable)
 
-// Miscellaneous
-.decl di?template_param(entry:DITemplateParam)
-
 
 //--------------------------------------------------------
 // Enforce predicate subtyping
@@ -66,9 +67,6 @@ di?local_scope(e) :- di?lexical_block_file(e).
 di?entry(e) :- di?variable(e).
 di?variable(e) :- di?local_variable(e).
 di?variable(e) :- di?global_variable(e).
-
-di?entry(e) :- di?template_param(e).
-
 
 // For constraints
 .decl debuginfo_invalid_entry(e:DIEntry, file:File, line:Line)

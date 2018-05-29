@@ -80,4 +80,5 @@
 #include "debuginfo/types.dl"
 #include "debuginfo/templates.dl"
 #include "debuginfo/imports.dl"
+#include "debuginfo/lexical_scopes.dl"
 #include "debuginfo/location.dl"

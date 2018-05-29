@@ -44,7 +44,7 @@ di?type_entry(e) :- di?basic_type_entry(e).
 //-----------------------------------------------------------
 
 .decl di?composite_type_entry(entry:DICompositeTypeEntry)
-.decl di?composite_type_entry_file(entry:DICompositeTypeEntry, file:DIFile)
+.decl di?composite_type_entry_source_file(entry:DICompositeTypeEntry, file:DIFile)
 .decl di?composite_type_entry_abi_id(entry:DICompositeTypeEntry, id:symbol)
 .decl di?composite_type_entry_field(entry:DICompositeTypeEntry, idx:number, field:DITypeEntry)
 .decl di?composite_type_entry_base_type(entry:DICompositeTypeEntry, type:DITypeEntry)
@@ -99,7 +99,7 @@ debuginfo_invalid_entry(Entry, __FILE__, __LINE__) :-
 //-----------------------------------------------------------
 
 .decl di?derived_type_entry(entry:DIDerivedTypeEntry)
-.decl di?derived_type_entry_file(entry:DIDerivedTypeEntry, file:DIFile)
+.decl di?derived_type_entry_source_file(entry:DIDerivedTypeEntry, file:DIFile)
 .decl di?derived_type_entry_kind(entry:DIDerivedTypeEntry, kind:DITag)
 .decl di?derived_type_entry_base_type(entry:DIDerivedTypeEntry, type:DITypeEntry)
 .decl di?derived_type_entry_raw_base_type(entry:DIDerivedTypeEntry, type:symbol)

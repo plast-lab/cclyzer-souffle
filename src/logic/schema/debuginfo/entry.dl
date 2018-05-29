@@ -45,8 +45,6 @@
 .decl di?scope(entry:DIScope)
 .decl di?local_scope(entry:DILocalScope)
 .decl di?subprogram(entry:DISubprogram)
-.decl di?lexical_block(entry:DILexicalBlock)
-.decl di?lexical_block_file(entry:DILexicalBlockFile)
 
 // Variables
 .decl di?variable(entry:DIVariable)
@@ -61,8 +59,6 @@
 di?entry(e) :- di?scope(e).
 di?scope(e) :- di?local_scope(e).
 di?local_scope(e) :- di?subprogram(e).
-di?local_scope(e) :- di?lexical_block(e).
-di?local_scope(e) :- di?lexical_block_file(e).
 
 di?entry(e) :- di?variable(e).
 di?variable(e) :- di?local_variable(e).

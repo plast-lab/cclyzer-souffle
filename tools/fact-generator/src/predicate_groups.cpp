@@ -453,28 +453,28 @@ pred_t di_scope_entry::id("debuginfo/scope");
 
 // File Entry
 pred_t di_file::id("debuginfo/file");
-pred_t di_file::filename("debuginfo/file:filename");
-pred_t di_file::directory("debuginfo/file:directory");
+pred_t di_file::filename("debuginfo/file_filename");
+pred_t di_file::directory("debuginfo/file_directory");
 
 // Namespace Entry
 pred_t di_namespace::id("debuginfo/namespace");
-pred_t di_namespace::name("debuginfo/namespace:name");
-pred_t di_namespace::file("debuginfo/namespace:file");
-pred_t di_namespace::line("debuginfo/namespace:line");
-pred_t di_namespace::scope("debuginfo/namespace:scope");
+pred_t di_namespace::name("debuginfo/namespace_name");
+pred_t di_namespace::file("debuginfo/namespace_source_file");
+pred_t di_namespace::line("debuginfo/namespace_line");
+pred_t di_namespace::scope("debuginfo/namespace_scope");
 
 // Lexical Block Entry
 pred_t di_lex_block::id("debuginfo/lexical_block");
-pred_t di_lex_block::file("debuginfo/lexical_block:file");
-pred_t di_lex_block::line("debuginfo/lexical_block:line");
-pred_t di_lex_block::column("debuginfo/lexical_block:column");
-pred_t di_lex_block::scope("debuginfo/lexical_block:scope");
+pred_t di_lex_block::file("debuginfo/lexical_block_source_file");
+pred_t di_lex_block::line("debuginfo/lexical_block_line");
+pred_t di_lex_block::column("debuginfo/lexical_block_column");
+pred_t di_lex_block::scope("debuginfo/lexical_block_scope");
 
 // Lexical Block File Entry
 pred_t di_lex_block_file::id("debuginfo/lexical_block_file");
-pred_t di_lex_block_file::file("debuginfo/lexical_block_file:file");
-pred_t di_lex_block_file::discriminator("debuginfo/lexical_block_file:discrim");
-pred_t di_lex_block_file::scope("debuginfo/lexical_block_file:scope");
+pred_t di_lex_block_file::file("debuginfo/lexical_block_file_source_file");
+pred_t di_lex_block_file::discriminator("debuginfo/lexical_block_file_discrim");
+pred_t di_lex_block_file::scope("debuginfo/lexical_block_file_scope");
 
 // Subprogram Entry
 pred_t di_subprogram::id("debuginfo/subprogram");
@@ -501,29 +501,29 @@ pred_t di_subprogram::function("debuginfo/subprogram:function");
 
 // Type Entry
 pred_t di_type::id("debuginfo/type_entry");
-pred_t di_type::name("debuginfo/type_entry:name");
-pred_t di_type::line("debuginfo/type_entry:line");
-pred_t di_type::scope::node("debuginfo/type_entry:scope");
-pred_t di_type::scope::raw("debuginfo/type_entry:raw_scope");
-pred_t di_type::flag("debuginfo/type_entry:flag");
-pred_t di_type::bitsize("debuginfo/type_entry:bit_size");
-pred_t di_type::bitalign("debuginfo/type_entry:bit_align");
-pred_t di_type::bitoffset("debuginfo/type_entry:bit_offset");
+pred_t di_type::name("debuginfo/type_entry_name");
+pred_t di_type::line("debuginfo/type_entry_line");
+pred_t di_type::scope::node("debuginfo/type_entry_scope");
+pred_t di_type::scope::raw("debuginfo/type_entry_raw_scope");
+pred_t di_type::flag("debuginfo/type_entry_has_flag");
+pred_t di_type::bitsize("debuginfo/type_entry_has_bit_size");
+pred_t di_type::bitalign("debuginfo/type_entry_is_bit_aligned_to");
+pred_t di_type::bitoffset("debuginfo/type_entry_has_bit_offset");
 
 pred_t di_basic_type::id("debuginfo/basic_type_entry");
 
 pred_t di_composite_type::id("debuginfo/composite_type_entry");
-pred_t di_composite_type::file("debuginfo/composite_type_entry:file");
-pred_t di_composite_type::abi_id("debuginfo/composite_type_entry:abi_id");
-pred_t di_composite_type::field("debuginfo/composite_type_entry:field");
-pred_t di_composite_type::enumerator("debuginfo/composite_type_entry:enumerator");
-pred_t di_composite_type::subrange("debuginfo/composite_type_entry:subrange");
-pred_t di_composite_type::template_param("debuginfo/composite_type_entry:template_param");
-pred_t di_composite_type::vtable::node("debuginfo/composite_type_entry:vtable");
-pred_t di_composite_type::vtable::raw("debuginfo/composite_type_entry:raw_vtable");
-pred_t di_composite_type::basetype::node("debuginfo/composite_type_entry:base_type");
-pred_t di_composite_type::basetype::raw("debuginfo/composite_type_entry:raw_base_type");
-pred_t di_composite_type::kind("debuginfo/composite_type_entry:kind");
+pred_t di_composite_type::file("debuginfo/composite_type_entry_source_file");
+pred_t di_composite_type::abi_id("debuginfo/composite_type_entry_abi_id");
+pred_t di_composite_type::field("debuginfo/composite_type_entry_field");
+pred_t di_composite_type::enumerator("debuginfo/composite_type_entry_enumerator");
+pred_t di_composite_type::subrange("debuginfo/composite_type_entry_subrange");
+pred_t di_composite_type::template_param("debuginfo/composite_type_entry_template_param");
+pred_t di_composite_type::vtable::node("debuginfo/composite_type_entry_vtable");
+pred_t di_composite_type::vtable::raw("debuginfo/composite_type_entry_raw_vtable");
+pred_t di_composite_type::basetype::node("debuginfo/composite_type_entry_base_type");
+pred_t di_composite_type::basetype::raw("debuginfo/composite_type_entry_raw_base_type");
+pred_t di_composite_type::kind("debuginfo/composite_type_entry_kind");
 pred_t di_composite_type::structures("debuginfo/structure_type_entry");
 pred_t di_composite_type::classes("debuginfo/class_type_entry");
 pred_t di_composite_type::arrays("debuginfo/array_type_entry");
@@ -531,25 +531,25 @@ pred_t di_composite_type::unions("debuginfo/union_type_entry");
 pred_t di_composite_type::enumerations("debuginfo/enum_type_entry");
 
 pred_t di_derived_type::id("debuginfo/derived_type_entry");
-pred_t di_derived_type::kind("debuginfo/derived_type_entry:kind");
-pred_t di_derived_type::file("debuginfo/derived_type_entry:file");
-pred_t di_derived_type::basetype::node("debuginfo/derived_type_entry:base_type");
-pred_t di_derived_type::basetype::raw("debuginfo/derived_type_entry:raw_base_type");
+pred_t di_derived_type::kind("debuginfo/derived_type_entry_kind");
+pred_t di_derived_type::file("debuginfo/derived_type_entry_source_file");
+pred_t di_derived_type::basetype::node("debuginfo/derived_type_entry_base_type");
+pred_t di_derived_type::basetype::raw("debuginfo/derived_type_entry_raw_base_type");
 
 pred_t di_subroutine_type::id("debuginfo/subroutine_type_entry");
-pred_t di_subroutine_type::type_elem("debuginfo/subroutine_type_entry:type_elem");
-pred_t di_subroutine_type::raw_type_elem("debuginfo/subroutine_type_entry:raw_type_elem");
+pred_t di_subroutine_type::type_elem("debuginfo/subroutine_type_entry_type_elem");
+pred_t di_subroutine_type::raw_type_elem("debuginfo/subroutine_type_entry_raw_type_elem");
 
 // Template Parameter Entry
 pred_t di_template_param::id("debuginfo/template_param");
-pred_t di_template_param::name("debuginfo/template_param:name");
-pred_t di_template_param::type::node("debuginfo/template_param:type");
-pred_t di_template_param::type::raw("debuginfo/template_param:raw_type");
+pred_t di_template_param::name("debuginfo/template_param_name");
+pred_t di_template_param::type::node("debuginfo/template_param_type");
+pred_t di_template_param::type::raw("debuginfo/template_param_raw_type");
 
 pred_t di_template_type_param::id("debuginfo/template_type_param");
 pred_t di_template_value_param::id("debuginfo/template_value_param");
-pred_t di_template_value_param::value("debuginfo/template_value_param:value");
-pred_t di_template_value_param::elements("debuginfo/template_value_param:elements");
+pred_t di_template_value_param::value("debuginfo/template_value_param_value");
+pred_t di_template_value_param::elements("debuginfo/template_value_param_elements");
 
 // Variable Entry
 pred_t di_variable::id("debuginfo/variable");
@@ -574,25 +574,25 @@ pred_t di_global_var::static_data_member_decl("debuginfo/global_variable:static_
 
 // Enumerator Entry
 pred_t di_enumerator::id("debuginfo/enumerator");
-pred_t di_enumerator::name("debuginfo/enumerator:name");
-pred_t di_enumerator::value("debuginfo/enumerator:value");
+pred_t di_enumerator::name("debuginfo/enumerator_name");
+pred_t di_enumerator::value("debuginfo/enumerator_value");
 
 // Subrange Entry
 pred_t di_subrange::id("debuginfo/subrange");
-pred_t di_subrange::lower_bound("debuginfo/subrange:lower_bound");
-pred_t di_subrange::count("debuginfo/subrange:count");
+pred_t di_subrange::lower_bound("debuginfo/subrange_lower_bound");
+pred_t di_subrange::count("debuginfo/subrange_count");
 
 // Imported Entity Entry
 pred_t di_imported_entity::id("debuginfo/imported_entity");
-pred_t di_imported_entity::name("debuginfo/imported_entity:name");
-pred_t di_imported_entity::line("debuginfo/imported_entity:line");
-pred_t di_imported_entity::scope("debuginfo/imported_entity:scope");
-pred_t di_imported_entity::entity::node("debuginfo/imported_entity:entity");
-pred_t di_imported_entity::entity::raw("debuginfo/imported_entity:raw_entity");
+pred_t di_imported_entity::name("debuginfo/imported_entity_name");
+pred_t di_imported_entity::line("debuginfo/imported_entity_line");
+pred_t di_imported_entity::scope("debuginfo/imported_entity_scope");
+pred_t di_imported_entity::entity::node("debuginfo/imported_entity_entity");
+pred_t di_imported_entity::entity::raw("debuginfo/imported_entity_raw_entity");
 
 // Location Entry
 pred_t di_location::id("debuginfo/location");
-pred_t di_location::line("debuginfo/location:line");
-pred_t di_location::column("debuginfo/location:column");
-pred_t di_location::scope("debuginfo/location:scope");
-pred_t di_location::inlined_at("debuginfo/location:inlined_at");
+pred_t di_location::line("debuginfo/location_line");
+pred_t di_location::column("debuginfo/location_column");
+pred_t di_location::scope("debuginfo/location_scope");
+pred_t di_location::inlined_at("debuginfo/location_inlined_at");

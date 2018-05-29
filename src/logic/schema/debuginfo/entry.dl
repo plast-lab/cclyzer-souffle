@@ -38,13 +38,9 @@
 .type DISubrange = DIEntry
 .type DIImportedEntity = DIEntry
 
-
 .decl di?entry(entry:DIEntry)
-
-// Scopes
 .decl di?scope(entry:DIScope)
 .decl di?local_scope(entry:DILocalScope)
-.decl di?subprogram(entry:DISubprogram)
 
 
 //--------------------------------------------------------
@@ -53,7 +49,6 @@
 
 di?entry(e) :- di?scope(e).
 di?scope(e) :- di?local_scope(e).
-di?local_scope(e) :- di?subprogram(e).
 
 // For constraints
 .decl debuginfo_invalid_entry(e:DIEntry, file:File, line:Line)

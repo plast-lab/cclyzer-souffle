@@ -82,4 +82,5 @@
 #include "debuginfo/imports.dl"
 #include "debuginfo/lexical_scopes.dl"
 #include "debuginfo/variable.dl"
+#include "debuginfo/subprogram.dl"
 #include "debuginfo/location.dl"

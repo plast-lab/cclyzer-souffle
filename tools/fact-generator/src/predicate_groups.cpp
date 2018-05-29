@@ -478,26 +478,26 @@ pred_t di_lex_block_file::scope("debuginfo/lexical_block_file_scope");
 
 // Subprogram Entry
 pred_t di_subprogram::id("debuginfo/subprogram");
-pred_t di_subprogram::name("debuginfo/subprogram:name");
-pred_t di_subprogram::linkage_name("debuginfo/subprogram:linkage_name");
-pred_t di_subprogram::file("debuginfo/subprogram:file");
-pred_t di_subprogram::line("debuginfo/subprogram:line");
-pred_t di_subprogram::scope::node("debuginfo/subprogram:scope");
-pred_t di_subprogram::scope::raw("debuginfo/subprogram:raw_scope");
-pred_t di_subprogram::scope_line("debuginfo/subprogram:scope_line");
-pred_t di_subprogram::type("debuginfo/subprogram:type");
-pred_t di_subprogram::containing_type::node("debuginfo/subprogram:containing_type");
-pred_t di_subprogram::containing_type::raw("debuginfo/subprogram:raw_containing_type");
-pred_t di_subprogram::declaration("debuginfo/subprogram:declaration");
-pred_t di_subprogram::virtuality("debuginfo/subprogram:virtuality");
-pred_t di_subprogram::virtual_index("debuginfo/subprogram:virtual_index");
-pred_t di_subprogram::flag("debuginfo/subprogram:flag");
-pred_t di_subprogram::template_param("debuginfo/subprogram:template_param");
-pred_t di_subprogram::variable("debuginfo/subprogram:variable");
-pred_t di_subprogram::is_definition("debuginfo/subprogram:is_definition");
-pred_t di_subprogram::is_local_to_unit("debuginfo/subprogram:is_local_to_unit");
-pred_t di_subprogram::is_optimized("debuginfo/subprogram:is_optimized");
-pred_t di_subprogram::function("debuginfo/subprogram:function");
+pred_t di_subprogram::name("debuginfo/subprogram_name");
+pred_t di_subprogram::linkage_name("debuginfo/subprogram_linkage_name");
+pred_t di_subprogram::file("debuginfo/subprogram_source_file");
+pred_t di_subprogram::line("debuginfo/subprogram_line");
+pred_t di_subprogram::scope::node("debuginfo/subprogram_scope");
+pred_t di_subprogram::scope::raw("debuginfo/subprogram_raw_scope");
+pred_t di_subprogram::scope_line("debuginfo/subprogram_scope_line");
+pred_t di_subprogram::type("debuginfo/subprogram_type");
+pred_t di_subprogram::containing_type::node("debuginfo/subprogram_containing_type");
+pred_t di_subprogram::containing_type::raw("debuginfo/subprogram_raw_containing_type");
+pred_t di_subprogram::declaration("debuginfo/subprogram_declaration");
+pred_t di_subprogram::virtuality("debuginfo/subprogram_virtuality");
+pred_t di_subprogram::virtual_index("debuginfo/subprogram_virtual_index");
+pred_t di_subprogram::flag("debuginfo/subprogram_has_flag");
+pred_t di_subprogram::template_param("debuginfo/subprogram_template_param");
+pred_t di_subprogram::variable("debuginfo/subprogram_variable");
+pred_t di_subprogram::is_definition("debuginfo/subprogram_is_definition");
+pred_t di_subprogram::is_local_to_unit("debuginfo/subprogram_is_local_to_unit");
+pred_t di_subprogram::is_optimized("debuginfo/subprogram_is_optimized");
+pred_t di_subprogram::function("debuginfo/subprogram_function");
 
 // Type Entry
 pred_t di_type::id("debuginfo/type_entry");

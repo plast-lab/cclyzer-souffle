@@ -46,11 +46,6 @@
 .decl di?local_scope(entry:DILocalScope)
 .decl di?subprogram(entry:DISubprogram)
 
-// Variables
-.decl di?variable(entry:DIVariable)
-.decl di?local_variable(entry:DILocalVariable)
-.decl di?global_variable(entry:DIGlobalVariable)
-
 
 //--------------------------------------------------------
 // Enforce predicate subtyping
@@ -59,10 +54,6 @@
 di?entry(e) :- di?scope(e).
 di?scope(e) :- di?local_scope(e).
 di?local_scope(e) :- di?subprogram(e).
-
-di?entry(e) :- di?variable(e).
-di?variable(e) :- di?local_variable(e).
-di?variable(e) :- di?global_variable(e).
 
 // For constraints
 .decl debuginfo_invalid_entry(e:DIEntry, file:File, line:Line)

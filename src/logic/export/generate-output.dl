@@ -53,6 +53,9 @@
 .output di?friend_type_entry
 .output di?inheritance_type_entry
 .output di?local_scope
+.output di?local_variable_is_artificial
+.output di?local_variable_is_object_pointer
+.output di?local_variable_is_parameter
 .output di?member_type_entry
 .output di?ptr_to_member_type_entry
 .output di?ptr_type_entry

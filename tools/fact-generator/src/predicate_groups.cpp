@@ -553,24 +553,24 @@ pred_t di_template_value_param::elements("debuginfo/template_value_param_element
 
 // Variable Entry
 pred_t di_variable::id("debuginfo/variable");
-pred_t di_variable::name("debuginfo/variable:name");
-pred_t di_variable::file("debuginfo/variable:file");
-pred_t di_variable::line("debuginfo/variable:line");
-pred_t di_variable::scope("debuginfo/variable:scope");
-pred_t di_variable::type::node("debuginfo/variable:type");
-pred_t di_variable::type::raw("debuginfo/variable:raw_type");
+pred_t di_variable::name("debuginfo/variable_name");
+pred_t di_variable::file("debuginfo/variable_source_file");
+pred_t di_variable::line("debuginfo/variable_line");
+pred_t di_variable::scope("debuginfo/variable_scope");
+pred_t di_variable::type::node("debuginfo/variable_type");
+pred_t di_variable::type::raw("debuginfo/variable_raw_type");
 
 pred_t di_local_var::id("debuginfo/local_variable");
-pred_t di_local_var::arg_num("debuginfo/local_variable:arg_num");
-pred_t di_local_var::flag("debuginfo/local_variable:flag");
+pred_t di_local_var::arg_num("debuginfo/local_variable_arg_num");
+pred_t di_local_var::flag("debuginfo/local_variable_has_flag");
 pred_t di_local_var::variable("debuginfo/local_variable_declaration");
 
 pred_t di_global_var::id("debuginfo/global_variable");
-pred_t di_global_var::variable("debuginfo/global_variable:resolved_name");
-pred_t di_global_var::linkage_name("debuginfo/global_variable:linkage_name");
-pred_t di_global_var::is_definition("debuginfo/global_variable:is_definition");
-pred_t di_global_var::is_local_to_unit("debuginfo/global_variable:is_local_to_unit");
-pred_t di_global_var::static_data_member_decl("debuginfo/global_variable:static_data_member_decl");
+pred_t di_global_var::variable("debuginfo/global_variable_resolved_name");
+pred_t di_global_var::linkage_name("debuginfo/global_variable_linkage_name");
+pred_t di_global_var::is_definition("debuginfo/global_variable_is_definition");
+pred_t di_global_var::is_local_to_unit("debuginfo/global_variable_is_local_to_unit");
+pred_t di_global_var::static_data_member_decl("debuginfo/global_variable_static_data_member_decl");
 
 // Enumerator Entry
 pred_t di_enumerator::id("debuginfo/enumerator");

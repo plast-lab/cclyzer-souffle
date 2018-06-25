@@ -1,0 +1,7 @@
+// Subset of reachable functions and instructions
+.decl reachable_function(func:FunctionDecl)
+.decl reachable_instruction(instr:Instruction)
+
+reachable_instruction(Instr) :-
+   reachable_function(Func),
+   instruction_in_function(Instr, Func).

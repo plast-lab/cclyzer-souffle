@@ -1,0 +1,14 @@
+// Functions registered to @atexit are also reachable if the @atexit
+// call is reachable.
+.decl called_at_exit(func:FunctionDecl)
+
+reachable_function(Callback) :-
+   called_at_exit(Callback).
+
+called_at_exit(Callback) :-
+   function_has_name(AtExit, "@atexit"),
+   static_callgraph_edge(CallerInstr, AtExit),
+   call_instruction_arg(CallerInstr, 0, Constant),
+   // the following is a simplified version of logic that can only
+   // work with direct function calls
+   constant_references_function(Constant, Callback).

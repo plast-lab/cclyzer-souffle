@@ -35,6 +35,9 @@
 .output call_instruction_fn_target
 .output call_instruction_fn_type
 .output call_instruction_return_type
+.output called_at_exit
+.output called_at_startup
+.output callgraph_invalid_edge
 .output calling_convention
 .output cmpxchg_instruction_cmp_value_type
 .output cold_calling_convention
@@ -88,6 +91,7 @@
 .output dllexport_linkage_type
 .output dllimport_linkage_type
 .output double_type
+.output entry_point
 .output eq_size_vector_types
 .output eq_size_vector_types_
 .output extern_weak_linkage_type
@@ -222,6 +226,7 @@
 .output load_instruction_is_atomic
 .output local_dynamic_threadlocal_mode
 .output local_exec_threadlocal_mode
+.output main_function
 .output metadata_type
 .output monotonic_ordering
 .output msp430_intr_calling_convention
@@ -253,6 +258,8 @@
 .output ptrtoint_instruction_from_type
 .output ptx_device_calling_convention
 .output ptx_kernel_calling_convention
+.output reachable_function
+.output reachable_instruction
 .output release_ordering
 .output schema_invalid_alias
 .output schema_invalid_constant
@@ -267,6 +274,8 @@
 .output shufflevector_instruction_input_type
 .output shufflevector_instruction_mask_type
 .output sitofp_instruction_from_type
+.output static_callgraph_edge
+.output static_callgraph_fn_edge
 .output store_instruction_address_ptr_type
 .output store_instruction_is_atomic
 .output store_instruction_value_type

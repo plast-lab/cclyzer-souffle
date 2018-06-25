@@ -1,0 +1,55 @@
+//--------------------------------------------------------------------
+// [Basic predicate declarations]
+//--------------------------------------------------------------------
+
+// Call-graph edge from instruction to callee function
+.decl static_callgraph_edge(caller:Instruction, callee:FunctionDecl)
+
+// Call-graph edge from caller function to callee function
+.decl static_callgraph_fn_edge(caller:Function, callee:FunctionDecl)
+
+
+// This auxiliary predicate is derived directly from the instruction
+// edges
+
+static_callgraph_fn_edge(Caller, Callee) :-
+   static_callgraph_edge(CallerInstr, Callee),
+   instruction_in_function(CallerInstr, Caller).
+
+//-------------------------------
+// [Reachability Constraints]
+//-------------------------------
+
+// For constraints
+.decl callgraph_invalid_edge(instr:Instruction, callee:FunctionDecl, file:File, line:Line)
+
+callgraph_invalid_edge(CallerInstr, Callee, __FILE__, __LINE__) :-
+   schema_sanity(),
+   static_callgraph_edge(CallerInstr, Callee),
+   !reachable_instruction(CallerInstr).
+
+callgraph_invalid_edge(CallerInstr, Callee, __FILE__, __LINE__) :-
+   schema_sanity(),
+   static_callgraph_edge(CallerInstr, Callee),
+   !reachable_function(Callee).
+
+
+//--------------------------------------------------------------------
+// Simple call-graph construction
+//--------------------------------------------------------------------
+
+// If a call instruction is reachable, then the callee function is
+// also reachable. This accounts for the static part of the
+// call-graph.
+
+static_callgraph_edge(CallerInstr, Callee)
+ , reachable_function(Callee)
+ :-
+   reachable_instruction(CallerInstr),
+   call_instruction_fn_target(CallerInstr, Callee).
+
+static_callgraph_edge(CallerInstr, Callee)
+ , reachable_function(Callee)
+ :-
+   reachable_instruction(CallerInstr),
+   invoke_instruction_fn_target(CallerInstr, Callee).

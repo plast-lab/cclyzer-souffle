@@ -23,12 +23,6 @@ di?type_entry_is_forward_decl(Entry) :-
 di?type_entry_is_static_member(Entry) :-
    di?type_entry_has_flag(Entry, "DIFlagStaticMember").
 
-// Constraints
-debuginfo_invalid_entry(Entry, __FILE__, __LINE__) :-
-   schema_sanity(),
-   di?type_entry(Entry),
-   !di?type_entry_name(Entry, _).
-
 
 //-----------------------------------------------------------
 // Debug Info - Basic Type Entry

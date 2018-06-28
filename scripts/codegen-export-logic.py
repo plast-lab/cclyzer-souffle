@@ -43,6 +43,8 @@ def main():
                         help='Directory containing Datalog files')
     parser.add_argument('-o', '--output_file', metavar='OUTFILE',
                         help='output file', required=True)
+    parser.add_argument('--extra-output-preds', metavar='FILE',
+                        help='Extra output predicates', type=argparse.FileType('r'))
 
     # Parse arguments
     args = parser.parse_args()
@@ -65,9 +67,19 @@ def main():
                 inputpreds.add(predicate)
 
     # Compute output predicates
-    outputpreds = filter(lambda p: not p.startswith('_'), allpreds.difference(inputpreds))
+    outputpreds = allpreds.difference(inputpreds)
+
+    # Add extra output predicates
+    if args.extra_output_preds:
+        extra_preds = args.extra_output_preds.read().splitlines()
+        for pred in extra_preds:
+            if pred in allpreds:
+                outputpreds.add(pred)
+            else:
+                parser.error("Unknown output predicate to be added: {}".format(pred))
 
     # Create output file
+    outputpreds = filter(lambda p: not p.startswith('_'), outputpreds)
     generate_output_logic(args.output_file, outputpreds)
 
 

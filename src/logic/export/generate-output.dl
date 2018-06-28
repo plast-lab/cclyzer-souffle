@@ -32,6 +32,7 @@
 .output bitcast_instruction_from_type
 .output boolean_type
 .output boolean_vector_type
+.output br_instruction
 .output call_instruction_fn_target
 .output call_instruction_fn_type
 .output call_instruction_return_type
@@ -42,6 +43,8 @@
 .output cmpxchg_instruction_cmp_value_type
 .output cold_calling_convention
 .output common_linkage_type
+.output constant
+.output constant_expression
 .output constant_in_function
 .output constant_references_function
 .output constant_references_variable
@@ -50,6 +53,7 @@
 .output debuginfo_is_loaded
 .output default_visibility
 .output derived_type
+.output di?composite_type_entry
 .output di?const_type_entry
 .output di?entry
 .output di?file_path
@@ -65,6 +69,7 @@
 .output di?reference_type_entry
 .output di?restrict_type_entry
 .output di?rvalue_ref_type_entry
+.output di?scope
 .output di?tag
 .output di?tag_array_type
 .output di?tag_class_type
@@ -82,9 +87,12 @@
 .output di?tag_typedef
 .output di?tag_union_type
 .output di?tag_volatile_type
+.output di?template_param
+.output di?type_entry
 .output di?type_entry_is_forward_decl
 .output di?type_entry_is_static_member
 .output di?typedef_type_entry
+.output di?variable
 .output di?volatile_type_entry
 .output direct_call_instruction
 .output direct_invoke_instruction
@@ -124,6 +132,7 @@
 .output float_type
 .output fp128_type
 .output fp_pointer_type
+.output fp_type
 .output fp_vector_type
 .output fpext_instruction_from_type
 .output fptosi_instruction_from_type
@@ -163,6 +172,7 @@
 .output function_attribute__sspreq
 .output function_attribute__sspstrong
 .output function_attribute__uwtable
+.output function_decl
 .output function_decl_to_defn
 .output function_is_illformed
 .output function_is_wellformed
@@ -207,6 +217,7 @@
 .output int8_array_type
 .output int8_type
 .output integer_pointer_type
+.output integer_type
 .output integer_vector_type
 .output intel_ocl_bi_calling_convention
 .output internal_linkage_type
@@ -253,6 +264,7 @@
 .output pointer_type_to_firstclass
 .output pointer_vector_type
 .output ppc_fp128_type
+.output primitive_type
 .output private_linkage_type
 .output protected_visibility
 .output ptrtoint_instruction_from_type
@@ -280,6 +292,7 @@
 .output store_instruction_is_atomic
 .output store_instruction_value_type
 .output struct_pointer_type
+.output struct_type
 .output struct_type_field_name
 .output struct_type_field_name_at_offset
 .output struct_type_inherits_at_offset

@@ -3,3 +3,4 @@
 #include "symbol-lookup/symbol-lookup.project"
 #include "callgraph/callgraph.project"
 #include "export/export.project"
+#include "points-to/points-to.project"

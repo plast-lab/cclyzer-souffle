@@ -277,7 +277,7 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input alias_has_linkage_type(IO="file", delimiter="\t", filename="alias_has_linkage_type.csv")
 .input alias_has_visibility(IO="file", delimiter="\t", filename="alias_has_visibility.csv")
 
-.input constant_hashes_to(IO="file", delimiter="\t", filename="constant_hashes_to.csv")
+// .input constant_hashes_to(IO="file", delimiter="\t", filename="constant_hashes_to.csv")
 .input constant_has_value(IO="file", delimiter="\t", filename="constant_has_value.csv")
 
 .decl _constant_in_function(v0:symbol, v1:symbol)

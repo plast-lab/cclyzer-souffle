@@ -258,7 +258,7 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input getelementptr_constant_expression_base(IO="file", delimiter="\t", filename="getelementptr_constant_expression_base.csv")
 .input getelementptr_constant_expression_index(IO="file", delimiter="\t", filename="getelementptr_constant_expression_index.csv")
 .input getelementptr_constant_expression_nindices(IO="file", delimiter="\t", filename="getelementptr_constant_expression_nindices.csv")
-.input constant_to_int(IO="file", delimiter="\t", filename="constant_to_int.csv")
+
 
 
 .input global_variable_has_type(IO="file", delimiter="\t", filename="global_variable_has_type.csv")
@@ -277,7 +277,11 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input alias_has_linkage_type(IO="file", delimiter="\t", filename="alias_has_linkage_type.csv")
 .input alias_has_visibility(IO="file", delimiter="\t", filename="alias_has_visibility.csv")
 
+// anantoni: The following input relations have been commented out since Souffle does not support unsigned 64-bit
+// integers, which appear in several benchmarks
+//
 // .input constant_hashes_to(IO="file", delimiter="\t", filename="constant_hashes_to.csv")
+// .input constant_to_int(IO="file", delimiter="\t", filename="constant_to_int.csv")
 .input constant_has_value(IO="file", delimiter="\t", filename="constant_has_value.csv")
 
 .decl _constant_in_function(v0:symbol, v1:symbol)

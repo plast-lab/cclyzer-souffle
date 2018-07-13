@@ -24,6 +24,13 @@ allocation(?alloc) :-
   heap_allocation(?alloc);
   global_allocation(?alloc).
 
+
+//Constructors
+
 .decl stack_allocation_by_instruction(?insn:AllocaInstruction, ?stackAlloc:StackAllocation)
 
+.decl stack_allocation_by_parameter(?func:FunctionDecl,?index:number,?stackAlloc:StackAllocation)
 
+.decl heap_allocation_by_instruction(?insn:AllocaInstruction, ?heapAlloc:HeapAllocation)
+
+.decl heap_allocation_by_variable(?globalVar:GlobalVariable

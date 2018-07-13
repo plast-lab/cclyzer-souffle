@@ -195,6 +195,7 @@
 .output heap_allocation_by_instruction
 .output heap_allocation_by_malloc
 .output heap_allocation_by_realloc
+.output heap_allocation_by_variable
 .output hidden_visibility
 .output icmp_condition
 .output icmp_condition__eq
@@ -297,6 +298,7 @@
 .output sitofp_instruction_from_type
 .output stack_allocation
 .output stack_allocation_by_instruction
+.output stack_allocation_by_parameter
 .output static_callgraph_edge
 .output static_callgraph_fn_edge
 .output store_instruction_address_ptr_type

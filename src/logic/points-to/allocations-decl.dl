@@ -26,6 +26,9 @@ basic_allocation(?alloc) :-
   heap_allocation(?alloc);
   global_allocation(?alloc).
 
+
+//Constructors
+
 .decl stack_allocation_by_instruction(?insn:AllocaInstruction, ?stackAlloc:StackAllocation)
 .decl heap_allocation_by_instruction(?insn:Instruction, ?heapAlloc:HeapAllocation)
 
@@ -35,6 +38,11 @@ basic_allocation(?alloc) :-
 .decl heap_allocation_by_calloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_realloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 
+.decl stack_allocation_by_parameter(?func:FunctionDecl, ?index:number, ?stackAlloc:StackAllocation)
+
+.decl heap_allocation_by_variable(?globalVar:GlobalVariable, ?heapAlloc:HeapAllocation)
+
 .output heap_allocation_by_malloc
 .output heap_allocation_by_calloc
 .output heap_allocation_by_realloc
+                                     

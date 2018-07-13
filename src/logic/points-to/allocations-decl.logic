@@ -1,0 +1,18 @@
+.symbol_type BasicAllocation
+.symbol_type StackAllocation
+.symbol_type HeapAllocation
+.symbol_type GlobalAllocation
+
+.type Allocation = BasicAllocation | StackAllocation | HeapAllocation | GlobalAllocation
+
+.decl allocation(alloc:Allocation)
+.decl basic_allocation(alloc:BasicAllocation)
+.decl stack_allocation(alloc:StackAllocation)
+.decl global_allocation(alloc:GlobalAllocation)
+
+
+allocation(?alloc) :-
+  basic_allocation(?alloc);
+  stack_allocation(?alloc);
+  heap_allocation(?alloc);
+  global_allocation(?alloc).

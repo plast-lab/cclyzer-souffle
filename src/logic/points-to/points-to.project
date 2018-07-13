@@ -1,2 +1,2 @@
-#include "allocations-decl.logic"
-#include "allocations.logic"
+#include "allocations-decl.dl"
+#include "allocations.dl"

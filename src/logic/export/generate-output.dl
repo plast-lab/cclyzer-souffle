@@ -2,6 +2,7 @@
 .output acquire_ordering
 .output aggregate_type
 .output aliased_constants
+.output allocation
 .output appending_linkage_type
 .output arm_aapcs_calling_convention
 .output arm_aapcs_vfp_calling_convention
@@ -23,6 +24,7 @@
 .output atomic_operation_xor
 .output attribute
 .output available_externally_linkage_type
+.output basic_allocation
 .output basicblock
 .output basicblock_first_instruction
 .output basicblock_last_instruction
@@ -183,9 +185,16 @@
 .output getelementptr_instruction_index_type
 .output getelementptr_instruction_interm_type
 .output getelementptr_instruction_value_type
+.output global_allocation
 .output global_variable_constant_reference
 .output global_variable_is_constant
 .output half_type
+.output heap_alloc_function
+.output heap_allocation
+.output heap_allocation_by_calloc
+.output heap_allocation_by_instruction
+.output heap_allocation_by_malloc
+.output heap_allocation_by_realloc
 .output hidden_visibility
 .output icmp_condition
 .output icmp_condition__eq
@@ -286,6 +295,8 @@
 .output shufflevector_instruction_input_type
 .output shufflevector_instruction_mask_type
 .output sitofp_instruction_from_type
+.output stack_allocation
+.output stack_allocation_by_instruction
 .output static_callgraph_edge
 .output static_callgraph_fn_edge
 .output store_instruction_address_ptr_type

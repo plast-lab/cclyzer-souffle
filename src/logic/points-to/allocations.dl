@@ -1,0 +1,40 @@
+//---------------------------------------------------------------------
+// [Heap Allocations]
+//
+// In contrast to the other types of allocations, an allocation on the
+// heap is not always associated with a type (at least locally).
+//---------------------------------------------------------------------
+
+heap_allocation_by_instruction(?instr, ?heapAlloc) :-
+   heap_alloc_function(?func),
+   ( call_instruction_fn_target(?instr, ?func)
+   ; invoke_instruction_fn_target(?instr, ?func)),
+   instruction_assigns_to(?instr, ?var),
+   instruction_in_function(?instr,  ?instrFunc),
+   // reachable_context(?ctx, ?instrFunc),
+   ?heapAlloc = [?instr].
+   // Extra
+   //context:__getitem__[?ctx] = Item.
+
+heap_alloc_function(?func) :-
+   function_has_name(?func, "@malloc")
+ ; function_has_name(?func, "@calloc")
+ ; function_has_name(?func, "@realloc").
+
+heap_allocation(?heapAlloc),
+heap_allocation_by_malloc(?insn, ?heapAlloc) :-
+  function_has_name(?func, "@malloc"),
+  call_instruction_fn_target(?insn, ?func),
+  heap_allocation_by_instruction(?insn, ?heapAlloc).
+
+heap_allocation(?heapAlloc),
+heap_allocation_by_calloc(?insn, ?heapAlloc) :-
+  function_has_name(?func, "@calloc"),
+  call_instruction_fn_target(?insn, ?func),
+  heap_allocation_by_instruction(?insn, ?heapAlloc).
+
+heap_allocation(?heapAlloc),
+heap_allocation_by_realloc(?insn, ?heapAlloc) :-
+  function_has_name(?func, "@realloc"),
+  call_instruction_fn_target(?insn, ?func),
+  heap_allocation_by_instruction(?insn, ?heapAlloc).

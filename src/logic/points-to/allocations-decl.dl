@@ -1,0 +1,29 @@
+
+
+//-----------------------------------
+// Basic Allocation Type Hierarchy
+//-----------------------------------
+
+
+.symbol_type BasicAllocation
+.symbol_type StackAllocation
+.symbol_type HeapAllocation
+.symbol_type GlobalAllocation
+
+.type Allocation = BasicAllocation | StackAllocation | HeapAllocation | GlobalAllocation
+
+.decl allocation(?alloc:Allocation)
+.decl basic_allocation(?basicAlloc:BasicAllocation)
+.decl stack_allocation(?stackAlloc:StackAllocation)
+.decl global_allocation(?globalAlloc:GlobalAllocation)
+
+
+allocation(?alloc) :-
+  basic_allocation(?alloc);
+  stack_allocation(?alloc);
+  heap_allocation(?alloc);
+  global_allocation(?alloc).
+
+.decl stack_allocation_by_instruction(?insn:AllocaInstruction, ?stackAlloc:StackAllocation)
+
+

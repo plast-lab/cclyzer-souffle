@@ -1,2 +1,3 @@
 #include "allocations-decl.dl"
 #include "allocations.dl"
+#include "type_compatibility.dl"

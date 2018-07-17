@@ -313,6 +313,9 @@
 .output threadlocal_mode
 .output trunc_instruction_from_type
 .output type
+.output type_compatible
+.output type_compatible_up_to_arg
+.output type_compatible_up_to_field
 .output type_is_firstclass
 .output uitofp_instruction_from_type
 .output unordered_ordering

@@ -1,0 +1,140 @@
+//------------------------------------------------------------------------------
+// [Type compatibility]
+//
+// Two types are type compatible if and only if they produce the same
+// offset, when the same field or array index expression is appended
+// to them.
+//
+// This concept is essential for field sensitivity, since we need a
+// type filter that prohibits the creation of unrealizable sub-object
+// expressions.
+//------------------------------------------------------------------------------
+
+.decl type_compatible(?type1:Type,?type2:Type)
+
+type(?from), 
+type(?to) :-
+   type_compatible(?from, ?to).
+
+type_compatible(?type, ?type) :-
+   type(?type).
+
+
+
+
+// Struct types
+
+.decl _first_field_of_struct(?field:Type, ?type:StructType)
+
+_first_field_of_struct(?field, ?type) :-
+   struct_type_field(?type, 0, ?field).
+
+.decl type_compatible_up_to_field(?type1:StructType, ?type2:StructType, ?field:number)
+
+//struct_type(?type1), 
+//struct_type(?type2) :-
+//   type_compatible_up_to_field(?type1, ?type2, _).		//Ιs this needed?
+
+type_compatible_up_to_field(?type1, ?type2, 0) :-
+   struct_type_field(?type1, 0, ?field1),
+   struct_type_field(?type2, 0, ?field2),
+   _first_field_of_struct(?field1, ?type1), // redundant OPT clause
+   _first_field_of_struct(?field2, ?type2), // redundant OPT clause
+   type_compatible(?field1, ?field2).
+
+type_compatible_up_to_field(?type1, ?type2, i + 1) :-
+   type_compatible_up_to_field(?type1, ?type2, i),
+   struct_type_field(?type1, i + 1, ?field1),
+   struct_type_field(?type2, i + 1, ?field2),
+   type_compatible(?field1, ?field2).
+
+type_compatible(?type1,?type2) :-
+   struct_type_nfields(?type1,?nfields),
+   struct_type_nfields(?type2,?nfields),
+   type_compatible_up_to_field(?type1,?type2,?nfields).
+
+
+// Function types
+
+
+.decl type_compatible_up_to_arg(?from:FunctionType, ?to:FunctionType, ?index:number)
+
+//function_type(?from), 
+//function_type(?to) :-
+//   type_compatible_up_to_arg(?from, ?to, ?arg).			//Is this needed?
+
+
+type_compatible_up_to_arg(?from, ?to, 0) :-
+   function_type_return(?from, ?returnType1),
+   function_type_return(?to , ?returnType2),
+   type_compatible(?returnType1, ?returnType2).
+
+type_compatible_up_to_arg(?from, ?to, i+1) :-
+   type_compatible_up_to_arg(?from, ?to, i),
+   function_type_param(?from, i , ?param1),
+   function_type_param(?to, i , ?param2),
+   type_compatible(?param1, ?param2).
+
+type_compatible(?from,?to) :-
+   function_type_nparams(?from, ?nparams),
+   function_type_nparams(?to, ?nparams),
+   type_compatible_up_to_arg(?from, ?to, ?nparams).
+
+
+type_compatible(?from,?to) :-
+   function_type_nparams(?to, ?nparams),
+   function_type_has_varargs(?to),
+   type_compatible_up_to_arg(?from, ?to, ?nparams).
+
+
+
+
+// Array types
+
+type_compatible(?type1, ?type2) :-
+   array_type_has_component(?type1, ?comp1),
+   array_type_has_component(?type2, ?comp2),
+   ( (!array_type_has_size(?type1, _) )
+   ; (!array_type_has_size(?type2, _) )),
+   type_compatible(?comp1, ?comp2).
+
+type_compatible(?type1, ?type2) :-
+   array_type_has_component(?type1, ?comp1),
+   array_type_has_component(?type2, ?comp2),
+   array_type_has_size(?type1, ?size),
+   array_type_has_size(?type2, ?size),
+   type_compatible(?comp1, ?comp2).
+
+
+// Pointer types
+
+type_compatible(?ptrType1, ?ptrType2) :-
+   pointer_type_has_component(?ptrType1 , ?type1),
+   pointer_type_has_component(?ptrType2 , ?type2),
+   type_compatible(?type1, ?type2).
+
+
+// Any pointer type can be seen as an array of bytes
+
+type_compatible(?from, ?to) :-
+   pointer_type_has_component(?to, ?i8),
+   int8_type(?i8),
+   pointer_type(?from).
+
+type_compatible(?from, ?to) :-
+   pointer_type_has_component(?from, ?i8),
+   int8_type(?i8),
+   pointer_type(?to).
+
+
+
+
+
+
+
+
+
+
+
+
+

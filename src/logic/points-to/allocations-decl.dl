@@ -1,14 +1,12 @@
-
-
 //-----------------------------------
 // Basic Allocation Type Hierarchy
 //-----------------------------------
 
-.type AllocationComponent = Instruction
-.type BasicAllocation     = StackAllocation | HeapAllocation | GlobalAllocation
-.type StackAllocation     = [stackAlloc:AllocationComponent]
-.type HeapAllocation      = [heapAlloc:AllocationComponent]
-.type GlobalAllocation    = [globalAlloc:AllocationComponent]
+
+.type BasicAllocation     = [?alloc:Instruction]
+.type StackAllocation     = [?instr:AllocaInstruction]
+.type HeapAllocation      = [?instr:CallInstruction]
+.type GlobalAllocation    = [?globalAlloc:Instruction]
 
                             
 .decl allocation(?alloc:BasicAllocation)
@@ -21,26 +19,27 @@
 allocation(?alloc) :-
   basic_allocation(?alloc).
 
-basic_allocation(?alloc) :-
-  stack_allocation(?alloc);
-  heap_allocation(?alloc);
-  global_allocation(?alloc).
+
+basic_allocation([?instr]) :-
+  stack_allocation([?instr]);
+  heap_allocation([?instr]);
+  global_allocation([?instr]).
 
 
 //Constructors
 
 .decl stack_allocation_by_instruction(?insn:AllocaInstruction, ?stackAlloc:StackAllocation)
-.decl heap_allocation_by_instruction(?insn:Instruction, ?heapAlloc:HeapAllocation)
+.decl stack_allocation_by_parameter(?func:FunctionDecl, ?index:number, ?stackAlloc:StackAllocation)
+
+.decl heap_allocation_by_instruction(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
+.decl heap_allocation_by_variable(?globalVar:GlobalVariable, ?heapAlloc:HeapAllocation)
 
 .decl heap_alloc_function(?function:Function)
-      
 .decl heap_allocation_by_malloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_calloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_realloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 
-.decl stack_allocation_by_parameter(?func:FunctionDecl, ?index:number, ?stackAlloc:StackAllocation)
 
-.decl heap_allocation_by_variable(?globalVar:GlobalVariable, ?heapAlloc:HeapAllocation)
 
 .output heap_allocation_by_malloc
 .output heap_allocation_by_calloc

@@ -1,3 +1,47 @@
+/// 1. Alloca Instructions
+
+
+stack_allocation(?stackAlloc),
+stack_allocation_by_instruction(?instr, ?stackAlloc) :-
+   alloca_instruction(?instr),
+   instruction_assigns_to(?instr, ?var),
+   instruction_in_function(?instr, ?instrFunc),
+   ?stackAlloc = ?instr.
+   
+   //reachable_context(Ctx, InstrFunc),
+   // Extra
+   //context:__getitem__[Ctx] = Item.
+
+
+allocation_type(?stackAlloc, ?type) :-
+   alloca_instruction(?instr),
+   alloca_instruction_type(?instr,?type),
+   stack_allocation_by_instruction(?instr, ?stackAlloc).
+
+/// 2. Parameters with pass-by-value semantics
+
+
+stack_allocation(?stackAlloc),
+stack_allocation_by_parameter(?func, ?index, ?stackAlloc) :-
+   function_param_by_value(?func, ?index),
+   function_param(?func, ?index, ?param),
+   ?stackAlloc = ?param.
+   
+//   reachable_context(Ctx, Func),
+//   Extra
+//   context:__getitem__[Ctx] = Item.
+
+
+allocation_type(?stackAlloc, ?type) :-
+   stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
+   function_has_type(?func,?funcType),
+   function_type_param(?funcType, ?index, ?paramType),
+   pointer_type_has_component(?paramType, ?type).
+
+
+
+
+
 //---------------------------------------------------------------------
 // [Heap Allocations]
 //
@@ -5,13 +49,17 @@
 // heap is not always associated with a type (at least locally).
 //---------------------------------------------------------------------
 
+
+
+
+
 heap_allocation_by_instruction(?instr, ?heapAlloc) :-
    heap_alloc_function(?func),
    ( call_instruction_fn_target(?instr, ?func)
    ; invoke_instruction_fn_target(?instr, ?func)),
    instruction_assigns_to(?instr, ?var),
    instruction_in_function(?instr,  ?instrFunc),
-   ?heapAlloc = [?instr].
+   ?heapAlloc = ?instr.
    // reachable_context(?ctx, ?instrFunc),
    // Extra
    //context:__getitem__[?ctx] = Item.
@@ -38,3 +86,141 @@ heap_allocation_by_realloc(?insn, ?heapAlloc) :-
   function_has_name(?func, "@realloc"),
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).
+
+
+
+// !! Track heap allocation types !! Note that a single heap
+// allocation is just a series of bytes, which can flow to multiple
+// variables of different types in principle.
+//
+// Consider a generic wrapper to @malloc (that calls @malloc inside
+// its body). This allocation inside the wrapper function will flow to
+// all sorts of places that have nothing to do with each other, and
+// will probably involve many heterogeneous types.
+
+//heap_allocation:types(Type, ACtx, HeapAlloc) <-
+//  heap_allocation(HeapAlloc),
+//   operand_points_to(ACtx, HeapAlloc, _, Var),
+//   operand:type[Var] = PtrType,
+//   pointer_type:component[PtrType] = Type.
+
+
+//---------------------------------------------------------------------
+// [Global Allocations]
+//
+// Note that the type of a global allocation is readily available at
+// any case.
+//---------------------------------------------------------------------
+
+
+/// 1. Global variable allocations
+
+global_allocation(?alloc),
+global_allocation_by_variable(?gVar, ?alloc):-
+   global_variable(?gVar),
+   ?alloc = ?gVar.
+
+allocation_type(?alloc, ?type):-
+   global_allocation_by_variable(?gVar, ?alloc),
+   global_variable_has_type(?gVar, ?type).
+
+/// 2. Function Allocations
+
+global_allocation(?alloc),
+global_allocation_by_function(?func, ?alloc):-
+   (function(?func);
+   function_decl(?func),
+   !function_decl_to_defn(?func,_)),
+   ?alloc=?func.
+
+
+allocation_type(?alloc, ?type):-
+   global_allocation_by_function(?func, ?alloc),
+   function_has_type(?func,?type).
+
+
+/*
+//------------------------------------------------------------------------------
+// [Sanity checks]
+//
+// Only empty contexts are associated with global and pseudo-allocs.
+//------------------------------------------------------------------------------
+
+_allocation_with_context(ACtx, Alloc) <-
+   var_points_to(ACtx, Alloc, _, _).
+
+_allocation_with_context(ACtx, Alloc) <-
+   ptr_points_to(ACtx, Alloc, _, _).
+
+_allocation_with_context(ACtx, Alloc) <-
+   ptr_points_to(_, _, ACtx, Alloc).
+
+unknown_location[] = Unknown
+ , empty_alloc_context[] = EmptyContext
+ , _allocation_with_context(ACtx, Unknown)
+ ->
+   ACtx = EmptyContext.
+
+null_location[] = Null
+ , empty_alloc_context[] = EmptyContext
+ , _allocation_with_context(ACtx, Null)
+ ->
+   ACtx = EmptyContext.
+
+global_allocation(Alloc)
+ , empty_alloc_context[] = EmptyContext
+ , _allocation_with_context(ACtx, Alloc)
+ ->
+   ACtx = EmptyContext.
+*/
+
+
+//------------------------------------------------
+// [Allocation String Representation Protocol]
+//------------------------------------------------
+
+// Every allocation must have a string representation
+//.decl allocation_to_string(?alloc:Allocation , ?str: symbol)
+
+// Human readable representation for stack allocations
+
+allocation_to_string(?alloc, ?str) :-
+   stack_allocation_by_instruction(?insn, ?alloc),
+   instruction_assigns_to(?insn, ?var),
+   variable_in_function(?var,?func),
+   variable_has_type(?var,?type),
+   variable_has_name(?var,?name),
+   ?str = cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]").
+
+allocation_to_string(?alloc, ?str) :-
+   stack_allocation_by_parameter(?func, ?index, ?alloc),
+   function_param(?func, ?index, ?param),
+   variable_in_function(?param,?func),
+   variable_has_type(?param,?type),
+   variable_has_name(?param,?name),
+   ?str = cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]").
+
+// Human readable representation for heap allocations
+
+allocation_to_string(?alloc, ?str) :-
+   heap_allocation_by_instruction(?insn, ?alloc),
+   instruction_assigns_to(?insn, ?var),
+   variable_in_function(?var,?func),
+   variable_has_type(?var,?type),
+   variable_has_name(?var,?name),
+   ?str = cat(cat(cat(cat(cat(cat("*heap_alloc",?func),"["),?type)," "),?name),"]").
+
+// Human readable representation for global variable allocations
+
+allocation_to_string(?alloc, ?str) :-
+   global_allocation_by_variable(?gVar, ?alloc),
+   global_variable_has_name(?gVar, ?name),
+   ?str = cat("*global_alloc",?name).
+
+// Human readable representation for function allocations
+
+allocation_to_string(?alloc, ?str) :-
+   global_allocation_by_function(?func, ?alloc),
+   function_has_name(?func, ?name),
+   ?str = cat("*global_alloc",?name).
+

@@ -1,0 +1,39 @@
+.decl empty_context(?ctx:Context)
+empty_context(?ctx):-
+   context_new(?ctx). 
+
+
+.decl empty_alloc_context(?ctx:AllocationContext)
+empty_alloc_context(?aCtx):-
+   alloc_context_new(?aCtx).
+
+
+.decl main_context(?ctx:Context)
+main_context(?ctx):-
+   context_new(?ctx).
+
+.decl startup_context(?ctx:Context)
+startup_context(?ctx):-
+   context_new(?ctx).
+
+
+.decl exit_context(?ctx:Context)
+
+exit_context(?ctx):-
+   context_new(?ctx).
+
+
+.decl reachable_context(?ctx:Context, ?main:Function)
+
+reachable_context(?ctx,?main):-
+   main_function(?main),
+   main_context(?ctx).
+
+reachable_context(?ctx,?startupFunc):-
+   called_at_startup(?startupFunc),
+   startup_context(?ctx).
+
+
+reachable_context(?ctx,?exitFunc):-
+   called_at_exit(?exitFunc),
+   exit_context(?ctx).

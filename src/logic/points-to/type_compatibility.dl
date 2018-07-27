@@ -31,9 +31,6 @@ _first_field_of_struct(?field, ?type) :-
 
 .decl type_compatible_up_to_field(?type1:StructType, ?type2:StructType, ?field:number)
 
-//struct_type(?type1), 
-//struct_type(?type2) :-
-//   type_compatible_up_to_field(?type1, ?type2, _).		//Ιs this needed?
 
 type_compatible_up_to_field(?type1, ?type2, 0) :-
    struct_type_field(?type1, 0, ?field1),
@@ -59,9 +56,6 @@ type_compatible(?type1,?type2) :-
 
 .decl type_compatible_up_to_arg(?from:FunctionType, ?to:FunctionType, ?index:number)
 
-//function_type(?from), 
-//function_type(?to) :-
-//   type_compatible_up_to_arg(?from, ?to, ?arg).			//Is this needed?
 
 
 type_compatible_up_to_arg(?from, ?to, 0) :-

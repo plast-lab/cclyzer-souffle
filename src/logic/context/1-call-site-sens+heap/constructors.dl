@@ -1,0 +1,99 @@
+//------------------------------------------------------------------------------
+// [1 Call-site Sensitive + Heap Analysis]
+//
+// In this analysis, context and alocation context is in both cases
+// the latest invocation instruction.
+//------------------------------------------------------------------------------
+
+.type Context = ContextItem
+.type AllocationContext = ContextItem
+.type ContextItem = Instruction | symbol
+
+
+.decl context(?ctx:Context)
+.decl alloc_context(?allocCtx:AllocationContext)
+.decl context_item(?item:ContextItem)
+
+//-----------------------------------------------------
+// Context Constructors
+//-----------------------------------------------------
+
+.decl context_new(?item:ContextItem, ?ctx:Context)
+.decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
+
+
+//-----------------------------------------------------
+// Context Item Constructors
+//-----------------------------------------------------
+
+.decl context_item_by_invoc(?invoc:Instruction, ?ctxItem:ContextItem)
+.decl context_item_invoc(?ctxItem:ContextItem, ?invoc:Instruction)
+
+context_item_invoc(?ctxItem, ?invoc) :-
+   context_item_by_invoc(?invoc, ?ctxItem).
+
+context_item(?ctxItem)
+ , context_item_by_invoc(?instr, ?ctxItem):-
+   (call_instruction(?instr) ;
+   invoke_instruction(?instr)),
+   ?ctxItem = ?instr.
+
+
+// Dummy context items (needed for empty contexts)
+.decl matches_string_context(?str:symbol)
+
+matches_string_context(?str):-
+   ?str = "<<empty-context>>";
+   ?str = "<<main-context>>";
+   ?str = "<<startup-context>>";
+   ?str = "<<exit-context>>".
+
+.decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)
+context_item(?ctxItem)
+ , dummy_context_item_by_str(?str,?ctxItem)
+ :-
+   matches_string_context(?str),
+   ?ctxItem=?str.
+
+//-----------------------------------------------------
+// Macro-constructors
+//-----------------------------------------------------
+
+// record[Ctx, Alloc] = ACtx ->
+//    context(Ctx), allocation(Alloc), alloc_context(ACtx).
+
+// merge[CallerCtx, Invoc, ACtx, Alloc] = CalleeCtx ->
+//    context(CallerCtx), context(CalleeCtx),
+//    instruction(Invoc), alloc_context(ACtx), allocation(Alloc).
+
+// // Macro-definitions
+// alloc_context:new[Item] = ACtx <-
+//    record[Ctx, _] = ACtx,
+//    context:new[Item] = Ctx.
+
+// context:new[NewItem] = CalleeCtx <-
+//    merge[CallerCtx, Invoc, _, _] = CalleeCtx,
+//    context:new[_] = CallerCtx,
+//    context_item:by_invoc[Invoc] = NewItem.
+
+//-----------------------------------------------------
+// Unpacking context items
+//-----------------------------------------------------
+
+.decl context_getitem(?ctx:Context, ?item:ContextItem)
+context_getitem(?ctx, ?item):-
+   context_new(?item, ?ctx).
+
+.decl alloc_context_getitem(?ctx:AllocationContext, ?item:ContextItem)
+alloc_context_getitem(?ctx, ?item):-
+   alloc_context_new(?item, ?ctx).
+
+.decl context_getinvoc(?ctx:Context, ?invoc:Instruction)
+context_getinvoc(?ctx, ?invoc):-
+   context_getitem(?ctx, ?item),
+   context_item_invoc(?item, ?invoc).
+
+.decl alloc_context_getinvoc(?ctx:AllocationContext, ?invoc:Instruction)
+alloc_context_getinvoc(?ctx, ?invoc) :-
+   alloc_context_getitem(?ctx, ?item),
+   context_item_invoc(?item, ?invoc).

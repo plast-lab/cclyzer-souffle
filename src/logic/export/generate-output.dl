@@ -49,6 +49,7 @@
 .output call_instruction_return_type
 .output called_at_exit
 .output called_at_startup
+.output callgraph_edge
 .output callgraph_invalid_edge
 .output calling_convention
 .output cmpxchg_instruction_cmp_value_type
@@ -57,11 +58,16 @@
 .output constant
 .output constant_expression
 .output constant_in_function
+.output constant_points_to
 .output constant_references_function
 .output constant_references_variable
 .output context
 .output context_getinvoc
+.output context_getinvoc0
+.output context_getinvoc1
 .output context_getitem
+.output context_getitem0
+.output context_getitem1
 .output context_item
 .output context_item_by_invoc
 .output context_item_invoc
@@ -281,6 +287,7 @@
 .output operand_has_type
 .output operand_is_firstclass
 .output operand_is_pointer
+.output operand_points_to
 .output ordering
 .output parameter_attribute__align
 .output parameter_attribute__byval
@@ -303,6 +310,7 @@
 .output private_linkage_type
 .output protected_visibility
 .output ptr_compatible_allocation
+.output ptr_points_to
 .output ptrtoint_instruction_from_type
 .output ptx_device_calling_convention
 .output ptx_kernel_calling_convention
@@ -323,6 +331,7 @@
 .output shufflevector_instruction_input_type
 .output shufflevector_instruction_mask_type
 .output sitofp_instruction_from_type
+.output sized_alloc_instr
 .output stack_allocation
 .output stack_allocation_by_instruction
 .output stack_allocation_by_parameter
@@ -348,6 +357,7 @@
 .output uitofp_instruction_from_type
 .output unknown_location
 .output unordered_ordering
+.output var_points_to
 .output variable_in_function
 .output variable_is_firstclass
 .output variable_is_label

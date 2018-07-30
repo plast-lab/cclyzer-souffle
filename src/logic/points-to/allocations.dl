@@ -1,16 +1,19 @@
 /// 1. Alloca Instructions
 
-
-stack_allocation(?stackAlloc),
-stack_allocation_by_instruction(?instr, ?stackAlloc) :-
+alloc_context(?aCtx),
+   alloc_context_new(?item,?aCtx),
+   stack_allocation(?stackAlloc),
+   stack_allocation_by_instruction(?instr, ?stackAlloc),
+   var_points_to(?aCtx, ?stackAlloc, ?ctx, ?var)
+ :-
    alloca_instruction(?instr),
    instruction_assigns_to(?instr, ?var),
    instruction_in_function(?instr, ?instrFunc),
-   ?stackAlloc = ?instr.
-   
-   //reachable_context(Ctx, InstrFunc),
+   ?stackAlloc = ?instr,
+   reachable_context(?ctx, ?instrFunc),
    // Extra
-   //context:__getitem__[Ctx] = Item.
+   context_getitem(?ctx, ?item),
+   ?aCtx=[?item].
 
 
 allocation_type(?stackAlloc, ?type) :-
@@ -20,16 +23,20 @@ allocation_type(?stackAlloc, ?type) :-
 
 /// 2. Parameters with pass-by-value semantics
 
-
-stack_allocation(?stackAlloc),
-stack_allocation_by_parameter(?func, ?index, ?stackAlloc) :-
+alloc_context(?aCtx),
+   alloc_context_new(?item,?aCtx),
+   stack_allocation(?stackAlloc),
+   stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
+   var_points_to(?aCtx, ?stackAlloc, ?ctx, ?param)
+ :-
    function_param_by_value(?func, ?index),
    function_param(?func, ?index, ?param),
-   ?stackAlloc = ?param.
-   
-//   reachable_context(Ctx, Func),
+   ?stackAlloc = ?param,
+   reachable_context(?ctx, ?func),
 //   Extra
-//   context:__getitem__[Ctx] = Item.
+   context_getitem(?ctx, ?item),
+   ?aCtx=[?item].
+
 
 
 allocation_type(?stackAlloc, ?type) :-

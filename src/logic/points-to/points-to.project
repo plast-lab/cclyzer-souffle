@@ -3,3 +3,4 @@
 #include "type_compatibility.dl"
 #include "points-to-decl.dl"
 #include "allocations-sizes.dl"
+#include "class-type.dl"

@@ -52,6 +52,10 @@
 .output callgraph_edge
 .output callgraph_invalid_edge
 .output calling_convention
+.output class_type
+.output class_type_constructor
+.output class_type_destructor
+.output class_type_name
 .output cmpxchg_instruction_cmp_value_type
 .output cold_calling_convention
 .output common_linkage_type
@@ -278,6 +282,8 @@
 .output main_function
 .output matches_string_context
 .output metadata_type
+.output minimal_suffix
+.output minimal_suffix_len
 .output monotonic_ordering
 .output msp430_intr_calling_convention
 .output next_instruction_index
@@ -318,6 +324,7 @@
 .output reachable_function
 .output reachable_instruction
 .output release_ordering
+.output relevant_suffix_position
 .output schema_invalid_alias
 .output schema_invalid_constant
 .output schema_invalid_function
@@ -346,6 +353,9 @@
 .output struct_type_field_name
 .output struct_type_field_name_at_offset
 .output struct_type_inherits_at_offset
+.output suffix
+.output template_type
+.output template_type_name
 .output terminator_instruction
 .output threadlocal_mode
 .output trunc_instruction_from_type
@@ -357,6 +367,7 @@
 .output uitofp_instruction_from_type
 .output unknown_location
 .output unordered_ordering
+.output unpadded_struct_type
 .output var_points_to
 .output variable_in_function
 .output variable_is_firstclass

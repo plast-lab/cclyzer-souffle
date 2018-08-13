@@ -42,6 +42,15 @@ schema_invalid_function(Func, __FILE__, __LINE__) :-
    function_decl(Func),
    !function_has_name(Func, _).
 
+.decl schema_multiple_function_names(Func: FunctionDecl, file:File, line:Line)
+schema_multiple_function_names(Func, __FILE__, __LINE__) :-
+   schema_sanity(),
+   function_decl(Func),
+   function_has_name(Func,name1),
+   function_has_name(Func,name2),
+   name1!=name2.
+
+.output schema_multiple_function_names
 
 //----------------------------------------
 // Variables and Constants contained

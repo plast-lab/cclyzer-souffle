@@ -6,6 +6,7 @@
 .output alloc_context_getinvoc
 .output alloc_context_getitem
 .output alloc_context_new
+.output alloc_subregion
 .output allocation
 .output allocation_pos
 .output allocation_size
@@ -60,6 +61,7 @@
 .output cold_calling_convention
 .output common_linkage_type
 .output constant
+.output constant_contains_vptr
 .output constant_expression
 .output constant_in_function
 .output constant_points_to
@@ -227,6 +229,7 @@
 .output heap_allocation_by_instruction
 .output heap_allocation_by_malloc
 .output heap_allocation_by_realloc
+.output heap_allocation_by_type_instruction
 .output hidden_visibility
 .output icmp_condition
 .output icmp_condition__eq
@@ -281,6 +284,7 @@
 .output main_context
 .output main_function
 .output matches_string_context
+.output merge
 .output metadata_type
 .output minimal_suffix
 .output minimal_suffix_len
@@ -309,6 +313,7 @@
 .output parameter_attribute__signext
 .output parameter_attribute__sret
 .output parameter_attribute__zeroext
+.output pointer_type_base_component
 .output pointer_type_to_firstclass
 .output pointer_vector_type
 .output ppc_fp128_type
@@ -323,6 +328,7 @@
 .output reachable_context
 .output reachable_function
 .output reachable_instruction
+.output record
 .output release_ordering
 .output relevant_suffix_position
 .output schema_invalid_alias
@@ -331,6 +337,7 @@
 .output schema_invalid_global_variable
 .output schema_invalid_instruction
 .output schema_invalid_type
+.output schema_multiple_function_names
 .output schema_sanity
 .output seq_cst_ordering
 .output sext_instruction_from_type
@@ -363,11 +370,23 @@
 .output type_compatible
 .output type_compatible_up_to_arg
 .output type_compatible_up_to_field
+.output type_indication
 .output type_is_firstclass
+.output typeinfo
+.output typeinfo_base_class
+.output typeinfo_baseclass
+.output typeinfo_has_vtable
+.output typeinfo_multiple_inheritance
+.output typeinfo_single_inheritance
+.output typeinfo_vtable
+.output typeinfo_vtable_baseclass
+.output typeinfo_vtable_multiple_inheritance
+.output typeinfo_vtable_single_inheritance
 .output uitofp_instruction_from_type
 .output unknown_location
 .output unordered_ordering
 .output unpadded_struct_type
+.output untyped_allocation
 .output var_points_to
 .output variable_in_function
 .output variable_is_firstclass
@@ -377,6 +396,9 @@
 .output vector_pointer_type
 .output visibility
 .output void_type
+.output vtable
+.output vtable_function
+.output vtable_typeinfo
 .output weak_linkage_type
 .output weak_odr_linkage_type
 .output x86_fastcall_calling_convention

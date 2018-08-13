@@ -4,3 +4,6 @@
 #include "points-to-decl.dl"
 #include "allocations-sizes.dl"
 #include "class-type.dl"
+#include "virtual-tables.dl"
+#include "type-back-propagation.dl"
+#include "allocations-subobjects.dl"

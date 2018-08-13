@@ -210,6 +210,7 @@ schema_invalid_type(Type, __FILE__, __LINE__) :-
 .decl array_pointer_type(type:PointerType)
 .decl vector_pointer_type(type:PointerType)
 .decl pointer_type_to_firstclass(type:PointerType)
+.decl pointer_type_base_component(type:PointerType, baseComp:Type)
 
 integer_pointer_type(Type) :-
    pointer_type_has_component(Type, Comp),
@@ -246,6 +247,15 @@ schema_invalid_type(Type, __FILE__, __LINE__) :-
    pointer_type(Type),
    pointer_type_has_component(Type, Comp),
    (void_type(Comp) ; label_type(Comp)).
+
+// Get to the base component
+pointer_type_base_component(Type, BaseComp) :-
+   pointer_type_has_component(Type, BaseComp),
+   !pointer_type(BaseComp).
+
+pointer_type_base_component(Type, BaseComp) :-
+   pointer_type_has_component(Type, Comp),
+   pointer_type_base_component(Comp,BaseComp).
 
 
 //----------------------

@@ -13,7 +13,9 @@
 //--------------------------------------------------------------------
 
 .decl vtable(?vt: GlobalVariable, ?name: symbol)
+.decl typeinfo(?typeInfo: GlobalVariable)
 .decl vtable_typeinfo(?vt: GlobalVariable,?typeInfo: GlobalVariable)
+
 
 .decl typeinfo_vtable(?vt: GlobalVariable, ?name: symbol)
 vtable(?vt, ?name) :-
@@ -34,7 +36,7 @@ typeinfo_vtable_baseclass(?vt, ?name) :-
    match("%__class_type_info%",?name).
 
 .decl typeinfo_vtable_single_inheritance(?vt: GlobalVariable, ?name: symbol)
-typeinfo_vtable_single_inheritance(?vt: GlobalVariable, ?name: symbol) :-
+typeinfo_vtable_single_inheritance(?vt, ?name) :-
    typeinfo_vtable(?vt, ?name),
    match("%__si_class_type_info%",?name).
 
@@ -66,81 +68,82 @@ constant_contains_vptr(?vt, ?outer) :-
 
 // Identify the actual type info objects throught their vpointers
 
-typeinfo(TypeInfo), typeinfo:vtable[TypeInfo] = VTable <-
-   constant_contains_vptr(VTable, Initializer),
-   typeinfo_vtable(VTable, _),
-   global_variable:initializer[TypeInfo] = Initializer.
+.decl typeinfo_has_vtable(?typeInfo:symbol ,?vt: GlobalVariable)
+typeinfo(?typeInfo),
+typeinfo_has_vtable(?typeInfo,?vt) :-
+   constant_contains_vptr(?vt, ?initializer),
+   typeinfo_vtable(?vt, _),
+   global_variable_has_initializer(?typeInfo, ?initializer).
 
-typeinfo:baseclass(TypeInfo) <-
-   typeinfo:vtable[TypeInfo] = VT,
-   typeinfo_vtable:baseclass(VT, _).
+.decl typeinfo_baseclass(?typeInfo: GlobalVariable)
+typeinfo_baseclass(?typeInfo) :-
+   typeinfo_has_vtable(?typeInfo, ?vt),
+   typeinfo_vtable_baseclass(?vt,_).
 
-typeinfo:single_inheritance(TypeInfo) <-
-   typeinfo:vtable[TypeInfo] = VT,
-   typeinfo_vtable:single_inheritance(VT, _).
+.decl typeinfo_single_inheritance(?typeInfo: GlobalVariable)
+typeinfo_single_inheritance(?typeInfo) :-
+   typeinfo_has_vtable(?typeInfo, ?vt),
+   typeinfo_vtable_single_inheritance(?vt, _).
 
-typeinfo:multiple_inheritance(TypeInfo) <-
-   typeinfo:vtable[TypeInfo] = VT,
-   typeinfo_vtable:multiple_inheritance(VT, _).
+.decl typeinfo_multiple_inheritance(?typeInfo: GlobalVariable)
+typeinfo_multiple_inheritance(?typeInfo) :-
+   typeinfo_has_vtable(?typeInfo, ?vt),
+   typeinfo_vtable_multiple_inheritance(?vt, _).
 
 
 // Now identify vtables
 
-_constant_contains_typeinfo(TypeInfo, Constant) <-
-   global_variable_constant:to_var[Constant] = TypeInfo,
-   typeinfo(TypeInfo).
+.decl _constant_contains_typeinfo(?typeInfo: GlobalVariable, ?constant:Constant)
+_constant_contains_typeinfo(?typeInfo, ?constant) :-
+   global_variable_constant_reference(?constant, ?typeInfo),
+   typeinfo(?typeInfo).
 
-_constant_contains_typeinfo(TypeInfo, Outer) <-
-   bitcast_constant_expression:from[Outer] = Inner,
-   _constant_contains_typeinfo(TypeInfo, Inner).
+_constant_contains_typeinfo(?typeinfo, ?outer) :-
+   bitcast_constant_expression_from(?outer, ?inner),
+   _constant_contains_typeinfo(?typeinfo, ?inner).
 
-vtable(VT, Name), vtable:typeinfo[VT] = TypeInfo <-
-   global_variable:name[VT] = Name,
-   global_variable:initializer[VT] = Initializer, // get array constant of vtable
-   constant_array:index[Initializer, 1] = TIC,    // type info is at index 1
-   _constant_contains_typeinfo(TypeInfo, TIC).
+vtable(?vt, ?name),
+vtable_typeinfo(?vt,?typeinfo) :-
+   global_variable_has_name(?vt, ?name),
+   global_variable_has_initializer(?vt, ?initializer), // get array constant of vtable
+   constant_array_index(?initializer, 1, ?tic),    // type info is at index 1
+   _constant_contains_typeinfo(?typeinfo, ?tic).
 
 
 // Recover hints of class hierarchy by identifying cases of typeinfo
 // objects inside other typeinfo objects
+.decl _typeinfo_contains_typeinfo(?outer: GlobalVariable, ?index:number, ?inner: GlobalVariable)
+_typeinfo_contains_typeinfo(?outer, ?index, ?inner) :-
+   typeinfo(?outer),
+   global_variable_has_initializer(?outer, ?init),
+   constant_struct_index(?init, ?index, ?tic),
+   _constant_contains_typeinfo(?inner, ?tic).
 
-_typeinfo_contains_typeinfo[Outer, Index] = Inner <-
-   typeinfo(Outer),
-   global_variable:initializer[Outer] = Initializer,
-   constant_struct:index[Initializer, Index] = TIC,
-   _constant_contains_typeinfo(Inner, TIC).
-
-
-typeinfo:base_class[TypeInfo, Offset] = BaseTypeInfo ->
-   global_variable(TypeInfo), int[64](Offset), global_variable(BaseTypeInfo).
-
+.decl typeinfo_base_class(?typeinfo:GlobalVariable, ?offset: number, ?baseTypeinfo: GlobalVariable)
 
 // Single inheritance case
-typeinfo:base_class[TypeInfo, 0] = BaseTypeInfo <-
-   typeinfo:single_inheritance(TypeInfo),
-   _typeinfo_contains_typeinfo[TypeInfo, 2] = BaseTypeInfo.
+typeinfo_base_class(?typeinfo, 0, ?baseTypeinfo) :-
+   typeinfo_single_inheritance(?typeinfo),
+   _typeinfo_contains_typeinfo(?typeinfo, 2, ?baseTypeinfo).
 
 // Multiple inheritance case
-typeinfo:base_class[TypeInfo, Offset] = BaseTypeInfo <-
-   typeinfo:multiple_inheritance(TypeInfo),
-   _typeinfo_contains_typeinfo[TypeInfo, Index] = BaseTypeInfo,
-   global_variable:initializer[TypeInfo] = Initializer,
-   constant_struct:index[Initializer, Index + 1] = Constant,
-   constant:to_int[Constant] = OffsetMask,
-   Offset = OffsetMask / 256.
+typeinfo_base_class(?typeinfo, ?offset, ?baseTypeinfo) :-
+   typeinfo_multiple_inheritance(?typeinfo),
+   _typeinfo_contains_typeinfo(?typeinfo, ?index, ?baseTypeinfo),
+   global_variable_has_initializer(?typeinfo, ?init),
+   constant_struct_index(?init, ?index + 1, ?constant),
+   constant_to_int(?constant, ?offsetMask),
+   ?offset = ?offsetMask / 256.
 
 // see RTTI Layout of Itanium C++ ABI
 
-
 // Find the functions stored inside each vtable
+.decl vtable_function(?vt: GlobalVariable, ?index: number, ?func: FunctionDecl)
 
-vtable:function[VT, Index] = Function ->
-   global_variable(VT), int[64](Index), function_decl(Function).
-
-vtable:function[VT, Index] = Function <-
-   vtable(VT, _),
-   global_variable:initializer[VT] = Initializer,
-   constant_array:index[Initializer, Index] = FuncAsInteger,
-   bitcast_constant_expression:from[FuncAsInteger] = FuncConstant,
-   function_constant:function_name[FuncConstant] = FuncName,
-   function:name[Function] = FuncName.
+vtable_function(?vt,?index,?func) :-
+   vtable(?vt, _),
+   global_variable_has_initializer(?vt,?init),
+   constant_array_index(?init, ?index, ?funcAsInteger),
+   bitcast_constant_expression_from(?funcAsInteger, ?funcConstant),
+   function_constant_fn_name(?funcConstant, ?funcName),
+   function_has_name(?func,?funcName).

@@ -2,6 +2,8 @@
 // Class Types
 //-----------------
 
+//UNFINISHED
+
 // Class types are a subset of struct types
 .type ClassType = StructType
 .decl class_type(?type: ClassType)

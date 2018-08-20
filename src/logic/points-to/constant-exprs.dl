@@ -1,0 +1,133 @@
+//------------------------------------------------------------------------------
+// Constant aliases
+//------------------------------------------------------------------------------
+
+constant_points_to(?otherConstant, ?alloc)
+ :-
+   aliased_constants(?otherConstant, ?constant),
+   constant_points_to(?constant, ?alloc).
+
+//------------------------------------------------------------------------------
+// inttoptr constant expression
+//------------------------------------------------------------------------------
+
+// Integers can be cast to pointers. In such case, the conservative
+// approach is to assume that the pointer may point to anywhere in
+// memory.
+//
+// Example: (int *) 0xabcd
+
+constant_points_to(?constant, ?unknown) :-
+   inttoptr_constant_expression(?constant),
+   unknown_location(?unknown).
+
+//------------------------------------------------------------------------------
+// ptrtoint constant expression
+//------------------------------------------------------------------------------
+
+// A pointer may be masqueraded into an integer (or something else),
+// but the associated memory locations are still valid.
+
+constant_points_to(?intConstant, ?alloc) :-
+   ptrtoint_constant_expression_from(?intConstant, ?ptrConstant),
+   constant_points_to(?ptrConstant, ?alloc).
+
+//------------------------------------------------------------------------------
+// bitcast constant expression
+//------------------------------------------------------------------------------
+
+constant_points_to(?outerConstant, ?alloc) :-
+   bitcast_constant_expression_from(?outerConstant, ?innerConstant),
+   constant_points_to(?innerConstant, ?alloc).
+
+
+//------------------------------------------------------------------------------
+// [Field Sensitivity for `getelementptr` constant expressions]
+//
+// This is equivalent to the treatment of GEP instructions, but with
+// no support for variable indices, as they are not allowed in
+// constant expressions.
+//------------------------------------------------------------------------------
+
+
+// Compute intermediate points to for `getelementptr` constant
+// expression up to some index
+
+.decl gep_constant_expr_points_to(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
+
+gep_constant_expr_points_to(?cExpr, 0, ?alloc) :-
+   getelementptr_constant_expression_base(?cExpr, ?base),
+   constant_points_to(?base, ?alloc).
+
+
+// First index as above
+
+gep_constant_expr_points_to(?cExpr, 1, ?alloc)
+ :-
+   gep_constant_expr_points_to(?cExpr, 0, ?alloc),
+   alloc_subregion(?alloc),
+   getelementptr_constant_expression_index(?cExpr, 0, ?constant),
+   constant_to_int(?constant, 0).
+
+
+gep_constant_expr_points_to(?cExpr, 1, ?region)
+ :-
+   gep_constant_expr_points_to(?cExpr, 1, ?alloc),
+   basic_allocation(?alloc),
+   getelementptr_constant_expression_index(?cExpr, 1, ?constant),
+   constant_to_int(?constant, ?index),
+   alloc_subregion_at_array_index(?alloc, ?index, ?region).
+
+
+// Rest of the indices
+
+gep_constant_expr_points_to(?cExpr, ?nextIndex, ?region)
+ :-
+   gep_constant_expr_points_to(?cExpr, ?index, ?alloc),
+   _getelementptr_constant_expression_interm_type(?cExpr, ?index, ?declaredType),
+   array_type(?declaredType),
+   alloc_subregion(?alloc),
+   // get constant array index (as integer)
+   getelementptr_constant_expression_index(?cExpr, ?index, ?constant),
+   constant_to_int(?constant, ?constantIndex),
+   // NextIndex = Index + 1
+   _constant_expression_next_index(?cExpr, ?index, ?nextIndex),
+   // get subobject for given index
+   alloc_subregion_at_array_index(?alloc, ?constantIndex, ?region).
+
+
+gep_constant_expr_points_to(?cExpr, ?nextIndex, ?region)
+ :-
+   gep_constant_expr_points_to(?cExpr, ?index, ?alloc),
+   _getelementptr_constant_expression_interm_type(?cExpr, ?index, ?declaredType),
+   struct_type(?declaredType),
+   // get field (as integer constant)
+   getelementptr_constant_expression_index(?cExpr, ?index, ?constant),
+   constant_to_int(?constant, ?field),
+   // NextIndex = Index + 1
+   _constant_expression_next_index(?cExpr, ?index, ?nextIndex),
+   // get suboject for given field
+   alloc_subregion_at_field(?alloc, ?field, ?region).
+
+
+constant_points_to(?cExpr, ?alloc) :-
+   getelementptr_constant_expression_nindices(?cExpr, ?total),
+   gep_constant_expr_points_to(?cExpr, ?total, ?alloc).
+
+/*
+// TODO: check if the following is needed
+
+// gep_points_to(Insn, Index, Alloc) <-
+//    gep_points_to(Insn, Index, SomeAlloc),
+//    alloc_aliases(Alloc, SomeAlloc).
+
+// gep_points_to(Insn, 0, ZeroAliasAlloc)
+//  <-
+//    gep_points_to(Insn, 0, Alloc),
+//    // first index can be anything
+//    getelementptr_instruction:index[Insn, 0] = _,
+//    // base object
+//    basic_allocation(Alloc),
+//    alloc_subregion:at_array_index[Alloc, 0] = ZeroAliasAlloc.
+
+*/

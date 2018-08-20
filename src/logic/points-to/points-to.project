@@ -7,3 +7,5 @@
 #include "class-type.dl"
 #include "virtual-tables.dl"
 #include "type-back-propagation.dl"
+#include "constant-init.dl"
+#include "constant-exprs.dl"

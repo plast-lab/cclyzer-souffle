@@ -224,6 +224,7 @@
 .output function_is_wellformed
 .output function_nparams
 .output function_param_by_value
+.output gep_constant_expr_points_to
 .output gep_is_vector_based
 .output getelementptr_instruction_base_type
 .output getelementptr_instruction_index_type
@@ -259,6 +260,7 @@
 .output indirect_call_instruction
 .output indirect_invoke_instruction
 .output initial_exec_threadlocal_mode
+.output initialized_by_constant
 .output insertelement_instruction_type
 .output insertvalue_instruction_base_type
 .output insertvalue_instruction_interm_type

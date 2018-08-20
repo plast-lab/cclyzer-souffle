@@ -65,6 +65,8 @@
 .output class_type_constructor
 .output class_type_destructor
 .output class_type_name
+.output class_type_typeinfo
+.output class_type_vtable
 .output cmpxchg_instruction_cmp_value_type
 .output cold_calling_convention
 .output common_linkage_type
@@ -134,6 +136,8 @@
 .output di?volatile_type_entry
 .output direct_call_instruction
 .output direct_invoke_instruction
+.output direct_subclass
+.output direct_superclass
 .output dllexport_linkage_type
 .output dllimport_linkage_type
 .output double_type
@@ -326,6 +330,7 @@
 .output pointer_type_to_firstclass
 .output pointer_vector_type
 .output ppc_fp128_type
+.output primary_superclass
 .output primitive_type
 .output private_linkage_type
 .output protected_visibility
@@ -350,6 +355,7 @@
 .output schema_invalid_type
 .output schema_multiple_function_names
 .output schema_sanity
+.output secondary_superclass
 .output seq_cst_ordering
 .output sext_instruction_from_type
 .output shufflevector_instruction_element_type
@@ -372,8 +378,10 @@
 .output struct_type_field_name_at_offset
 .output struct_type_inherits_at_offset
 .output suffix
+.output superclass
 .output template_type
 .output template_type_name
+.output template_typeinfo
 .output terminator_instruction
 .output threadlocal_mode
 .output trunc_instruction_from_type

@@ -2,7 +2,7 @@
 // Class Types
 //-----------------
 
-//UNFINISHED
+//UNFINISHED (needs debuginfo)
 
 // Class types are a subset of struct types
 .type ClassType = StructType
@@ -36,7 +36,7 @@ class_type_name(?type, ?name) :-
    ?n=strlen(?type),
    ?name = substr(?type, 8, (?n) - 8).
 
-/*
+
 //------------------------------------------------------------------------------
 // Virtual Table - Type Info - Class Type Associations
 //
@@ -45,117 +45,121 @@ class_type_name(?type, ?name) :-
 // symbols, since they lack any v-table.
 //------------------------------------------------------------------------------
 
-vtable:typeinfo[VT] = TypeInfo -> // defined in virtual-tables.logic
-   global_variable(VT), global_variable(TypeInfo).
+.decl class_type_vtable(?classType: ClassType, ?vt: GlobalVariable)
 
-class_type:vtable[ClassType] = VT ->
-   struct_type(ClassType), global_variable(VT).
-
-class_type:typeinfo[ClassType] = TypeInfo ->
-   struct_type(ClassType), global_variable(TypeInfo).
+.decl class_type_typeinfo(?classType: ClassType, ?typeInfo: GlobalVariable)
 
 
 // Extract class name from unmangled type info name. The latter is of
 // the form: typeinfo for CLASS-NAME
-_typeinfo_class_name[TypeInfo] = ClassName <-
-   typeinfo(TypeInfo),
-   global_variable:unmangled_name[TypeInfo] = TIName,
-   string:like(TIName, "typeinfo for %"),
-   string:length[TIName] = N,
-   string:substring[TIName, 13, N - 13] = ClassName.
+.decl _typeinfo_class_name(?typeInfo: GlobalVariable, ?className: symbol)
+_typeinfo_class_name(?typeInfo, ?className) :-
+   typeinfo(?typeInfo),
+   global_variable_has_unmangled_name(?typeInfo, ?tIName),
+   match("typeinfo for %", ?tIName),
+   ?n = strlen(?tIName),
+   ?className = substr(?tIName, 13, ?n - 13).
 
-_typeinfo_by_class_name[ClassName] = TypeInfo <-
-   _typeinfo_class_name[TypeInfo] = ClassName.
+
+.decl _typeinfo_by_class_name(?className: symbol , ?typeInfo: GlobalVariable)
+_typeinfo_by_class_name(?className, ?typeInfo) :-
+   _typeinfo_class_name(?typeInfo, ?className).
 
 // typeinfo of class
-class_type:typeinfo[ClassType] = TypeInfo <-
-   class_type:name[ClassType] = ClassName,
-   _typeinfo_by_class_name[ClassName] = TypeInfo.
+class_type_typeinfo(?classType, ?typeInfo) :-
+   class_type_name(?classType, ?className),
+   _typeinfo_by_class_name(?className, ?typeInfo).
 
 
 // Extract class name from unmangled vtable name. The latter is of the
 // form: vtable for CLASS-NAME
-_vtable_class_name[VTable] = ClassName <-
-   vtable(VTable, _),
-   global_variable:unmangled_name[VTable] = UnmangledName,
-   string:like(UnmangledName, "vtable for %"),
-   string:length[UnmangledName] = N,
-   string:substring[UnmangledName, 11, N - 11] = ClassName.
+.decl _vtable_class_name(?vt: GlobalVariable, ?className: symbol)
+_vtable_class_name(?vt, ?className) :-
+   vtable(?vt, _),
+   global_variable_has_unmangled_name(?vt, ?unmangledName),
+   match("vtable for %", ?unmangledName),
+   ?n = strlen(?unmangledName),
+   ?className = substr(?unmangledName, 11, ?n - 11).
 
-_vtable_by_class_name[ClassName] = VTable <-
-   _vtable_class_name[VTable] = ClassName.
+.decl _vtable_by_class_name(?className: symbol, ?vt: GlobalVariable)
+_vtable_by_class_name(?className, ?vt) :-
+   _vtable_class_name(?vt, ?className).
 
 // v-table of class
-class_type:vtable[ClassType] = VTable <-
-   class_type:name[ClassType] = ClassName,
-   _vtable_class_name[VTable] = ClassName,
-   _vtable_by_class_name[ClassName] = VTable.
-
+class_type_vtable(?classType, ?vt) :-
+   class_type_name(?classType, ?className),
+   _vtable_class_name(?vt, ?className),
+   _vtable_by_class_name(?className, ?vt).
+/*
 // Sanity check
 class_type:vtable[ClassType] = VTable
  , vtable:typeinfo[VTable] = TypeInfo
  ->
    class_type:typeinfo[ClassType] = TypeInfo.
-
+*/
 
 //------------------------------------------------------------------------------
 // Recovering Class Hierarchy
 //------------------------------------------------------------------------------
 
-primary_superclass[Type] = Supertype ->
-   struct_type(Type), struct_type(Supertype).
 
-secondary_superclass(Supertype, Type) ->
-   struct_type(Type), struct_type(Supertype).
+.decl primary_superclass(?type: ClassType, ?superType: ClassType)
+.decl secondary_superclass(?superType: ClassType, ?type: ClassType)
 
 // From typeinfo to class type
-_typeinfo_class_type[TypeInfo] = ClassType <-
-   !unpadded_struct_type(ClassType),
-   !template_typeinfo(TypeInfo),
-   !template_type(ClassType),
-   class_type:typeinfo[ClassType] = TypeInfo.
 
-_typeinfo_class_type[TypeInfo] = ClassType <-
-   !unpadded_struct_type(ClassType),
-   template_typeinfo(TypeInfo),
-   template_type(ClassType),
-   class_type:typeinfo[ClassType] = TypeInfo.
+.decl _typeinfo_class_type(?typeInfo: GlobalVariable, ?classType: ClassType)
 
-primary_superclass[Type] = Supertype <-
-   typeinfo:base_class[TypeInfo, 0] = BaseTypeInfo,
-   _typeinfo_class_type[TypeInfo] = Type,
-   _typeinfo_class_type[BaseTypeInfo] = Supertype.
+_typeinfo_class_type(?typeInfo, ?classType) :-
+   !unpadded_struct_type(?classType),
+   !template_typeinfo(?typeInfo),
+   !template_type(?classType),
+   class_type_typeinfo(?classType, ?typeInfo).
 
-secondary_superclass(Supertype, Type) <-
-   typeinfo:base_class[TypeInfo, Index] = BaseTypeInfo,
-   _typeinfo_class_type[TypeInfo] = Type,
-   _typeinfo_class_type[BaseTypeInfo] = Supertype,
-   Index > 0.
+_typeinfo_class_type(?typeInfo, ?classType) :-
+   !unpadded_struct_type(?classType),
+   template_typeinfo(?typeInfo),
+   template_type(?classType),
+   class_type_typeinfo(?classType, ?typeInfo).
+
+primary_superclass(?type, ?superType) :-
+   typeinfo_base_class(?typeInfo, 0, ?baseTypeInfo),
+   _typeinfo_class_type(?typeInfo, ?type),
+   _typeinfo_class_type(?baseTypeInfo, ?superType).
+
+secondary_superclass(?superType, ?type) :-
+   typeinfo_base_class(?typeInfo, ?index, ?baseTypeInfo),
+   _typeinfo_class_type(?typeInfo, ?type),
+   _typeinfo_class_type(?baseTypeInfo, ?superType),
+   ?index > 0.
 
 
 // Union of the above two kinds of superclasses
-direct_superclass(Supertype, Type) <-
-   primary_superclass[Type] = Supertype
- ; secondary_superclass(Supertype, Type).
+.decl direct_superclass(?superType: ClassType, ?type: ClassType)
+direct_superclass(?superType, ?type) :-
+   primary_superclass(?type, ?superType)
+ ; secondary_superclass(?superType, ?type).
 
 
 // Inverse relation
-direct_subclass(Subtype, Type) <-
-   direct_superclass(Type, Subtype).
+.decl direct_subclass(?subType: ClassType, ?type: ClassType)
+direct_subclass(?subtype, ?type) :-
+   direct_superclass(?type, ?subtype).
 
 // Transitive closure computation to compute all superclasses of each
 // type
 
-superclass(Supertype, Type) <-
-   direct_superclass(Supertype, Type).
+.decl superclass(?superType: ClassType, ?type: ClassType)
+superclass(?superType, ?type) :-
+   direct_superclass(?superType, ?type).
 
-superclass(Supertype, Type) <-
-   direct_superclass(Supertype, IntermType),
-   superclass(IntermType, Type).
+superclass(?superType, ?type) :-
+   direct_superclass(?superType, ?intermType),
+   superclass(?intermType, ?type).
 
 
 // Constraints according to typeinfo recorded inheritance
-
+/*
 typeinfo:baseclass(TypeInfo)
  , _typeinfo_class_type[TypeInfo] = ClassType
  ->
@@ -168,33 +172,12 @@ typeinfo:single_inheritance(TypeInfo)
  , direct_superclass(Supertype2, ClassType)
  ->
    Supertype1 = Supertype2.
-
+*/
 
 //------------------------------------------------------------------------------
 // Class Type Name Parsing
 //------------------------------------------------------------------------------
 
-
-.decl _struct_type_dot_split(?type: StructType, ?n: number)
-_struct_type_dot_split(Type, N) <-
-   struct_type(Type), type:id(Type:TypeSignature),
-   string:split[TypeSignature, ".", N] = _.
-
-_struct_type_dot_splits[Type] = M <-
-   agg<<M = max(N)>> _struct_type_dot_split(Type, N).
-
-_struct_type_dotsuffix[Type] = DotSuffix <-
-   type:id(Type:TypeSignature),
-   _struct_type_dot_splits[Type] = M, M > 1,
-   string:split[TypeSignature, ".", M] = DotSuffix.
-
-// Types that are template instantiations
-template_type(Type) <-
-   _struct_type_dotsuffix[Type] = DotSuffix,
-   DotSuffix != "base".
-
-
-*/
 /*************************************************************
  * Suffix helper relations
  *
@@ -256,18 +239,19 @@ unpadded_struct_type(?type) :-
 
 // Defined in debuginfo module
 .decl template_type_name(?name: symbol)
+.decl template_typeinfo(?typeInfo: GlobalVariable)
 /*
 // Typeinfo objects of template types
-template_typeinfo(TypeInfo) <-
+template_typeinfo(?typeInfo) :-
    debuginfo_is_loaded(),
-   template_type_name(Name),
-   _typeinfo_by_class_name[Name] = TypeInfo.
+   template_type_name(?name),
+   _typeinfo_by_class_name(?name, ?typeInfo).
 
 // Fallback when no debug info has been loaded
-template_typeinfo(TypeInfo) <-
+template_typeinfo(?typeInfo) :-
    !debuginfo:loaded(),
-   string:like(Name, "%<%>"),
-   _typeinfo_by_class_name[Name] = TypeInfo.
+   match("%<%>", ?name),
+   _typeinfo_by_class_name(?name, ?typeInfo).
 
 */
 //------------------------------------------------------------------------------

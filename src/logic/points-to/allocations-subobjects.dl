@@ -30,18 +30,22 @@
 // sufficient.
 //------------------------------------------------------------------------------
 
-//UNFINISHED
 
 .type AllocSubregion = Allocation
+
+
+
+.decl alloc_subregion_base(?region: AllocSubregion, ?base: Allocation)
+.decl alloc_subobject(?alloc: AllocSubregion, ?baseAlloc: Allocation)
 
 .decl alloc_subregion(?allocSub: AllocSubregion)
 allocation(?region) :-
    alloc_subregion(?region).
-/*
-ptr_compatible_allocation(?alloc) <-
+
+ptr_compatible_allocation(?alloc) :-
    ptr_compatible_allocation(?baseAlloc),
-   alloc_subobjects(?alloc, ?baseAlloc), // OPT CLAUSE
-   alloc_subregion:base[Alloc] = BaseAlloc.
+   alloc_subobject(?alloc, ?baseAlloc), // OPT CLAUSE
+   alloc_subregion_base(?alloc,?baseAlloc).
 
 //---------------------------------------------------------------
 // [Field Selections]
@@ -49,24 +53,22 @@ ptr_compatible_allocation(?alloc) <-
 
 // Single constructor for field selections
 
-alloc_subregion:at_field[Alloc, Index] = Region ->
-   allocation(Alloc), int[64](Index), alloc_subregion(Region).
-
-lang:constructor(`alloc_subregion:at_field).
+.decl alloc_subregion_at_field(?alloc: Allocation, ?index: number, ?region:AllocSubregion)
 
 // Create every field sub-expression, once type for base object is
 // established
 
-alloc_subregion(NewAlloc)
- , alloc_subregion:at_field[Alloc, Field] = NewAlloc
- , allocation:type[NewAlloc] = FieldType
- <-
-   allocation:type[Alloc] = Type,
+alloc_subregion(?newAlloc)
+ , alloc_subregion_at_field(?alloc, ?field, ?newAlloc)
+ , allocation_type(?newAlloc, ?fieldType)
+ :-
+   allocation_type(?alloc, ?type),
    // filter base allocations
-   alloc_subregion(Alloc),
+   alloc_subregion(?alloc),
    // determine type
-   struct_type(Type),
-   struct_type:field[Type, Field] = FieldType.
+   struct_type(?type),
+   struct_type_field(?type, ?field, ?fieldType),
+   ?newAlloc= cat(cat(?alloc, "sub"), to_string(?field)).
 
 
 //---------------------------------------------------------------
@@ -74,37 +76,35 @@ alloc_subregion(NewAlloc)
 //---------------------------------------------------------------
 
 // Constructor for unknown array/pointer index
-
-alloc_subregion:at_any_array_index[Alloc] = Region ->
-   allocation(Alloc), alloc_subregion(Region).
-
-lang:constructor(`alloc_subregion:at_any_array_index).
+.decl alloc_subregion_at_any_array_index(?alloc: Allocation, ?region: AllocSubregion)
 
 
 // Create star pointer index expression, once type for base object is
 // established
 
-alloc_subregion(NewAlloc)
- , alloc_subregion:at_any_array_index[Alloc] = NewAlloc
- , allocation:type[NewAlloc] = Type
- <-
-   allocation:type[Alloc] = Type,
+alloc_subregion(?newAlloc)
+ , alloc_subregion_at_any_array_index(?alloc, ?newAlloc)
+ , allocation_type(?newAlloc, ?type)
+ :-
+   allocation_type(?alloc, ?type),
    // base object
-   basic_allocation(Alloc).
+   basic_allocation(?alloc),
+   ?newAlloc=cat(?alloc,"sub").
 
 // Create star array index expression, once type for base object is
 // established
 
-alloc_subregion(NewAlloc)
- , alloc_subregion:at_any_array_index[Alloc] = NewAlloc
- , allocation:type[NewAlloc] = ElementType
- <-
-   allocation:type[Alloc] = Type,
+alloc_subregion(?newAlloc)
+ , alloc_subregion_at_any_array_index(?alloc, ?newAlloc)
+ , allocation_type(?newAlloc, ?elementType)
+ :-
+   allocation_type(?alloc, ?type),
    // filter base allocations
-   alloc_subregion(Alloc),
+   alloc_subregion(?alloc),
    // determine type
-   array_type(Type),
-   array_type:component[Type] = ElementType.
+   array_type(?type),
+   array_type_has_component(?type, ?elementType),
+   ?newAlloc=cat(?alloc,"sub").
 
 
 //---------------------------------------------------------------
@@ -113,88 +113,85 @@ alloc_subregion(NewAlloc)
 
 // Constructor for constant array/pointer index
 
-alloc_subregion:at_array_index[Alloc, Index] = Region ->
-   allocation(Alloc), int[64](Index), alloc_subregion(Region).
-
-lang:constructor(`alloc_subregion:at_array_index).
-
+.decl alloc_subregion_at_array_index(?alloc: Allocation, ?index: number, ?region: AllocSubregion)
 
 // Create every pointer index expression, once type for base object is
 // established
 
-alloc_subregion(NewAlloc)
- , alloc_subregion:at_array_index[Alloc, Index] = NewAlloc
- , allocation:type[NewAlloc] = Type
- <-
-   allocation:type[Alloc] = Type,
+alloc_subregion(?newAlloc),
+   alloc_subregion_at_array_index(?alloc, ?index, ?newAlloc),
+   allocation_type(?newAlloc, ?type)
+ :-
+   allocation_type(?alloc, ?type),
    // base object
-   basic_allocation(Alloc),
+   basic_allocation(?alloc),
    // first index is a constant
-   pointer_index(Index).
+   pointer_index(?index),
+   ?newAlloc= cat(cat(?alloc,"sub"), to_string(?index)).
 
 
 // Record trivial zero aliases on base objects
 
-allocation_zeroalias(NewAlloc)
- <-
-   basic_allocation(Alloc),
-   alloc_subregion:at_array_index[Alloc, 0] = NewAlloc,
-   allocation:type[NewAlloc] = Type,
-   allocation:type[Alloc] = Type.
+.decl allocation_zeroalias(?alloc: Allocation)
+allocation_zeroalias(?newAlloc) :-
+   basic_allocation(?alloc),
+   alloc_subregion_at_array_index(?alloc, 0, ?newAlloc),
+   allocation_type(?newAlloc,?type),
+   allocation_type(?alloc,?type).
 
-ptr_points_to$no_zero_aliases(ToCtx, To, FromCtx, From) <-
-   ptr_points_to(ToCtx, To, FromCtx, From),
-   !allocation_zeroalias(To),
-   !allocation_zeroalias(From).
+.decl ptr_points_to_no_zero_aliases(?toCtx: AllocationContext, ?to: Allocation, ?fromCtx: AllocationContext, ?from: Allocation)
+ptr_points_to_no_zero_aliases(?toCtx, ?to, ?fromCtx, ?from) :-
+   ptr_points_to(?toCtx, ?to, ?fromCtx, ?from),
+   !allocation_zeroalias(?to),
+   !allocation_zeroalias(?from).
 
 
 // Create star array index expression, once type for base object is
 // established
 
-alloc_subregion(NewAlloc)
- , alloc_subregion:at_array_index[Alloc, Index] = NewAlloc
- , allocation:type[NewAlloc] = ElementType
- <-
-   allocation:type[Alloc] = Type,
+alloc_subregion(?newAlloc),
+   alloc_subregion_at_array_index(?alloc, ?index, ?newAlloc),
+   allocation_type(?newAlloc, ?elementType)
+ :-
+   allocation_type(?alloc, ?type),
    // filter base allocations
-   alloc_subregion(Alloc),
+   alloc_subregion(?alloc),
    // determine type
-   array_type(Type),
-   array_type:component[Type] = ElementType,
+   array_type(?type),
+   array_type_has_component(?type, ?elementType),
    // accept any relevant array index for this type
-   array_indices(Type, Index).
+   array_indices(?type, ?index),
+   ?newAlloc = cat(cat(?alloc, "sub"), to_string(?index)).
 
 
 // Find all statically possible pointer indices
 
-pointer_index(Index) -> int[64](Index).
+.decl pointer_index(?index: number)
 pointer_index(0).
 
-pointer_index(Index) <-
-   getelementptr_instruction:index[_, 0] = IndexOp,
-   operand:to_int[IndexOp] = Index,
-   Index >= 0.
+pointer_index(?index) :-
+   getelementptr_instruction_index(_, 0,?indexOp),
+   constant_to_int(?indexOp,?index),
+   ?index >= 0.
 
 // Find all statically possible array indices
 
-array_indices:__no_typecomp(Type, Index) ->
-   array_type(Type), int[64](Index).
+.decl array_indices__no_typecomp(?type: ArrayType, ?index: number)
 
-array_indices:__no_typecomp(DeclaredType, ConstantIndex) <-
-   getelementptr_instruction:index[Insn, Index] = IndexOp,
-   getelementptr_instruction:interm_type[Insn, Index] = DeclaredType,
-   operand:to_int[IndexOp] = ConstantIndex,
-   array_type(DeclaredType).
+array_indices__no_typecomp(?declaredType, ?constantIndex) :-
+   getelementptr_instruction_index(?insn, ?index, ?indexOp),
+   getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
+   constant_to_int(?indexOp, ?constantIndex),
+   array_type(?declaredType).
 
 // Same thing, but also consider compatible array types
 
-array_indices(Type, Index) ->
-   array_type(Type), int[64](Index).
+.decl array_indices(?type: ArrayType, ?index: number)
 
-array_indices(Type, ConstantIndex) <-
-   array_type(Type),
-   type_compatible(Type, DeclaredType),
-   array_indices:__no_typecomp(DeclaredType, ConstantIndex).
+array_indices(?type, ?constantIndex) :-
+   array_type(?type),
+   type_compatible(?type, ?declaredType),
+   array_indices__no_typecomp(?declaredType, ?constantIndex).
 
 
 //-------------------------------------------------------------------
@@ -203,54 +200,51 @@ array_indices(Type, ConstantIndex) <-
 
 // Region base: unified predicate that applies to all types of
 // subobjects
+alloc_subregion_base(?region, ?base) :-
+   alloc_subregion_at_field(?base, _, ?region).
 
-alloc_subregion:base[Region] = Base ->
-   alloc_subregion(Region), allocation(Base).
+alloc_subregion_base(?region, ?base) :-
+   alloc_subregion_at_any_array_index(?base, ?region).
 
-alloc_subregion:base[Region] = Base <-
-   alloc_subregion:at_field[Base, _] = Region.
-
-alloc_subregion:base[Region] = Base <-
-   alloc_subregion:at_any_array_index[Base] = Region.
-
-alloc_subregion:base[Region] = Base <-
-   alloc_subregion:at_array_index[Base, _] = Region.
+alloc_subregion_base(?region, ?base) :-
+   alloc_subregion_at_array_index(?base, _, ?region).
 
 // Index Optimization predicate
 
-alloc_subobjects(Alloc, BaseAlloc) <-
-   alloc_subregion:base[Alloc] = BaseAlloc.
+alloc_subobject(?alloc, ?baseAlloc) :-
+   alloc_subregion_base(?alloc, ?baseAlloc).
 
 //-------------------------------------
 // String Representation Protocol
 //-------------------------------------
 
-allocation:to_string[Region] = RegionStr <-
-   alloc_subregion:at_array_index[Alloc, Index] = Region,
-   allocation:to_string[Alloc] = AllocStr,
-   int64:string:convert[Index] = IndexStr,
-   RegionStr = AllocStr + "[" + IndexStr + "]".
 
-allocation:to_string[Region] = RegionStr <-
-   alloc_subregion:at_any_array_index[Alloc] = Region,
-   allocation:to_string[Alloc] = AllocStr,
-   RegionStr = AllocStr + "[*]".
+allocation_to_string(?region, ?regionStr) :-
+   alloc_subregion_at_array_index(?alloc, ?index, ?region),
+   allocation_to_string(?alloc, ?allocStr),
+   ?indexStr = to_string(?index),
+   ?regionStr = cat(cat(cat(?allocStr, "["), ?indexStr), "]").
 
-allocation:to_string[Region] = RegionStr <-
-   allocation:type[Alloc] = Type,
-   struct_type:field_name[Type, Index] = FieldName,
-   alloc_subregion:at_field[Alloc, Index] = Region,
-   allocation:to_string[Alloc] = AllocStr,
-   int64:string:convert[Index] = IndexStr,
-   RegionStr = AllocStr + "." + FieldName + "/" + IndexStr.
+allocation_to_string(?region, ?regionStr) :-
+   alloc_subregion_at_any_array_index(?alloc, ?region),
+   allocation_to_string(?alloc, ?allocStr),
+   ?regionStr = cat(?allocStr, "[*]").
 
-allocation:to_string[Region] = RegionStr <-
-   allocation:type[Alloc] = Type,
-   !struct_type:field_name[Type, Index] = _,
-   alloc_subregion:at_field[Alloc, Index] = Region,
-   allocation:to_string[Alloc] = AllocStr,
-   int64:string:convert[Index] = IndexStr,
-   RegionStr = AllocStr + ".?/" + IndexStr.
+allocation_to_string(?region, ?regionStr) :-
+   allocation_type(?alloc, ?type),
+   struct_type_field_name(?type, ?index, ?fieldName),
+   alloc_subregion_at_field(?alloc, ?index, ?region),
+   allocation_to_string(?alloc, ?allocStr),
+   ?indexStr = to_string(?index),
+   ?regionStr = cat(cat(cat(cat(?allocStr,"."), ?fieldName), "/"), ?indexStr).
+
+allocation_to_string(?region, ?regionStr) :-
+   allocation_type(?alloc, ?type),
+   !struct_type_field_name(?type, ?index, _),
+   alloc_subregion_at_field(?alloc, ?index, ?region),
+   allocation_to_string(?alloc, ?allocStr),
+   ?indexStr = to_string(?index),
+   ?regionStr = cat(cat(?allocStr, ".?/"), ?indexStr).
 
 
 //------------------------------------------------------------------------
@@ -306,18 +300,16 @@ allocation:to_string[Region] = RegionStr <-
 // Region containment
 //------------------------------------
 
-region_contains(Outer, Inner) ->
-   alloc_subregion(Inner), allocation(Outer).
+.decl region_contains(?outer: AllocSubregion, ?inner: Allocation)
 
-region_contains(Outer, Inner) <-
-   alloc_subregion:base[Inner] = Outer.
+region_contains(?outer, ?inner) :-
+   alloc_subregion_base(?inner, ?outer).
 
-region_contains(Outer, Inner) <-
-   alloc_subobjects(Inner, Interm),
-   region_contains(Outer, Interm).
+region_contains(?outer, ?inner) :-
+   alloc_subobject(?inner, ?interm),
+   region_contains(?outer, ?interm).
 
 // Non-allocations (e.g., *null*) cannot contain anything
 
-non_allocation(NonAlloc) ->
-   !region_contains(NonAlloc, _).
-*/
+//non_allocation(NonAlloc) ->
+//   !region_contains(NonAlloc, _).

@@ -63,7 +63,7 @@ exit_context(?ctx)
 // Bootstrap the analysis
 //---------------------------------------------------------
 
-.decl reachable_context(?ctx:Context, ?func:Function)
+.decl reachable_context(?ctx:Context, ?func:FunctionDecl)
 
 reachable_context(?ctx, ?func) :-
    main_function(?func),

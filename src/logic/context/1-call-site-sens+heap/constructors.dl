@@ -67,17 +67,11 @@ context_item(?ctxItem)
 //    instruction(Invoc), alloc_context(ACtx), allocation(Alloc).
 
 // // Macro-definitions
-// alloc_context_new[Item] = ACtx <-
-//    record[Ctx, _] = ACtx,
-//    context:new[Item] = Ctx.
+
 alloc_context_new(?item, ?aCtx) :-
    record(?ctx, _, ?aCtx),
    context_new(?item, ?ctx).
 
-// context:new[NewItem] = CalleeCtx <-
-//    merge[CallerCtx, Invoc, _, _] = CalleeCtx,
-//    context:new[_] = CallerCtx,
-//    context_item:by_invoc[Invoc] = NewItem.
 
 context_new(?newItem, ?calleeCtx) :-
    merge(?callerCtx, ?invoc, _, _, ?calleeCtx),

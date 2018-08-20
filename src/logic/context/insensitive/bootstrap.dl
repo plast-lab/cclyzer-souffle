@@ -23,7 +23,7 @@ exit_context(?ctx):-
    context_new(?ctx).
 
 
-.decl reachable_context(?ctx:Context, ?main:Function)
+.decl reachable_context(?ctx:Context, ?main:FunctionDecl)
 
 reachable_context(?ctx,?main):-
    main_function(?main),

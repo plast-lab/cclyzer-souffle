@@ -2,10 +2,12 @@
 .output acquire_ordering
 .output aggregate_type
 .output aliased_constants
+.output alloc_aliases
 .output alloc_context
 .output alloc_context_getinvoc
 .output alloc_context_getitem
 .output alloc_context_new
+.output alloc_matches
 .output alloc_subobject
 .output alloc_subregion
 .output alloc_subregion_at_any_array_index
@@ -27,6 +29,7 @@
 .output array_indices__no_typecomp
 .output array_pointer_type
 .output asm_call_instruction
+.output assign_instruction
 .output atomic_operation
 .output atomic_operation_add
 .output atomic_operation_and
@@ -345,6 +348,8 @@
 .output reachable_context
 .output reachable_function
 .output reachable_instruction
+.output reachable_load
+.output reachable_store
 .output record
 .output region_contains
 .output release_ordering

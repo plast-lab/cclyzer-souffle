@@ -9,3 +9,5 @@
 #include "type-back-propagation.dl"
 #include "constant-init.dl"
 #include "constant-exprs.dl"
+#include "allocations-subobjects-aliases.dl"
+#include "core.dl"

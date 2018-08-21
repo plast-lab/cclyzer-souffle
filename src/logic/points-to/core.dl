@@ -1,0 +1,147 @@
+
+// Model null as a specific memory location
+constant_points_to(?constant, ?null) :-
+   nullptr_constant(?constant),
+   null_location(?null).
+
+// Global variable and function references is a common type of
+// constants. They should be matched to the corresponding global
+// allocation.
+
+constant_points_to(?constant, ?alloc) :-
+   global_variable_constant_name(?constant, ?name),
+   global_variable_has_name(?gVar, ?name),
+   global_allocation_by_variable(?gVar, ?alloc).
+
+constant_points_to(?constant, ?alloc) :-
+   function_constant_fn_name(?constant, ?fName),
+   function_has_name(?func, ?fName),
+   global_allocation_by_function(?func, ?alloc).
+
+constant_points_to(?constant, ?alloc) :-
+   constant_references_variable(?constant, ?gVar),
+   global_allocation_by_variable(?gVar, ?alloc).
+
+constant_points_to(?constant, ?alloc) :-
+   constant_references_function(?constant, ?func),
+   global_allocation_by_function(?func, ?alloc).
+
+
+//----------------------------------------------------------------------
+// [Assignment Instructions]
+//
+// There are many types of instructions that essentially copy the
+// points-to set of a variable to another.
+//
+// Cast instructions such as `bitcast` fall to this category. Often
+// the returned type of a `@malloc` function call is different than
+// the declared type of the target variable. The LLVM IR adds a
+// temporary variable of type `i8*` to hold the result and then an
+// intermediate `bitcast` instruction that casts this temporary
+// variable to the right type.
+//
+// Another class of assignment instructions are the interprocedural
+// assignments. This way we can model the implicit flow from (i) the
+// actual arguments to the formal parameters, and from (ii) the return
+// value of the called function to the variable that is assigned the
+// result of the `call instruction`.
+//----------------------------------------------------------------------
+
+
+
+var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+   assign_instruction(?instrFunc, ?toVar, ?value),
+   operand_points_to(?aCtx, ?alloc, ?ctx, ?value), // TODO: consider adding type check
+   reachable_context(?ctx, ?instrFunc).
+
+.decl assign_instruction(?instrFunc: Function, ?toVar: Variable, ?value: Operand)
+// `bitcast` instructions
+assign_instruction(?instrFunc, ?toVar, ?value) :-
+   reachable_function(?instrFunc),
+   bitcast_instruction_from_operand(?instr, ?value),  // TODO: consider adding type check
+   instruction_assigns_to(?instr, ?toVar),
+   instruction_in_function(?instr, ?instrFunc).
+
+// `ptrtoint` instructions
+assign_instruction(?instrFunc, ?toVar, ?value) :-
+   reachable_function(?instrFunc),
+   ptrtoint_instruction_from_operand(?instr, ?value),
+   instruction_assigns_to(?instr, ?toVar),
+   instruction_in_function(?instr, ?instrFunc).
+
+// `inttoptr` instructions
+var_points_to(?aCtx, ?unknown, ?ctx, ?toVar) :-
+   empty_alloc_context(?aCtx),
+   unknown_location(?unknown),
+   inttoptr_instruction(?instr),
+   instruction_assigns_to(?instr, ?toVar),
+   instruction_in_function(?instr, ?instrFunc),
+   reachable_function(?instrFunc),
+   reachable_context(?ctx, ?instrFunc).
+
+// `phi` instructions: treat every possible pair value as a potential
+// assignment to the target variable
+assign_instruction(?instrFunc, ?toVar, ?value) :-
+   reachable_function(?instrFunc),
+   phi_instruction_pair(?instr, _, [?value, _]),
+   instruction_assigns_to(?instr, ?toVar),
+   instruction_in_function(?instr, ?instrFunc).
+
+
+// `select` instructions; similar to `phi` instructions
+assign_instruction(?instrFunc, ?toVar, ?value) :-
+   reachable_function(?instrFunc),
+   select_instruction(?instr),
+   ( select_instruction_first_operand(?instr, ?value)
+   ; select_instruction_second_operand(?instr, ?value) ),
+   instruction_assigns_to(?instr, ?toVar),
+   instruction_returns_type(?instr, ?type),
+   instruction_in_function(?instr, ?instrFunc),
+   !vector_type(?type).
+
+// // A simple field-insensitive approach (just ignore indices of
+// // `getelementptr`)
+//
+// assign_instruction(ToVar, Base) <-
+//    getelementptr_instruction:base[Insn] = Base,
+//    instruction:to[Insn] = ToVar.
+
+
+// TODO: support `cmpxchg` and `atomicrmw` instructions
+// TODO: support `invoke` and `landingpad` instructions
+
+
+//----------------------------------------------------------------------
+// [Load/Store Instructions]
+//----------------------------------------------------------------------
+
+.decl reachable_store(?instrFunc: Function, ?toAddress: Operand, ?value: Operand)
+
+reachable_store(?instrFunc, ?toAddress, ?value) :-
+   reachable_function(?instrFunc),
+   store_instruction_value(?instr, ?value),
+   store_instruction_address(?instr, ?toAddress),
+   instruction_in_function(?instr, ?instrFunc).
+
+
+ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc) :-
+   reachable_store(?instrFunc, ?toAddress, ?value),
+   reachable_context(?ctx, ?instrFunc),
+   operand_points_to(?aCtx, ?alloc, ?ctx, ?value),
+   operand_points_to(?baseACtx, ?baseAlloc, ?ctx, ?toAddress),
+   ptr_compatible_allocation(?baseAlloc).
+
+.decl reachable_load(?instrFunc: Function, ?toVar: Variable, ?fromAdress: Operand)
+
+reachable_load(?instrFunc, ?toVar, ?fromAddress) :-
+   reachable_function(?instrFunc),
+   load_instruction_address(?instr, ?fromAddress),
+   instruction_assigns_to(?instr, ?toVar),
+   instruction_in_function(?instr, ?instrFunc).
+
+var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+   reachable_load(?instrFunc, ?toVar, ?fromAddress),
+   reachable_context(?ctx, ?instrFunc),
+   operand_points_to(?baseACtx, ?baseAlloc, ?ctx, ?fromAddress),
+   ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc). // TODO: consider adding type check
+

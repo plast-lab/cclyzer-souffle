@@ -29,6 +29,7 @@
 .decl context_item_by_invoc(?invoc:Instruction, ?ctxItem:ContextItem)
 .decl context_item_invoc(?ctxItem:ContextItem, ?invoc:Instruction)
 
+
 context_item_invoc(?ctxItem, ?invoc) :-
    context_item_by_invoc(?invoc, ?ctxItem).
 

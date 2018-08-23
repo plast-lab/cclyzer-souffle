@@ -234,6 +234,7 @@
 .output function_is_wellformed
 .output function_nparams
 .output function_param_by_value
+.output function_returns_value
 .output gep_constant_expr_points_to
 .output gep_is_vector_based
 .output getelementptr_instruction_base_type
@@ -291,6 +292,7 @@
 .output integer_vector_type
 .output intel_ocl_bi_calling_convention
 .output internal_linkage_type
+.output interp_assignment
 .output inttoptr_instruction_from_type
 .output invoke_instruction_fn_target
 .output invoke_instruction_fn_type
@@ -310,6 +312,7 @@
 .output main_context
 .output main_function
 .output matches_string_context
+.output memcpy_pass_by_value
 .output merge
 .output metadata_type
 .output minimal_suffix
@@ -361,6 +364,7 @@
 .output reachable_store
 .output record
 .output region_contains
+.output registers_atexit
 .output registers_dtor_atexit
 .output release_ordering
 .output relevant_suffix_position
@@ -428,6 +432,7 @@
 .output unordered_ordering
 .output unpadded_struct_type
 .output untyped_allocation
+.output va_arg_target
 .output var_points_to
 .output variable_in_function
 .output variable_is_firstclass

@@ -258,8 +258,8 @@ template_typeinfo(?typeInfo) :-
 // Constructors and Destructors for objects of this class type
 //------------------------------------------------------------------------------
 
-.decl class_type_constructor(?cTor: FunctionDecl, ?type: StructType)
-.decl class_type_destructor(?dTor: FunctionDecl, ?type: StructType)
+.decl class_type_constructor(?cTor: FunctionDecl, ?type: ClassType)
+.decl class_type_destructor(?dTor: FunctionDecl, ?type: ClassType)
 
 // To identify constructors we rely on the Itanium ABI mangling rules
 

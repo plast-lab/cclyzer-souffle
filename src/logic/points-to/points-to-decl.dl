@@ -67,4 +67,4 @@ operand_points_to(_, _, Ctx, Operand)
 // Call-Graph
 //----------------------------
 
-.decl callgraph_edge(?calleeCtx: Context, ?callee: Instruction, ?callerCtx: Context, ?callerInstr: FunctionDecl)
+.decl callgraph_edge(?calleeCtx: Context, ?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)

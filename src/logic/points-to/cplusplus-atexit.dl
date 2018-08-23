@@ -1,0 +1,61 @@
+//------------------------------------------------------------------------------
+// [Atexit Function - Itanium C++ ABI]
+//
+// Signature:
+// int __cxa_atexit(void (*func) (void *), void * arg, void * dso_handle);
+//
+// Registers a destructor function to be called by exit() or when a
+// shared library is unloaded.
+//
+// Its arguments are:
+//   * A pointer to the destructor function
+//   * The receiver object of the call
+//   * A handle to the shared library
+//
+// This routine never returns.
+//------------------------------------------------------------------------------
+
+.decl cxx_atexit_function(?func: FunctionDecl)
+
+cxx_atexit_function(?func) :-
+   function_has_name(?func, "@__cxa_atexit"),
+   function_has_type(?func, ?fType),
+   function_type_param(?fType, 0, ?type1),
+   function_type_param(?fType, 1, ?type2),
+   function_type_param(?fType, 2, ?type3),
+   pointer_type_has_component(?type1, ?compType1),
+   function_type(?compType1),
+   integer_pointer_type(?type2),
+   integer_pointer_type(?type3),
+   function_type_nparams(?fType, 3).
+
+.decl registers_dtor_atexit(?callCtx: Context, ?dtorOperand: Operand, ?recvOperand: Operand)
+registers_dtor_atexit(?callCtx, ?dtorOperand, ?recvOperand) :-
+   cxx_atexit_function(?atExit),
+   callgraph_inverted_edge(?callCtx, ?callInstr, _, ?atExit),
+   call_instruction_arg(?callInstr, 0, ?dtorOperand),
+   call_instruction_arg(?callInstr, 1, ?recvOperand).
+
+
+// Model effects of `__cxa_atexit`
+
+.decl _dtor_accepts_recv(?aCtx: AllocationContext, ?recvObj: GlobalAllocation , ?dtor: FunctionDecl)
+
+called_at_exit(?dtor)
+ , _dtor_accepts_recv(?aCtx, ?recvObj, ?dtor)
+ :-
+   registers_dtor_atexit(?ctx, ?dtorOperand, ?recvOperand),
+   operand_points_to(_, ?dtorObj, ?ctx, ?dtorOperand),
+   operand_points_to(?aCtx, ?someObj, ?ctx, ?recvOperand),
+   alloc_aliases(?recvObj, ?someObj),
+   allocation_type(?recvObj, ?recvType),
+   function_by_location(?dtorObj, ?dtor),
+   function_has_type(?dtor, ?dtorType),
+   function_type_param(?dtorType, 0, ?ptrType),
+   pointer_type_has_component(?ptrType, ?recvType).
+
+var_points_to(?aCtx, ?recvObj, ?exitCtx, ?this) :-
+   exit_context(?exitCtx),
+   _dtor_accepts_recv(?aCtx, ?recvObj, ?dtor),
+   reachable_context(?exitCtx, ?dtor),
+   function_param(?dtor, 0, ?this).

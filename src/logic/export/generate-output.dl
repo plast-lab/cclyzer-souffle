@@ -1,5 +1,6 @@
 .output acq_rel_ordering
 .output acquire_ordering
+.output actual_arg
 .output aggregate_type
 .output aliased_constants
 .output alloc_aliases
@@ -63,6 +64,7 @@
 .output called_at_startup
 .output callgraph_edge
 .output callgraph_invalid_edge
+.output callgraph_inverted_edge
 .output calling_convention
 .output class_type
 .output class_type_constructor
@@ -80,6 +82,7 @@
 .output constant_points_to
 .output constant_references_function
 .output constant_references_variable
+.output constructor_class_type
 .output context
 .output context_getinvoc
 .output context_getinvoc0
@@ -91,11 +94,14 @@
 .output context_item_by_invoc
 .output context_item_invoc
 .output context_new
+.output cxx_atexit_function
+.output cxx_new_function
 .output debuginfo_invalid_entry
 .output debuginfo_invalid_location
 .output debuginfo_is_loaded
 .output default_visibility
 .output derived_type
+.output destructor_class_type
 .output di?composite_type_entry
 .output di?const_type_entry
 .output di?entry
@@ -221,6 +227,7 @@
 .output function_attribute__sspreq
 .output function_attribute__sspstrong
 .output function_attribute__uwtable
+.output function_by_location
 .output function_decl
 .output function_decl_to_defn
 .output function_is_illformed
@@ -244,6 +251,7 @@
 .output heap_allocation_by_calloc
 .output heap_allocation_by_instruction
 .output heap_allocation_by_malloc
+.output heap_allocation_by_new
 .output heap_allocation_by_realloc
 .output heap_allocation_by_type_instruction
 .output hidden_visibility
@@ -262,6 +270,7 @@
 .output icmp_instruction_to_type
 .output indirect_call_instruction
 .output indirect_invoke_instruction
+.output init_by_ctor
 .output initial_exec_threadlocal_mode
 .output initialized_by_constant
 .output insertelement_instruction_type
@@ -352,6 +361,7 @@
 .output reachable_store
 .output record
 .output region_contains
+.output registers_dtor_atexit
 .output release_ordering
 .output relevant_suffix_position
 .output schema_invalid_alias
@@ -379,6 +389,11 @@
 .output store_instruction_address_ptr_type
 .output store_instruction_is_atomic
 .output store_instruction_value_type
+.output stripctx_callgraph_edge
+.output stripctx_filtered_ptr_points_to
+.output stripctx_operand_points_to
+.output stripctx_ptr_points_to
+.output stripctx_var_points_to
 .output struct_pointer_type
 .output struct_type
 .output struct_type_field_name

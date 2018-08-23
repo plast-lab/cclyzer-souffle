@@ -11,3 +11,7 @@
 #include "constant-exprs.dl"
 #include "allocations-subobjects-aliases.dl"
 #include "core.dl"
+#include "cplusplus.dl"
+#include "cplusplus-atexit.dl"
+#include "strip-context-projections.dl"
+#include "interprocedural.dl"

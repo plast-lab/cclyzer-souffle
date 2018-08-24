@@ -4,6 +4,7 @@
 #include "allocations-subobjects.dl"
 #include "type_compatibility.dl"
 #include "points-to-decl.dl"
+#include "points-to-statistics.dl"
 #include "class-type.dl"
 #include "virtual-tables.dl"
 #include "type-back-propagation.dl"

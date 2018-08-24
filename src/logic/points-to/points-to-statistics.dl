@@ -1,0 +1,144 @@
+// The containing function of a variable
+/*
+variable_in_function(?var, ?func) :-
+   variable:descriptor(Var, _, FuncSign, _, _),
+   function:by_name[FuncSign] = Func.
+*/
+
+// Compute variables defined in reachable functions
+
+.decl reachable_var(?var: Variable)
+.decl reachable_vars(?nVars: number)
+.decl empty_var(?var: Variable)
+.decl nonempty_var(?var: Variable)
+.decl empty_vars(?nVars: number)
+.decl nonempty_vars(?nVars: number)
+.decl var_points_to_sizes(?var: Variable, ?nAllocs: number)
+.decl _var_pt_size(?nAllocs: number, ?var: Variable)
+.decl nvars_by_pt_size(?nAllocs: number, ?nVars: number)
+.decl _nvars_by_pt_total(?nVars: number)
+.decl empty_ptr(?ptr: Allocation)
+.decl empty_ptrs(?nPtrs: number)
+.decl nonempty_ptr(?ptr: Allocation)
+.decl nonempty_ptrs(?nPtrs: number)
+.decl alloc_points_to_sizes(?alloc: Allocation, ?nAllocs: number)
+.decl _alloc_pt_size(?nAllocs: number, ?alloc: Allocation)
+.decl nallocs_by_pt_size(?nAllocs: number, ?nPtrs: number)
+
+
+
+
+reachable_var(?var) :-
+   variable_in_function(?var, ?func),
+   reachable_function(?func).
+
+
+
+reachable_vars(?nVars) :-
+   ?nVars = count : reachable_var(_).
+
+
+
+//------------------------------------------------------------------------------
+// Variable Points-to Sets Statistics
+//------------------------------------------------------------------------------
+
+
+// Compute variables with non-empty points-to sets
+
+
+empty_var(?var) :-
+   variable(?var),
+   !stripctx_var_points_to(_, ?var).
+
+nonempty_var(?var) :-
+   stripctx_var_points_to(_, ?var).
+
+empty_vars(?nVars) :-
+   ?nVars = count : empty_var(_).
+
+nonempty_vars(?nVars) :-
+   ?nVars = count : nonempty_var(_).
+
+
+// Compute variable points-to sets sizes
+
+
+var_points_to_sizes(?var, ?nAllocs) :-
+   variable(?var),
+   ?nAllocs = count : stripctx_var_points_to(_, ?var).
+
+_var_pt_size(?nAllocs, ?var) :-
+   var_points_to_sizes(?var, ?nAllocs).
+
+
+// Number of variables that point to `NAllocs` number of allocations
+
+nvars_by_pt_size(?nAllocs, ?nVars) :-
+   _var_pt_size(?nAllocs, _),
+   ?nVars = count : _var_pt_size(?nAllocs, _).
+
+
+// Sanity check: all non-empty variables should point-to some number
+// of allocations
+
+/*
+//				Maybe sanity check?
+_nvars_by_pt_total(?nVars) :-
+   sanity_check(),
+   ?nVars = count : nvars_by_pt_size(_,?n).
+
+
+_nvars_by_pt_total[] = NVars
+ -> nonempty_vars[] = NVars.
+*/
+
+//------------------------------------------------------------------------------
+// Pointer Dereference Statistics
+//------------------------------------------------------------------------------
+
+
+// Compute pointer objects with non-empty points-to sets
+
+empty_ptr(?ptr) :-
+   allocation(?ptr),
+   !stripctx_ptr_points_to(_, ?ptr).
+
+empty_ptrs(?nPtrs) :-
+   ?nPtrs = count : empty_ptr(_).
+
+nonempty_ptr(?ptr) :-
+   stripctx_ptr_points_to(_, ?ptr).
+
+nonempty_ptrs(?nPtrs) :-
+   ?nPtrs = count : nonempty_ptr(_).
+
+
+// Compute pointer points-to sets sizes
+alloc_points_to_sizes(?alloc, ?nAllocs) :-
+   stripctx_ptr_points_to(_, ?alloc),
+   ?nAllocs = count : stripctx_ptr_points_to(_, ?alloc).
+
+_alloc_pt_size(?nAllocs, ?alloc) :-
+   alloc_points_to_sizes(?alloc, ?nAllocs).
+
+
+// Number of pointer objects that point to `NAllocs` number of
+// allocations
+
+nallocs_by_pt_size(?nAllocs, ?nPtrs) :-
+   _alloc_pt_size(?nAllocs, _),
+   ?nPtrs = count : _alloc_pt_size(?nAllocs, _).
+
+/*
+// Sanity check: all non-empty pointers should point-to some number of
+// allocations
+
+_nallocs_by_pt_total[] = NPtrs <-
+   agg<<NPtrs = total(N)>>
+   nallocs_by_pt_size[_] = N.
+
+_nallocs_by_pt_total[] = NVars
+ -> nonempty_ptrs[] = NVars.
+
+*/

@@ -9,6 +9,7 @@
 .output alloc_context_getitem
 .output alloc_context_new
 .output alloc_matches
+.output alloc_points_to_sizes
 .output alloc_subobject
 .output alloc_subregion
 .output alloc_subregion_at_any_array_index
@@ -153,6 +154,10 @@
 .output dummy_context_item_by_str
 .output empty_alloc_context
 .output empty_context
+.output empty_ptr
+.output empty_ptrs
+.output empty_var
+.output empty_vars
 .output entry_point
 .output eq_size_vector_types
 .output eq_size_vector_types_
@@ -321,9 +326,15 @@
 .output minimal_suffix_len
 .output monotonic_ordering
 .output msp430_intr_calling_convention
+.output nallocs_by_pt_size
 .output next_instruction_index
 .output non_allocation
+.output nonempty_ptr
+.output nonempty_ptrs
+.output nonempty_var
+.output nonempty_vars
 .output null_location
+.output nvars_by_pt_size
 .output operand
 .output operand_has_type
 .output operand_is_firstclass
@@ -364,6 +375,8 @@
 .output reachable_instruction
 .output reachable_load
 .output reachable_store
+.output reachable_var
+.output reachable_vars
 .output record
 .output region_contains
 .output registers_atexit
@@ -436,6 +449,7 @@
 .output untyped_allocation
 .output va_arg_target
 .output var_points_to
+.output var_points_to_sizes
 .output variable_in_function
 .output variable_is_firstclass
 .output variable_is_label

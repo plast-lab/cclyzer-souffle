@@ -1,0 +1,139 @@
+//------------------------------------------------------------------------------
+// [Memcpy instructions]
+//
+//  We must treat `memcpy` instructions in such a way as to ensure
+//  that it may change the points-to set of any subregion of memory
+//  that is being copied.
+//------------------------------------------------------------------------------
+
+// Two kinds of `memcpy` predicates that will trigger the deep copy
+// semantics for the corresponding allocations they point to.
+//
+// The first one is for ordinary memcpy calls, while the second one is
+// intended to simulate pass-by-value copy semantics.
+
+.decl memcpy_call(?instr: Instruction, ?ctx: Context, ?to: Operand, ?from: Operand)
+
+memcpy_call(?memcpyInstr, ?callerCtx, ?to, ?from) :-
+   function_has_name(?callee, ?name),
+   ( match("@memcpy%", ?name)
+   ; match("@llvm.memcpy%", ?name) ),
+   callgraph_edge(_, ?callee, ?callerCtx, ?memcpyInstr),
+   actual_arg(?memcpyInstr, 0, ?to),
+   actual_arg(?memcpyInstr, 1, ?from).
+
+//.decl memcpy_pass_by_value(?instr: Instruction, ?toCtx: Context, ?toVar: Variable, ?fromCtx: Context, ?fromValue: Operand)
+
+// Logic should handle syntactic aliases. For instance
+// `memcpy(to,from)` is equivalent to `memcpy(to, &from[0])`. We
+// consider all possible aliases of the base objects that flow to the
+// operands of the @memcpy instruction, but only keep type compatible
+// pairs.
+
+// Bitwise copy semantics that respect type information
+.decl memcpy(?insn: Instruction, ?toCtx: AllocationContext, ?to: Allocation, ?fromCtx: AllocationContext , ?from: Allocation)
+
+memcpy(?instr, ?toACtx, ?toALias, ?fromACtx, ?fromAlias)
+ :-
+   memcpy_call(?instr, ?ctx, ?to, ?from),
+   operand_points_to(?fromACtx, ?fromAlloc, ?ctx, ?from),
+   operand_points_to(?toACtx, ?toAlloc, ?ctx, ?to),
+   // consider any possible aliases
+   alloc_aliases(?toALias, ?toAlloc),
+   alloc_aliases(?fromAlias, ?fromAlloc),
+   // check type compatibility
+   allocation_type(?toALias, ?toType),
+   allocation_type(?fromAlias, ?fromType),
+   type_compatible(?fromType, ?toType).
+
+memcpy(?instr, ?toACtx, ?toALias, ?fromACtx, ?fromAlias)
+ :-
+   memcpy_pass_by_value(?instr, ?toCtx, ?to, ?fromCtx, ?from),
+   operand_points_to(?fromACtx, ?fromAlloc, ?fromCtx, ?from),
+   var_points_to(?toACtx, ?toAlloc, ?toCtx, ?to),
+   // consider any possible aliases
+   alloc_aliases(?toALias, ?toAlloc),
+   alloc_aliases(?fromAlias, ?fromAlloc),
+   // check type compatibility
+   allocation_type(?toALias, ?toType),
+   allocation_type(?fromAlias, ?fromType),
+   type_compatible(?fromType, ?toType).
+
+
+//------------------------------------------------------------------------------
+// [Recursive Memory Copying]
+//
+// Memory copy may extend to subobjects. As an optimization, we do not
+// keep track of context during the recursive computation of memcopied
+// pairs, since we can take it back from their respective base
+// objects.
+//------------------------------------------------------------------------------
+
+.decl _rec_memcpy(?insn: Instruction, ?to: Allocation, ?from: Allocation)
+
+_rec_memcpy(?insn, ?to, ?from) :-
+   memcpy(?insn, _, ?to, _, ?from).
+
+_rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
+ :-
+   _rec_memcpy(?insn, ?destObject, ?srcObject),
+   // get source and destination subobjects for given field
+   alloc_subregion_at_field(?srcObject, ?field, ?srcSubobject),
+   alloc_subregion_at_field(?destObject, ?field, ?destSubobject),
+   // check for type compatibility
+   allocation_type(?srcSubobject, ?srcType),
+   allocation_type(?destSubobject, ?destType),
+   type_compatible(?srcType, ?destType).
+
+_rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
+ :-
+   _rec_memcpy(?insn, ?destObject, ?srcObject),
+   // get source and destination subobjects
+   alloc_subregion_at_array_index(?srcObject, ?index, ?srcSubobject),
+   alloc_subregion_at_array_index(?destObject, ?index, ?destSubobject),
+   // check for type compatibility
+   allocation_type(?srcSubobject, ?srcType),
+   allocation_type(?destSubobject, ?destType),
+   type_compatible(?srcType, ?destType).
+
+_rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
+ :-
+   _rec_memcpy(?insn, ?destObject, ?srcObject),
+   // get source and destination subobjects
+   alloc_subregion_at_any_array_index(?srcObject, ?srcSubobject),
+   alloc_subregion_at_any_array_index(?destObject, ?destSubobject),
+   // check for type compatibility
+   allocation_type(?srcSubobject, ?srcType),
+   allocation_type(?destSubobject, ?destType),
+   type_compatible(?srcType, ?destType).
+
+
+//------------------------------------------------------------------------------
+// Copying pointer contents for memcopied objects
+//------------------------------------------------------------------------------
+
+// Lose instruction and invert FROM and TO for optimal indexing
+.decl _rec_memcpy_without_insn(?from: Allocation, ?to: Allocation)
+.decl _rec_memcpy_to_ptr(?insn: Instruction, ?to: Allocation, ?from: Allocation)
+
+
+_rec_memcpy_without_insn(?from, ?to) :-
+   _rec_memcpy(_, ?to, ?from).
+
+_rec_memcpy_to_ptr(?instr, ?to, ?from) :-
+   _rec_memcpy(?instr, ?to, ?from),
+   _rec_memcpy_without_insn(?from, ?to),
+   ptr_compatible_allocation(?to).
+
+// Copy points-to set of copied objects
+ptr_points_to(?aCtx, ?alloc, ?toCtx, ?to) :-
+   _rec_memcpy_to_ptr(?instr, ?to, ?from),
+   region_contains(?toOuter, ?to),
+   region_contains(?fromOuter, ?from),
+   memcpy(?instr, ?toCtx, ?toOuter, ?fromCtx, ?fromOuter),
+   ptr_points_to(?aCtx, ?alloc, ?fromCtx, ?from).
+
+ptr_points_to(?aCtx, ?alloc, ?toCtx, ?to) :-
+   _rec_memcpy_to_ptr(?instr, ?to, ?from),
+   memcpy(?instr, ?toCtx, ?to, ?fromCtx, ?from),
+   ptr_points_to(?aCtx, ?alloc, ?fromCtx, ?from).

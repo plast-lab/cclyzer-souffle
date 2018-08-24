@@ -312,6 +312,8 @@
 .output main_context
 .output main_function
 .output matches_string_context
+.output memcpy
+.output memcpy_call
 .output memcpy_pass_by_value
 .output merge
 .output metadata_type

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //  [Interprocedural Logic]
 //------------------------------------------------------------------------------
-//UNFINISHED
+
 
 .decl callgraph_inverted_edge(?callerCtx: Context, ?callerInstr: Instruction, ?calleeCtx: Context, ?callee: FunctionDecl)
 

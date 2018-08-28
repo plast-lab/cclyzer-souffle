@@ -68,7 +68,12 @@ alloc_subregion(?newAlloc)
    // determine type
    struct_type(?type),
    struct_type_field(?type, ?field, ?fieldType),
-   ?newAlloc= cat(cat(?alloc, "sub"), to_string(?field)).
+
+   (struct_type_field_name(?type,?field, ?fieldName),
+    ?newAlloc= cat(cat(cat(cat(?alloc,"."),?fieldName),"/"),to_string(?field))
+    ;
+    !struct_type_field_name(?type,?field, _),
+    ?newAlloc= cat(cat(?alloc,".?/"),to_string(?field))).
 
 
 //---------------------------------------------------------------
@@ -89,7 +94,7 @@ alloc_subregion(?newAlloc)
    allocation_type(?alloc, ?type),
    // base object
    basic_allocation(?alloc),
-   ?newAlloc=cat(?alloc,"sub").
+   ?newAlloc=cat(?alloc,"[*]").
 
 // Create star array index expression, once type for base object is
 // established
@@ -104,7 +109,7 @@ alloc_subregion(?newAlloc)
    // determine type
    array_type(?type),
    array_type_has_component(?type, ?elementType),
-   ?newAlloc=cat(?alloc,"sub").
+   ?newAlloc=cat(?alloc,"[*]").
 
 
 //---------------------------------------------------------------
@@ -127,7 +132,7 @@ alloc_subregion(?newAlloc),
    basic_allocation(?alloc),
    // first index is a constant
    pointer_index(?index),
-   ?newAlloc= cat(cat(?alloc,"sub"), to_string(?index)).
+   ?newAlloc= cat(cat(cat(?alloc,"["), to_string(?index)), "]").
 
 
 // Record trivial zero aliases on base objects
@@ -161,7 +166,7 @@ alloc_subregion(?newAlloc),
    array_type_has_component(?type, ?elementType),
    // accept any relevant array index for this type
    array_indices(?type, ?index),
-   ?newAlloc = cat(cat(?alloc, "sub"), to_string(?index)).
+   ?newAlloc = cat(cat(cat(?alloc, "["), to_string(?index)), "]").
 
 
 // Find all statically possible pointer indices
@@ -220,31 +225,16 @@ alloc_subobject(?alloc, ?baseAlloc) :-
 
 
 allocation_to_string(?region, ?regionStr) :-
-   alloc_subregion_at_array_index(?alloc, ?index, ?region),
-   allocation_to_string(?alloc, ?allocStr),
-   ?indexStr = to_string(?index),
-   ?regionStr = cat(cat(cat(?allocStr, "["), ?indexStr), "]").
+   alloc_subregion_at_array_index(_, _, ?region),
+   ?regionStr = ?region.
 
 allocation_to_string(?region, ?regionStr) :-
-   alloc_subregion_at_any_array_index(?alloc, ?region),
-   allocation_to_string(?alloc, ?allocStr),
-   ?regionStr = cat(?allocStr, "[*]").
+   alloc_subregion_at_any_array_index(_, ?region),
+   ?regionStr = ?region.
 
 allocation_to_string(?region, ?regionStr) :-
-   allocation_type(?alloc, ?type),
-   struct_type_field_name(?type, ?index, ?fieldName),
-   alloc_subregion_at_field(?alloc, ?index, ?region),
-   allocation_to_string(?alloc, ?allocStr),
-   ?indexStr = to_string(?index),
-   ?regionStr = cat(cat(cat(cat(?allocStr,"."), ?fieldName), "/"), ?indexStr).
-
-allocation_to_string(?region, ?regionStr) :-
-   allocation_type(?alloc, ?type),
-   !struct_type_field_name(?type, ?index, _),
-   alloc_subregion_at_field(?alloc, ?index, ?region),
-   allocation_to_string(?alloc, ?allocStr),
-   ?indexStr = to_string(?index),
-   ?regionStr = cat(cat(?allocStr, ".?/"), ?indexStr).
+   alloc_subregion_at_field(_, _, ?region),
+   ?regionStr = ?region.
 
 
 //------------------------------------------------------------------------

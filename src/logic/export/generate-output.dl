@@ -22,6 +22,7 @@
 .output allocation_to_string
 .output allocation_type
 .output allocation_zeroalias
+.output analyze_pointer_arithmetic
 .output appending_linkage_type
 .output arm_aapcs_calling_convention
 .output arm_aapcs_vfp_calling_convention
@@ -67,6 +68,9 @@
 .output callgraph_invalid_edge
 .output callgraph_inverted_edge
 .output calling_convention
+.output class_instance
+.output class_instance_constructor
+.output class_instance_vtable
 .output class_type
 .output class_type_constructor
 .output class_type_destructor
@@ -279,6 +283,7 @@
 .output init_by_ctor
 .output initial_exec_threadlocal_mode
 .output initialized_by_constant
+.output inlined_constructors
 .output insertelement_instruction_type
 .output insertvalue_instruction_base_type
 .output insertvalue_instruction_interm_type
@@ -447,6 +452,9 @@
 .output unordered_ordering
 .output unpadded_struct_type
 .output untyped_allocation
+.output user_options_entrypoints
+.output user_options_optimized_code
+.output user_options_pointer_arithmetic
 .output va_arg_target
 .output var_points_to
 .output var_points_to_sizes

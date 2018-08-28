@@ -2,11 +2,11 @@
 // Basic Allocation Type Hierarchy
 //-----------------------------------
 
-.type Allocation          = BasicAllocation
-.type BasicAllocation     = StackAllocation | HeapAllocation | GlobalAllocation
-.type StackAllocation     = AllocaInstruction | Variable
-.type HeapAllocation      = CallInstruction
-.type GlobalAllocation    = FunctionDecl | GlobalVariable
+.type Allocation
+.type BasicAllocation     = Allocation
+.type StackAllocation     = BasicAllocation
+.type HeapAllocation      = BasicAllocation
+.type GlobalAllocation    = BasicAllocation
 
 /*
 .type AllocationInstruction = CallInstruction | AllocaInstruction

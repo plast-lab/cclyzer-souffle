@@ -12,12 +12,13 @@
 // https://mentorembedded.github.io/cxx-abi/abi.html#rtti-layout
 //--------------------------------------------------------------------
 
-.decl vtable(?vt: GlobalVariable, ?name: symbol)
+.decl vtable(?vt: VirtualTable, ?name: symbol)
 .decl typeinfo(?typeInfo: GlobalVariable)
-.decl vtable_typeinfo(?vt: GlobalVariable,?typeInfo: GlobalVariable)
+.decl vtable_typeinfo(?vt: VirtualTable,?typeInfo: GlobalVariable)
 
+.type VirtualTable = GlobalVariable
 
-.decl typeinfo_vtable(?vt: GlobalVariable, ?name: symbol)
+.decl typeinfo_vtable(?vt: VirtualTable, ?name: symbol)
 vtable(?vt, ?name) :-
    typeinfo_vtable(?vt, ?name).
 
@@ -28,19 +29,19 @@ typeinfo_vtable(?vt, ?name) :-
    match("%class_type_info%",?name),
    match("%cxxabi%",?name).
 
-.decl typeinfo_vtable_baseclass(?vt: GlobalVariable, ?name: symbol)
+.decl typeinfo_vtable_baseclass(?vt: VirtualTable, ?name: symbol)
 typeinfo_vtable_baseclass(?vt, ?name) :-
    typeinfo_vtable(?vt, ?name),
    !match("%__si_class_type_info%",?name),
    !match("%__vmi_class_type_info%",?name),
    match("%__class_type_info%",?name).
 
-.decl typeinfo_vtable_single_inheritance(?vt: GlobalVariable, ?name: symbol)
+.decl typeinfo_vtable_single_inheritance(?vt: VirtualTable, ?name: symbol)
 typeinfo_vtable_single_inheritance(?vt, ?name) :-
    typeinfo_vtable(?vt, ?name),
    match("%__si_class_type_info%",?name).
 
-.decl typeinfo_vtable_multiple_inheritance(?vt: GlobalVariable, ?name: symbol)
+.decl typeinfo_vtable_multiple_inheritance(?vt: VirtualTable, ?name: symbol)
 typeinfo_vtable_multiple_inheritance(?vt, ?name) :-
    typeinfo_vtable(?vt, ?name),
    match("%__vmi_class_type_info%",?name).
@@ -48,7 +49,7 @@ typeinfo_vtable_multiple_inheritance(?vt, ?name) :-
 
 // Track flow of vpointers to constants
 
-.decl constant_contains_vptr(?vt: GlobalVariable, ?constant: Constant)
+.decl constant_contains_vptr(?vt: VirtualTable, ?constant: Constant)
 constant_contains_vptr(?vt, ?constant) :-
    global_variable_constant_name(?constant, ?name),
    vtable(?vt, ?name).
@@ -68,7 +69,7 @@ constant_contains_vptr(?vt, ?outer) :-
 
 // Identify the actual type info objects throught their vpointers
 
-.decl typeinfo_has_vtable(?typeInfo:symbol ,?vt: GlobalVariable)
+.decl typeinfo_has_vtable(?typeInfo:symbol ,?vt: VirtualTable)
 typeinfo(?typeInfo),
 typeinfo_has_vtable(?typeInfo,?vt) :-
    constant_contains_vptr(?vt, ?initializer),
@@ -138,7 +139,7 @@ typeinfo_base_class(?typeinfo, ?offset, ?baseTypeinfo) :-
 // see RTTI Layout of Itanium C++ ABI
 
 // Find the functions stored inside each vtable
-.decl vtable_function(?vt: GlobalVariable, ?index: number, ?func: FunctionDecl)
+.decl vtable_function(?vt: VirtualTable, ?index: number, ?func: FunctionDecl)
 
 vtable_function(?vt,?index,?func) :-
    vtable(?vt, _),

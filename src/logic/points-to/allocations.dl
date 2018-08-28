@@ -9,7 +9,10 @@ alloc_context(?aCtx),
    alloca_instruction(?instr),
    instruction_assigns_to(?instr, ?var),
    instruction_in_function(?instr, ?instrFunc),
-   ?stackAlloc = ?instr,
+   variable_in_function(?var,?func),
+   variable_has_type(?var,?type),
+   variable_has_name(?var,?name),
+   ?stackAlloc = cat(?instr, cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]")),
    reachable_context(?ctx, ?instrFunc),
    // Extra
    context_getitem(?ctx, ?item),
@@ -31,7 +34,12 @@ alloc_context(?aCtx),
  :-
    function_param_by_value(?func, ?index),
    function_param(?func, ?index, ?param),
-   ?stackAlloc = ?param,
+
+   variable_in_function(?param,?func),	//OPT clause
+   variable_has_type(?param,?type),
+   variable_has_name(?param,?name),
+   ?stackAlloc = cat(?param, cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]")),
+
    reachable_context(?ctx, ?func),
 //   Extra
    context_getitem(?ctx, ?item),
@@ -68,7 +76,11 @@ heap_allocation_by_instruction(?instr, ?heapAlloc) :-
    ; invoke_instruction_fn_target(?instr, ?func)),
    instruction_assigns_to(?instr, ?var),
    instruction_in_function(?instr,  ?instrFunc),
-   ?heapAlloc = ?instr,
+   
+   variable_has_type(?var,?type),
+   variable_has_name(?var,?name),
+
+   ?heapAlloc = cat(?instr, cat(cat(cat(cat(cat(cat("*heap_alloc",?instrFunc),"["),?type)," "),?name),"]")),
    reachable_context(?ctx, ?instrFunc),
    // Extra
    context_getitem(?ctx, ?item),
@@ -128,7 +140,9 @@ heap_allocation_by_realloc(?insn, ?heapAlloc) :-
 global_allocation(?alloc),
 global_allocation_by_variable(?gVar, ?alloc):-
    global_variable(?gVar),
-   ?alloc = ?gVar.
+
+   global_variable_has_name(?gVar, ?name),
+   ?alloc = cat(?gVar, cat("*global_alloc",?name)).
 
 allocation_type(?alloc, ?type):-
    global_allocation_by_variable(?gVar, ?alloc),
@@ -141,7 +155,10 @@ global_allocation_by_function(?func, ?alloc):-
    (function(?func);
    function_decl(?func),
    !function_decl_to_defn(?func,_)),
-   ?alloc=?func.
+   
+   function_has_name(?func, ?name),
+   ?alloc = cat(?func, cat("*global_alloc",?name)).
+
 
 
 allocation_type(?alloc, ?type):-
@@ -195,42 +212,28 @@ global_allocation(Alloc)
 // Human readable representation for stack allocations
 
 allocation_to_string(?alloc, ?str) :-
-   stack_allocation_by_instruction(?insn, ?alloc),
-   instruction_assigns_to(?insn, ?var),
-   variable_in_function(?var,?func),
-   variable_has_type(?var,?type),
-   variable_has_name(?var,?name),
-   ?str = cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]").
+   stack_allocation_by_instruction(_, ?alloc),
+   ?str = ?alloc.
 
 allocation_to_string(?alloc, ?str) :-
-   stack_allocation_by_parameter(?func, ?index, ?alloc),
-   function_param(?func, ?index, ?param),
-   variable_in_function(?param,?func),
-   variable_has_type(?param,?type),
-   variable_has_name(?param,?name),
-   ?str = cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]").
+   stack_allocation_by_parameter(_, _, ?alloc),
+   ?str = ?alloc.
 
 // Human readable representation for heap allocations
 
 allocation_to_string(?alloc, ?str) :-
-   heap_allocation_by_instruction(?insn, ?alloc),
-   instruction_assigns_to(?insn, ?var),
-   variable_in_function(?var,?func),
-   variable_has_type(?var,?type),
-   variable_has_name(?var,?name),
-   ?str = cat(cat(cat(cat(cat(cat("*heap_alloc",?func),"["),?type)," "),?name),"]").
+   heap_allocation_by_instruction(_, ?alloc),
+   ?str = ?alloc.
 
 // Human readable representation for global variable allocations
 
 allocation_to_string(?alloc, ?str) :-
-   global_allocation_by_variable(?gVar, ?alloc),
-   global_variable_has_name(?gVar, ?name),
-   ?str = cat("*global_alloc",?name).
+   global_allocation_by_variable(_, ?alloc),
+   ?str = ?alloc.
 
 // Human readable representation for function allocations
 
 allocation_to_string(?alloc, ?str) :-
-   global_allocation_by_function(?func, ?alloc),
-   function_has_name(?func, ?name),
-   ?str = cat("*global_alloc",?name).
+   global_allocation_by_function(_, ?alloc),
+   ?str = ?alloc.
 

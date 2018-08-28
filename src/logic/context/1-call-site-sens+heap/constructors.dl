@@ -7,7 +7,7 @@
 
 .type Context = [?ctxItem: ContextItem]
 .type AllocationContext = [?ctxItem: ContextItem]
-.type ContextItem = Instruction | symbol
+.type ContextItem = symbol
 
 
 .decl context(?ctx:Context)
@@ -68,7 +68,7 @@ context_item(?ctxItem)
 //    instruction(Invoc), alloc_context(ACtx), allocation(Alloc).
 
 // // Macro-definitions
-
+/*
 alloc_context_new(?item, ?aCtx) :-
    record(?ctx, _, ?aCtx),
    context_new(?item, ?ctx).
@@ -78,7 +78,7 @@ context_new(?newItem, ?calleeCtx) :-
    merge(?callerCtx, ?invoc, _, _, ?calleeCtx),
    context_new(_,?callerCtx),
    context_item_by_invoc(?invoc, ?newItem).
-
+*/
 //-----------------------------------------------------
 // Unpacking context items
 //-----------------------------------------------------

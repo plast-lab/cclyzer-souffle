@@ -83,38 +83,39 @@ init_by_ctor(?type, ?ctor, ?inFunction, ?alloc)
 
 // The actual type of the object must match its size, and the relevant
 // constructor must be in the same function that allocates it.
-/*
-allocation:type[HeapAlloc] = Type <-
+
+allocation_type(?heapAlloc, ?type) :-
    !inlined_constructors(),
-   instruction:function[AllocInsn] = InFunction,
-   heap_allocation:by_new[AllocInsn] = HeapAlloc,
-   allocation:size[HeapAlloc] = Size,
-   type:size[Type] = Size,
-   init_by_ctor(Type, _, InFunction, HeapAlloc).
+   instruction_in_function(?allocInsn, ?inFunction),
+   heap_allocation_by_new(?allocInsn, ?heapAlloc),
+   allocation_size(?heapAlloc, ?size),
+   type_has_size(?type, ?size),
+   init_by_ctor(?type, _, ?inFunction, ?heapAlloc).
 
 // In the case of inlined constructors, we mark the heap allocation as
 // untyped and rely on the type back-propagation technique.
 
-untyped_allocation(Insn, Alloc) ->
-   instruction(Insn), allocation(Alloc).
 
-untyped_allocation(Insn, HeapAlloc) <-
+untyped_allocation(?insn, ?heapAlloc) :-
    inlined_constructors(),
-   heap_allocation:by_new[Insn] = HeapAlloc.
+   heap_allocation_by_new(?insn, ?heapAlloc).
 
 //----------------------------------------------------
 // Identify class instances based on inferred type
 //----------------------------------------------------
 
-class_instance(Alloc) <-
-   allocation:type[Alloc] = Type,
-   class_type(Type),
-   basic_allocation(Alloc).
+.decl class_instance(?alloc: BasicAllocation)
 
-class_instance:constructor[Alloc] = Ctor <-
-   allocation:type[Alloc] = Type,
-   init_by_ctor(Type, Ctor, _, Alloc),
-   basic_allocation(Alloc).
+class_instance(?alloc) :-
+   allocation_type(?alloc, ?type),
+   class_type(?type),
+   basic_allocation(?alloc).
+
+.decl class_instance_constructor(?alloc: BasicAllocation, ?ctor: FunctionDecl)
+class_instance_constructor(?alloc, ?ctor) :-
+   allocation_type(?alloc, ?type),
+   init_by_ctor(?type, ?ctor, _, ?alloc),
+   basic_allocation(?alloc).
 
 
 //---------------------------------------------------------------------------
@@ -126,11 +127,9 @@ class_instance:constructor[Alloc] = Ctor <-
 // instances, but these would probably by unreachable code anyway.
 //---------------------------------------------------------------------------
 
-primary_superclass[Type] = Supertype ->
-   struct_type(Type), struct_type(Supertype).
+//.decl primary_superclass(?type: ClassType, ?superType: ClassType)
+//.decl secondary_superclass(?superType: ClassType, ?type: ClassType)
 
-secondary_superclass(Supertype, Type) ->
-   struct_type(Type), struct_type(Supertype).
 
 // The primary superclass of class B is derived by identifying the
 // call to some constructor of class A inside the B constructor, that
@@ -173,15 +172,17 @@ secondary_superclass(Supertype, Type) ->
 // Find vtable associated with given class instance
 //----------------------------------------------------
 
-class_instance:vtable[Alloc] = VTable
- <-
-   class_instance:constructor[Alloc] = Ctor,
-   instruction:function[StoreInsn] = Ctor,
-   store_instruction:value[StoreInsn] = Value,
-   store_instruction:address[StoreInsn] = Pointer,
-   stripctx_operand_points_to(Alloc, Pointer),
-   operand:as_constant[Value] = Constant,
-   constant_contains_vptr(VTable, Constant).
+.decl class_instance_vtable(?alloc: Allocation, ?vTable: VirtualTable)
+
+class_instance_vtable(?alloc, ?vTable)
+ :-
+   class_instance_constructor(?alloc, ?ctor),
+   instruction_in_function(?storeInsn, ?ctor),
+   store_instruction_value(?storeInsn, ?value),
+   store_instruction_address(?storeInsn, ?pointer),
+   stripctx_operand_points_to(?alloc, ?pointer),
+   constant(?value),
+   constant_contains_vptr(?vTable, ?value).
 
 
 //----------------------------------------------------
@@ -227,23 +228,24 @@ class_instance:vtable[Alloc] = VTable
 // some subclass be used in the place of the pointer to the
 // superclass!!
 
-_eligible_base_type(Supertype, Type) <-
-   struct_type:field[Type, 0] = UnpaddedType,
-   struct_type:nfields[UnpaddedType] = NFields,
-   type_compatible:up_to_field(Supertype, UnpaddedType, NFields - 1).
+.decl _eligible_base_type(?superType: StructType, ?type: StructType)
+_eligible_base_type(?superType, ?type) :-
+   struct_type_field(?type, 0, ?unpaddedType),
+   struct_type_nfields(?unpaddedType, ?nFields),
+   type_compatible_up_to_field(?superType, ?unpaddedType, ?nFields - 1).
 
-_type_expands_base_type(Supertype, Type) <-
-   _eligible_base_type(Supertype, Type).
+.decl _type_expands_base_type(?superType: StructType, ?type: StructType)
+_type_expands_base_type(?superType, ?type) :-
+   _eligible_base_type(?superType, ?type)
+   ;
+   _eligible_base_type(?superType, ?intermType),
+   _type_expands_base_type(?intermType, ?type).
 
-_type_expands_base_type(Supertype, Type) <-
-   _eligible_base_type(Supertype, IntermType),
-   _type_expands_base_type(IntermType, Type).
-
-type_compatible(PtrActualType, PtrDeclaredType) <-
-   pointer_type:component[PtrActualType] = ActualType,
-   pointer_type:component[PtrDeclaredType] = DeclaredType,
-   _type_expands_base_type(DeclaredType, ActualType).
-
+type_compatible(?ptrActualType, ?ptrDeclaredType) :-
+   pointer_type_has_component(?ptrActualType, ?actualType),
+   pointer_type_has_component(?ptrDeclaredType, ?declaredType),
+   _type_expands_base_type(?declaredType, ?actualType).
+/*
 struct_type(Type)
  , struct_type(UnpaddedType)
  , type:id(Type:Sign)

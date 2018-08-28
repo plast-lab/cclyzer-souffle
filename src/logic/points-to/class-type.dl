@@ -240,7 +240,7 @@ unpadded_struct_type(?type) :-
 // Defined in debuginfo module
 .decl template_type_name(?name: symbol)
 .decl template_typeinfo(?typeInfo: GlobalVariable)
-/*
+
 // Typeinfo objects of template types
 template_typeinfo(?typeInfo) :-
    debuginfo_is_loaded(),
@@ -249,11 +249,10 @@ template_typeinfo(?typeInfo) :-
 
 // Fallback when no debug info has been loaded
 template_typeinfo(?typeInfo) :-
-   !debuginfo:loaded(),
+   !debuginfo_is_loaded(),
    match("%<%>", ?name),
    _typeinfo_by_class_name(?name, ?typeInfo).
 
-*/
 //------------------------------------------------------------------------------
 // Constructors and Destructors for objects of this class type
 //------------------------------------------------------------------------------

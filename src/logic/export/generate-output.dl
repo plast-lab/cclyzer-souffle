@@ -102,6 +102,15 @@
 .output cxx_alloc_exception
 .output cxx_atexit_function
 .output cxx_new_function
+.output cxx_throw_function
+.output cxx_throw_instruction
+.output cxx_throw_instruction_destructor
+.output cxx_throw_instruction_exception
+.output cxx_throw_instruction_full_exception
+.output cxx_throw_instruction_no_dtor
+.output cxx_throw_instruction_typeinfo
+.output cxx_throws
+.output cxx_throws_no_dtor
 .output debuginfo_invalid_entry
 .output debuginfo_invalid_location
 .output debuginfo_is_loaded
@@ -170,6 +179,7 @@
 .output exit_context
 .output extern_weak_linkage_type
 .output external_linkage_type
+.output external_typeinfo
 .output extractelement_instruction_type
 .output extractvalue_instruction_base_type
 .output extractvalue_instruction_interm_type

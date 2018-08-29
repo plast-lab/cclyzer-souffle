@@ -18,3 +18,5 @@
 #include "strip-context-projections.dl"
 #include "interprocedural.dl"
 #include "memcpy.dl"
+#include "field-sensitivity.dl"
+#include "cplusplus-exceptions.dl"

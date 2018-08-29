@@ -9,10 +9,9 @@ alloc_context(?aCtx),
    alloca_instruction(?instr),
    instruction_assigns_to(?instr, ?var),
    instruction_in_function(?instr, ?instrFunc),
-   variable_in_function(?var,?func),
    variable_has_type(?var,?type),
    variable_has_name(?var,?name),
-   ?stackAlloc = cat(?instr, cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]")),
+   ?stackAlloc = cat(?instr, cat(cat(cat(cat(cat(cat("*stack_alloc",?instrFunc),"["),?type)," "),?name),"]")),
    reachable_context(?ctx, ?instrFunc),
    // Extra
    context_getitem(?ctx, ?item),
@@ -34,8 +33,6 @@ alloc_context(?aCtx),
  :-
    function_param_by_value(?func, ?index),
    function_param(?func, ?index, ?param),
-
-   variable_in_function(?param,?func),	//OPT clause
    variable_has_type(?param,?type),
    variable_has_name(?param,?name),
    ?stackAlloc = cat(?param, cat(cat(cat(cat(cat(cat("*stack_alloc",?func),"["),?type)," "),?name),"]")),
@@ -236,4 +233,18 @@ allocation_to_string(?alloc, ?str) :-
 allocation_to_string(?alloc, ?str) :-
    global_allocation_by_function(_, ?alloc),
    ?str = ?alloc.
+
+//------------------------------------------------
+// [Allocation Position Info]
+//------------------------------------------------
+
+allocation_pos(?alloc, ?line, ?column) :-
+   (stack_allocation_by_instruction(?insn, ?alloc);
+   heap_allocation_by_instruction(?insn, ?alloc)),
+   instruction_pos(?insn, ?line, ?column).
+
+allocation_pos(?alloc, ?line, ?column) :-
+   stack_allocation_by_parameter(?func, ?index, ?alloc),
+   function_param(?func, ?index, ?param),
+   variable_has_debug_decl_pos(?param, ?line, ?column).
 

@@ -99,6 +99,7 @@
 .output context_item_by_invoc
 .output context_item_invoc
 .output context_new
+.output cxx_alloc_exception
 .output cxx_atexit_function
 .output cxx_new_function
 .output debuginfo_invalid_entry
@@ -165,6 +166,7 @@
 .output entry_point
 .output eq_size_vector_types
 .output eq_size_vector_types_
+.output exception_object
 .output exit_context
 .output extern_weak_linkage_type
 .output external_linkage_type
@@ -245,7 +247,9 @@
 .output function_param_by_value
 .output function_returns_value
 .output gep_constant_expr_points_to
+.output gep_interm_points_to_array
 .output gep_is_vector_based
+.output gep_points_to
 .output getelementptr_instruction_base_type
 .output getelementptr_instruction_index_type
 .output getelementptr_instruction_interm_type
@@ -258,6 +262,7 @@
 .output half_type
 .output heap_alloc_function
 .output heap_allocation
+.output heap_allocation_by_alloc_exc
 .output heap_allocation_by_calloc
 .output heap_allocation_by_instruction
 .output heap_allocation_by_malloc

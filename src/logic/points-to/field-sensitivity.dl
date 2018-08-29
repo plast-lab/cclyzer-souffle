@@ -1,0 +1,345 @@
+//------------------------------------------------------------------------------
+// [Field Sensitive treatment of `getelementptr` instructions]
+//
+// We create subregions on the fly to act as destinations of
+// instructions that may point to an allocation at some
+// *offset*. Essentially, we create complex allocations paired with
+// access paths in a demand-driven way, according to the given indices
+// of some GEP instruction where an existing allocation is used as the
+// base operand.
+
+// Note that a subregion allocation created at some GEP instruction
+// will be identified and used by other instructions too that happen
+// to reference the same base allocation with the same offset.
+//
+// We filter null and other pseudo-allocations without depth by
+// requiring that the base of the new region should itself have a
+// depth.
+//------------------------------------------------------------------------------
+
+
+// Compute intermediate points to for `getelementptr` instruction up
+// to some index. GEP instruction INSN points to object ALLOC at
+// INDEX, when its base points to object BASEALLOC.
+
+.decl gep_points_to(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+
+gep_points_to(?insn, ?index, ?baseAlloc, ?alloc) :-
+   _inv_gep_points_to(?someAlloc, ?baseAlloc, ?index, ?insn),
+   alloc_aliases(?alloc, ?someAlloc).
+
+gep_points_to(?insn, 0, ?baseAlloc, ?baseAlloc) :-
+   !gep_is_vector_based(?insn),
+   getelementptr_instruction_base(?insn, ?base),
+   operand_points_to(_, ?baseAlloc, _, ?base).
+// TODO check type compatibility
+
+
+// Introduce inverted predicate to optimize indexing
+.decl _inv_gep_points_to(?alloc: Allocation, ?baseAlloc: Allocation, ?index: number, ?insn: GetElementPtrInstruction) 
+_inv_gep_points_to(?alloc, ?baseAlloc, ?index, ?insn) :-
+   gep_points_to(?insn, ?index, ?baseAlloc, ?alloc).
+
+
+// Guard configuration predicate for pointer arithmetic support
+
+/*
+ analyze_pointer_arithmetic() -> .
+*/
+
+//------------------------------------------------------------------------------
+// For the first index of the GEP instruction
+//------------------------------------------------------------------------------
+
+// We point to the aliased zero index of a base allocation, as if it
+// had been an array allocation, whenever the base allocation flows to
+// the address operand of some GEP instruction.
+
+gep_points_to(?insn, 0, ?baseAlloc, ?zeroAliasAlloc)
+ :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   // first index can be anything
+   getelementptr_instruction_index(?insn, 0, _),
+   // base object
+   basic_allocation(?alloc),
+   alloc_subregion_at_array_index(?alloc, 0, ?zeroAliasAlloc).
+
+
+// 1. First zero index is ignored when address operand points-to
+// non-base object.
+.decl _gep_with_zero_base_offset(?insn: GetElementPtrInstruction)
+_gep_with_zero_base_offset(?insn) :-
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, 0).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?alloc)
+ :-
+   _gep_with_zero_base_offset(?insn),
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   alloc_subregion(?alloc).
+
+
+// 2. The first non-zero index must be added to the previous index of
+// the allocation to produce a new offset
+
+// GEP instruction has non-zero base offset
+.decl _gep_with_nonzero_base_offset(?insn: GetElementPtrInstruction, ?index: number)
+_gep_with_nonzero_base_offset(?insn, ?index) :-
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?index),
+   ?index != 0.
+
+.decl _nonzero_gep_points_to(?insn: GetElementPtrInstruction, ?declaredType: Type, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+_nonzero_gep_points_to(?insn, ?declaredType, ?index, ?baseAlloc, ?alloc) :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   // constant non-zero first index
+   _gep_with_nonzero_base_offset(?insn, ?index),
+   getelementptr_instruction_interm_type(?insn, 1, ?declaredType).
+
+
+/// 2.1 Offset exists
+
+// Two array subobjects at relative offset
+
+.decl _array_subobjects_at_rel_offset(?alloc: Allocation, ?offset: number, ?newAlloc: Allocation)
+_array_subobjects_at_rel_offset(?alloc, ?offset, ?newAlloc) :-
+   alloc_subregion_at_array_index(?base, ?index1, ?alloc),
+   alloc_subregion_at_array_index(?base, ?index2 , ?newAlloc),
+   ?offset = ?index2 - ?index1,
+   ?offset > 0.
+
+gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
+ :-
+   _nonzero_gep_points_to(?insn, ?declaredType, ?index, ?baseAlloc, ?alloc),
+   // get existing allocation at new index (when such exists)
+   _array_subobjects_at_rel_offset(?alloc, ?index, ?newAlloc),
+   // check for type compatibility
+   allocation_type(?newAlloc, ?type), // old type may not be compatible
+   type_compatible(?type, ?declaredType).
+
+
+/// 2.2 Pointer offset doesn't exist
+
+// Get star object pointer, given a pointer to a base object
+.decl _star_subobj_of_base_subobj(?alloc: Allocation, ?index: number, ?newAlloc: Allocation)
+_star_subobj_of_base_subobj(?alloc, ?index, ?newAlloc) :-
+   basic_allocation(?base),
+   alloc_subregion_at_array_index(?base, ?index, ?alloc),
+   alloc_subregion_at_any_array_index(?base, ?newAlloc).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
+ :-
+   // This rule may be turned on/off via configuration
+   analyze_pointer_arithmetic(),
+   // GEP instruction to non-zero Index where base points to Alloc
+   _nonzero_gep_points_to(?insn, ?declaredType, ?index, ?baseAlloc, ?alloc),
+   // get star pointer object
+   _star_subobj_of_base_subobj(?alloc, ?otherIndex, ?newAlloc),
+   // new index doesn't exist
+   ?offset = ?otherIndex + ?index,
+   !pointer_index(?offset),
+   // check for type compatibility
+   allocation_type(?newAlloc, ?type), // old type may not be compatible
+   type_compatible(?type, ?declaredType).
+
+
+/// 2.3 Array offset doesn't exist
+
+.decl _star_subobj_of_array_subobj(?alloc: Allocation, ?baseType: ArrayType, ?index: number, ?newAlloc: Allocation)
+_star_subobj_of_array_subobj(?alloc, ?baseType, ?index, ?newAlloc) :-
+   allocation_type(?base, ?baseType),
+   array_type(?baseType),
+   alloc_subregion_at_array_index(?base, ?index, ?alloc),
+   alloc_subregion_at_any_array_index(?base, ?newAlloc).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
+ :-
+   // This rule may be turned on/off via configuration
+   analyze_pointer_arithmetic(),
+   // GEP instruction to non-zero Index where base points to Alloc
+   _nonzero_gep_points_to(?insn, ?declaredType, ?index, ?baseAlloc, ?alloc),
+   // get star array subobject
+   _star_subobj_of_array_subobj(?alloc, ?baseType, ?otherIndex, ?newAlloc),
+   // new index doesn't exist (over-approximation to avoid NTR)
+   ?offset = ?otherIndex + ?index,
+   type_compatible(?baseType, ?someType),
+   !array_indices__no_typecomp(?someType, ?offset),
+   // check for type compatibility
+   allocation_type(?newAlloc, ?type), // old type may not be compatible
+   type_compatible(?type, ?declaredType).
+
+
+// 3. The first index, if unknown, must be used to generate a new
+// star-index allocation that replaces the older constant index
+
+.decl _gep_with_unknown_base_offset(?insn: GetElementPtrInstruction)
+_gep_with_unknown_base_offset(?insn) :-
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   !constant_to_int(?indexOp, _).
+
+.decl _unknown_gep_points_to(?insn: GetElementPtrInstruction, ?declaredType: Type, ?baseAlloc: Allocation, ?alloc: Allocation)
+_unknown_gep_points_to(?insn, ?declaredType, ?baseAlloc, ?alloc) :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   _gep_with_unknown_base_offset(?insn),
+   getelementptr_instruction_interm_type(?insn, 1, ?declaredType).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
+ :-
+   _unknown_gep_points_to(?insn, ?declaredType, ?baseAlloc, ?alloc),
+   // check for type compatibility
+   allocation_type(?alloc, ?type),
+   type_compatible(?type, ?declaredType),
+   // allocation pointed to some specific (known) element
+   alloc_subregion_at_array_index(?base, _, ?alloc),
+   alloc_subregion_at_any_array_index(?base, ?newAlloc),
+   alloc_subregion_base(?alloc, ?base). // OPT: redundant clause
+
+
+// 4. First index is also ignored when address points-to non-base
+// object with variable array index, since adding the new first index
+// will not change anything. Thus, it suffices to propagate the
+// existing allocation
+
+gep_points_to(?insn, 1, ?baseAlloc, ?alloc)
+ :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   alloc_subregion_at_any_array_index(?base, ?alloc),
+   alloc_subregion_base(?alloc, ?base). // OPT: redundant clause
+
+
+// 5. When address operand points to base object, then we must record
+// the index accordingly
+
+.decl _gep_addr_points_to_baseobj(?alloc: Allocation, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction)
+_gep_addr_points_to_baseobj(?alloc, ?baseAlloc, ?insn) :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   getelementptr_instruction_interm_type(?insn, 1, ?declaredType),
+   // check for type compatibility
+   allocation_type(?alloc, ?type),
+   type_compatible(?type, ?declaredType),
+   // base object
+   basic_allocation(?alloc).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
+ :-
+   // GEP instruction points to base allocation
+   _gep_addr_points_to_baseobj(?alloc, ?baseAlloc, ?insn),
+   // first index is a constant
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?index),
+   // get subojbect at this array index
+   alloc_subregion_at_array_index(?alloc, ?index, ?indexedAlloc).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
+ :-
+   // GEP instruction points to base allocation
+   _gep_addr_points_to_baseobj(?alloc, ?baseAlloc, ?insn),
+   // first index is a variable
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   !constant_to_int(?indexOp, _),
+   // get subobject at star array index
+   alloc_subregion_at_any_array_index(?alloc, ?indexedAlloc).
+
+
+// 6. It also possible that a struct type is treated as an array of
+// bytes, in which case we must match the byte offset to some field
+
+gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
+ :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   // Base type of GEP is pointer to i8
+   getelementptr_instruction_base_type(?insn, ?ptrType),
+   pointer_type_has_component(?ptrType, ?i8),
+   int8_type(?i8),
+   // first index is a constant
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?offset),
+   // match byte offset to field
+   allocation_type(?alloc, ?type),
+   struct_type(?type),
+   struct_type_field_offset(?type, ?field, ?offset),
+   // get subobject of this field
+   alloc_subregion_at_field(?alloc, ?field, ?allocField).
+
+
+//------------------------------------------------------------------------------
+// For the rest of the indices of the GEP instruction
+//------------------------------------------------------------------------------
+
+.decl gep_interm_points_to_array(?insn: Instruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc)
+ :-
+   gep_points_to(?insn, ?index, ?baseAlloc, ?alloc),
+   getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
+   // check for type compatibility
+   allocation_type(?alloc, ?type),
+   array_type(?type),
+   array_type(?declaredType),
+   type_compatible(?type, ?declaredType),
+   alloc_subregion(?alloc).
+
+// Case of unknown index
+
+gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
+ :-
+   gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
+   // variable array index
+   getelementptr_instruction_index(?insn, ?index, ?indexOp),
+   !constant_to_int(?indexOp, _),
+   ?nextIndex = ?index + 1,
+   // get subobject at *star* (unknown) index
+   alloc_subregion_at_any_array_index(?alloc, ?indexedAlloc).
+
+
+// Case of known constant index
+
+gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
+ :-
+   gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
+   // get constant array index (as integer)
+   getelementptr_instruction_index(?insn, ?index, ?indexOp),
+   constant_to_int(?indexOp, ?constantIndex),
+   ?nextIndex = ?index + 1,
+   // get subobject for given array index
+   alloc_subregion_at_array_index(?alloc, ?constantIndex, ?indexedAlloc).
+
+
+// Case of field access
+
+gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?allocField)
+ :-
+   gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
+   getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
+   // check for type compatibility
+   allocation_type(?alloc, ?type),
+   struct_type(?type),
+   struct_type(?declaredType),
+   type_compatible_up_to_field(?type, ?declaredType, ?field),
+   // get field (as integer constant)
+   getelementptr_instruction_index(?insn, ?index, ?indexOp),
+   constant_to_int(?indexOp, ?field),
+   ?nextIndex = ?index + 1,
+   // get subobject for given field
+   alloc_subregion_at_field(?alloc, ?field, ?allocField).
+
+
+
+// The destination variable holds the allocation pointed by the last
+// index of the associated `getelementptr` instruction. We take the
+// context from the address operand.
+
+.decl _gep_last_index_points_to(?alloc: Allocation, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction) 
+_gep_last_index_points_to(?alloc, ?baseAlloc, ?insn) :-
+   gep_points_to(?insn, ?total, ?baseAlloc, ?alloc),
+   getelementptr_instruction_nindices(?insn, ?total).
+
+.decl _gep_address_ctx_points_to(?ctx: Context, ?aCtx: AllocationContext, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction)
+_gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn) :-
+   getelementptr_instruction_base(?insn, ?base),
+   operand_points_to(?aCtx, ?baseAlloc, ?ctx, ?base).
+
+// TODO type compatibility
+var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+   _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn),
+   _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn),
+   instruction_assigns_to(?insn, ?toVar).

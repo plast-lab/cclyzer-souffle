@@ -1,0 +1,258 @@
+//------------------------------------------------------------------------------
+// Exceptions - Important functions in the libc++ ABI
+//------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// [Exception Allocation - Memory Management]
+//
+// Signature:
+// void* __cxa_allocate_exception(size_t thrown_size) throw();
+//
+// Allocates memory to hold the exception to be thrown. thrown_size is
+// the size of the exception object. Can allocate additional memory to
+// hold private data. If memory can not be allocated, call
+// std::terminate().
+//
+// Returns: A pointer to the memory allocated for the exception
+// object.
+//-------------------------------------------------------------------------
+
+
+
+.decl cxx_alloc_exception(?func: FunctionDecl)
+
+cxx_alloc_exception(?func),
+   heap_alloc_function(?func) 
+ :-
+   function_has_name(?func, "@__cxa_allocate_exception"),
+   function_has_type(?func, ?fType),
+   function_type_param(?fType, 0, ?type),
+   integer_type(?type),
+   function_type_nparams(?fType, 1).
+
+// Exception Object
+
+.type ExceptionObject = Allocation
+.decl exception_object(?alloc: ExceptionObject)
+
+allocation(?alloc) :-
+   exception_object(?alloc).
+
+// Introduce new heap allocation selector
+
+.decl heap_allocation_by_alloc_exc(?insn: Instruction, ?heapAlloc: HeapAllocation)
+
+heap_allocation_by_alloc_exc(?insn, ?heapAlloc)
+ , exception_object(?heapAlloc)
+ :-
+   cxx_alloc_exception(?func),
+   call_instruction_fn_target(?insn, ?func),
+   heap_allocation_by_instruction(?insn, ?heapAlloc).
+
+heap_allocation_by_alloc_exc(?insn, ?heapAlloc)
+ , exception_object(?heapAlloc)
+ :-
+   cxx_alloc_exception(?func),
+   invoke_instruction_fn_target(insn, ?func),
+   heap_allocation_by_instruction(?insn, ?heapAlloc).
+
+// Compute allocation size
+sized_alloc_instr(?insn, ?size) :-
+   cxx:alloc_exception(?func),
+   call_instruction_fn_target(insn, ?func),
+   call_instruction_arg(?insn, 0, ?sizeOp),
+   constant_to_int(?sizeOp, ?size).
+
+sized_alloc_instr(?insn, ?size) :-
+   cxx:alloc_exception(?func),
+   invoke_instruction_fn_target(insn, ?func),
+   invoke_instruction_arg(?insn, 0, ?sizeOp),
+   constant_to_int(?sizeOp, ?size).
+/*
+// Infer its type
+allocation:type[ExcObj] = Type <-
+   !inlined_constructors(),
+   instruction:function[AllocInsn] = InFunction,
+   heap_allocation:by_alloc_exc[AllocInsn] = ExcObj,
+   allocation:size[ExcObj] = Size,
+   type:size[Type] = Size,
+   init_by_ctor(Type, _, InFunction, ExcObj).
+
+// In the case of inlined constructors, we mark the exception object
+// as untyped and rely on the type back-propagation
+// technique. However, we can supply more type hints that specifically
+// target exception throwing (see below).
+
+untyped_allocation(Insn, ExcObj) <-
+   inlined_constructors(),
+   heap_allocation:by_alloc_exc[Insn] = ExcObj.
+
+exception_object(TypedExcObj)
+ <-
+   inlined_constructors(),
+   heap_allocation:by_alloc_exc[Insn] = _,
+   heap_allocation:by_type_instruction[_, Insn] = TypedExcObj.
+
+
+//-------------------------------------------------------------------------
+// [Throw Function]
+//
+// Signature:
+// void __cxa_throw(void* thrown_exception,
+//                  struct std::type_info * tinfo,
+//                  void (*dest)(void*));
+//
+// The arguments are:
+//   * The address of the thrown exception object (which points to the
+//     throw value, after the header, as specified above).
+//   * A std::type_info pointer, giving the static type of the throw
+//     argument as a std::type_info pointer, used for matching
+//     potential catch sites to the thrown exception.
+//   * A destructor pointer to be used eventually to destroy the
+//     object.
+//
+// This routine never returns.
+//-------------------------------------------------------------------------
+
+cxx:throw_function[] = Func -> function_decl(Func).
+
+cxx:throw_function[] = Func <-
+   function:by_name["@__cxa_throw"] = Func,
+   function:type[Func] = FType,
+   function_type:param[FType, 0] = Type1,
+   function_type:param[FType, 1] = Type2,
+   function_type:param[FType, 2] = Type3,
+   pointer_type(Type1),
+   pointer_type(Type2),
+   pointer_type(Type3),
+   function_type:nparams[FType] = 3.
+
+
+//------------------------------------------------
+// * Throw Instr throws exception object
+//------------------------------------------------
+
+cxx:throw_instruction(ThrowInsn) <-
+   cxx:throw_function[] = ThrowFunc,
+   callgraph:inv_edge(_, ThrowInsn, _, ThrowFunc).
+
+cxx:throw_instruction:exception(ExcObj, ThrowInsn) <-
+   cxx:throw_instruction(ThrowInsn),
+   actual_arg[ThrowInsn, 0] = Exc,
+   stripctx_operand_points_to(ExcObj, Exc).
+
+cxx:throw_instruction:full_exception(ACtx, ExcObj, ThrowInsn) <-
+   cxx:throw_instruction(ThrowInsn),
+   actual_arg[ThrowInsn, 0] = Exc,
+   operand_points_to(ACtx, ExcObj, _, Exc).
+
+//------------------------------------------------
+// * Throw Instr associates typeinfo object
+//------------------------------------------------
+
+cxx:throw_instruction:typeinfo(ExcTypeInfo, ThrowInsn) <-
+   cxx:throw_instruction(ThrowInsn),
+   actual_arg[ThrowInsn, 1] = TypeInfoArg,
+   stripctx_operand_points_to(TypeInfoObj, TypeInfoArg),
+   _type_info_by_alloc[TypeInfoObj] = ExcTypeInfo.
+
+_type_info_by_alloc[Obj] = ExcTypeInfo <-
+   typeinfo(ExcTypeInfo),
+   global_allocation:by_variable[ExcTypeInfo] = Obj.
+
+// A typeinfo structure may have external linkage. Try to match it by
+// name.
+
+typeinfo(Var), external_typeinfo(Var) <-
+   linkage_type:external[] = ExternalLinkage,
+   global_variable:linkage_type[Var] = ExternalLinkage,
+   global_variable:name[Var] = Name,
+   string:like(Name, "@_ZTI%").
+
+
+//------------------------------------------------
+// * Throw Instr registers destructor
+//------------------------------------------------
+
+cxx:throw_instruction:destructor(Dtor, ThrowInsn) <-
+   cxx:throw_instruction(ThrowInsn),
+   actual_arg[ThrowInsn, 2] = DtorArg,
+   stripctx_operand_points_to(Alloc, DtorArg),
+   function:by_location[Alloc] = Dtor.
+
+cxx:throw_instruction:no_dtor(ThrowInsn) <-
+   null_location[] = Null,
+   cxx:throw_instruction(ThrowInsn),
+   actual_arg[ThrowInsn, 2] = DtorArg,
+   stripctx_operand_points_to(Null, DtorArg).
+
+//-------------------------------------------------------------------------
+// The following is a generic catch-all relation that associates with
+// each throw instruction multiple destructor - typeinfo - exception
+// object triplets. Each triplet contains compatible elements.
+//-------------------------------------------------------------------------
+
+// We can use the destructor and the typeinfo object supplied to a
+// throw instruction, as type indications for the exception object.
+
+type_indication(Type, ACtx, ExcObj)
+ <-
+   untyped_allocation(_, ExcObj),
+   cxx:throw_instruction:full_exception(ACtx, ExcObj, ThrowInsn),
+   cxx:throw_instruction:destructor(Dtor, ThrowInsn),
+   destructor:class_type[Dtor] = Type.
+
+type_indication(ClassType, ACtx, ExcObj)
+ <-
+   untyped_allocation(_, ExcObj),
+   cxx:throw_instruction:full_exception(ACtx, ExcObj, ThrowInsn),
+   cxx:throw_instruction:typeinfo(TypeInfo, ThrowInsn),
+   class_type:typeinfo[ClassType] = TypeInfo.
+
+
+// Note that the typeinfo registered in the throw instruction may be
+// one of a non-existing LLVM type, that has been removed altogehter
+// due to some optimization. Hence, we can only rely on the type of
+// the destructor's receiver to obtain and verify the type of the
+// exception object being thrown. However, the original type of the
+// exception is recorded in the typeinfo argument, so that we may
+// match exceptions and catch clauses reliably, even if the original
+// exception type has been optimized away.
+
+_typeinfo_no_class(TypeInfo) <-
+   typeinfo(TypeInfo),
+   !class_type:typeinfo[_] = TypeInfo.
+
+cxx:throws(Dtor, TypeInfo, ExcObj, ThrowInsn)
+ <-
+   cxx:throw_instruction:exception(ExcObj, ThrowInsn),
+   cxx:throw_instruction:typeinfo(TypeInfo, ThrowInsn),
+   cxx:throw_instruction:destructor(Dtor, ThrowInsn),
+   allocation:type[ExcObj] = Type,
+   class_type:typeinfo[Type] = TypeInfo,
+   class_type:destructor(Dtor, Type).
+
+cxx:throws(Dtor, TypeInfo, ExcObj, ThrowInsn)
+ <-
+   cxx:throw_instruction:exception(ExcObj, ThrowInsn),
+   cxx:throw_instruction:typeinfo(TypeInfo, ThrowInsn),
+   cxx:throw_instruction:destructor(Dtor, ThrowInsn),
+   _typeinfo_no_class(TypeInfo),
+   allocation:type[ExcObj] = Type,
+   class_type:destructor(Dtor, Type).
+
+cxx:throws_no_dtor(TypeInfo, ExcObj, ThrowInsn)
+ <-
+   cxx:throw_instruction:exception(ExcObj, ThrowInsn),
+   cxx:throw_instruction:typeinfo(TypeInfo, ThrowInsn),
+   cxx:throw_instruction:no_dtor(ThrowInsn),
+   _typeinfo_no_class(TypeInfo).
+
+cxx:throws_no_dtor(TypeInfo, ExcObj, ThrowInsn)
+ <-
+   cxx:throw_instruction:exception(ExcObj, ThrowInsn),
+   cxx:throw_instruction:typeinfo(TypeInfo, ThrowInsn),
+   cxx:throw_instruction:no_dtor(ThrowInsn),
+   allocation:type[ExcObj] = Type,
+   class_type:typeinfo[Type] = TypeInfo.
+*/

@@ -1,9 +1,9 @@
 // The containing function of a variable
-/*
+
 variable_in_function(?var, ?func) :-
-   variable:descriptor(Var, _, FuncSign, _, _),
-   function:by_name[FuncSign] = Func.
-*/
+   _variable_in_function(?var, ?funcName),
+   function_has_name(?func, ?funcName).
+
 
 // Compute variables defined in reachable functions
 

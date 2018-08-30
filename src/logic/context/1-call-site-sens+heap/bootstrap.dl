@@ -11,7 +11,7 @@ empty_context(?ctx)
  , context_new(?ctxItem, ?ctx)
  :-
    dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-   ?ctx=[?ctxItem].
+   ?ctx=?ctxItem.
 
 .decl empty_alloc_context(?ctx:AllocationContext)
 empty_alloc_context(?aCtx)
@@ -19,7 +19,7 @@ empty_alloc_context(?aCtx)
  , alloc_context_new(?ctxItem, ?aCtx)
  :-
    dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-   ?aCtx=[?ctxItem].
+   ?aCtx=?ctxItem.
 
 // Special context for when called from main
 //context_item(CtxItem)
@@ -31,7 +31,7 @@ main_context(?ctx)
  , context_new(?ctxItem, ?ctx)
  :-
    dummy_context_item_by_str("<<main-context>>", ?ctxItem),
-   ?ctx=[?ctxItem].
+   ?ctx=?ctxItem.
 
 // Special context for when called at startup
 //context_item(CtxItem)
@@ -43,7 +43,7 @@ startup_context(?ctx)
  , context_new(?ctxItem, ?ctx)
  :-
    dummy_context_item_by_str("<<startup-context>>", ?ctxItem),
-   ?ctx=[?ctxItem].
+   ?ctx=?ctxItem.
 
 // Special context for when called at exit
 //context_item(CtxItem)
@@ -56,7 +56,7 @@ exit_context(?ctx)
  , context_new(?ctxItem, ?ctx)
  :-
    dummy_context_item_by_str("<<exit-context>>", ?ctxItem),
-   ?ctx=[?ctxItem].
+   ?ctx=?ctxItem.
 
 
 //---------------------------------------------------------

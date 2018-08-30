@@ -5,8 +5,8 @@
 // the latest invocation instruction.
 //------------------------------------------------------------------------------
 
-.type Context = [?ctxItem: ContextItem]
-.type AllocationContext = [?ctxItem: ContextItem]
+.type Context = ContextItem
+.type AllocationContext = ContextItem
 .type ContextItem = symbol
 
 
@@ -34,7 +34,8 @@ context_item_invoc(?ctxItem, ?invoc) :-
    context_item_by_invoc(?invoc, ?ctxItem).
 
 context_item(?ctxItem)
- , context_item_by_invoc(?instr, ?ctxItem):-
+ , context_item_by_invoc(?instr, ?ctxItem)
+ :-
    (call_instruction(?instr) ;
    invoke_instruction(?instr)),
    ?ctxItem = ?instr.

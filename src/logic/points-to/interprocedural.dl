@@ -26,7 +26,7 @@ context(?calleeCtx)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = [?newItem].
+   ?calleeCtx = ?newItem.
 
 context(?calleeCtx)
  , context_new(?newItem, ?calleeCtx)
@@ -38,7 +38,7 @@ context(?calleeCtx)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = [?newItem].
+   ?calleeCtx = ?newItem.
 
 // Indirect function calls (via function pointers)
 context(?calleeCtx)
@@ -47,6 +47,7 @@ context(?calleeCtx)
  :-
    indirect_call_instruction(?callerInstr),
    call_instruction_fn_operand(?callerInstr, ?funcOp),
+
    operand_points_to(_, ?funcLoc, ?callerCtx, ?funcOp),
    function_by_location(?funcLoc, ?callee),
    function_has_type(?callee, ?actualType),
@@ -55,7 +56,7 @@ context(?calleeCtx)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = [?newItem].
+   ?calleeCtx = ?newItem.
 
 context(?calleeCtx)
  , context_new(?newItem, ?calleeCtx)
@@ -71,7 +72,7 @@ context(?calleeCtx)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = [?newItem].
+   ?calleeCtx = ?newItem.
 
 
 //------------------------------------------------------------------------------
@@ -97,7 +98,7 @@ actual_arg(?callInstr, ?index, ?argument) :-
 
 // Actual argument to formal parameter `assignment`
 interp_assignment(?calleeCtx, ?param, ?callerCtx, ?argument) :-
-   callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
+   //callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
    callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee),   //redundant OPT clause?
    actual_arg(?callerInstr, ?index, ?argument),
    function_param(?callee, ?index, ?param),
@@ -114,7 +115,7 @@ function_returns_value(?retValue, ?inFunction) :-
 
 interp_assignment(?callerCtx, ?toVar, ?calleeCtx, ?retValue) :-
    call_instruction(?callerInstr),  // do not model `invoke` instructions yet
-   callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
+   //callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
    callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee),   //redundant OPT clause?
    function_returns_value(?retValue, ?callee),
    instruction_assigns_to(?callerInstr, ?toVar).

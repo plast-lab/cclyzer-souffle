@@ -53,19 +53,19 @@ heap_allocation_by_alloc_exc(?insn, ?heapAlloc)
  , exception_object(?heapAlloc)
  :-
    cxx_alloc_exception(?func),
-   invoke_instruction_fn_target(insn, ?func),
+   invoke_instruction_fn_target(?insn, ?func),
    heap_allocation_by_instruction(?insn, ?heapAlloc).
 
 // Compute allocation size
 sized_alloc_instr(?insn, ?size) :-
    cxx_alloc_exception(?func),
-   call_instruction_fn_target(insn, ?func),
+   call_instruction_fn_target(?insn, ?func),
    call_instruction_arg(?insn, 0, ?sizeOp),
    constant_to_int(?sizeOp, ?size).
 
 sized_alloc_instr(?insn, ?size) :-
    cxx_alloc_exception(?func),
-   invoke_instruction_fn_target(insn, ?func),
+   invoke_instruction_fn_target(?insn, ?func),
    invoke_instruction_arg(?insn, 0, ?sizeOp),
    constant_to_int(?sizeOp, ?size).
 
@@ -125,7 +125,7 @@ cxx_throw_function(?func) :-
    pointer_type(?type1),
    pointer_type(?type2),
    pointer_type(?type3),
-   function_type_nparams(fType, 3).
+   function_type_nparams(?fType, 3).
 
 
 //------------------------------------------------

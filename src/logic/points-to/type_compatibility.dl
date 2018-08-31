@@ -10,14 +10,11 @@
 // expressions.
 //------------------------------------------------------------------------------
 
-.decl type_compatible(?type1:Type,?type2:Type)
+.decl type_compatible(?type1:Type, ?type2:Type)
 
-type(?from), 
-type(?to) :-
-   type_compatible(?from, ?to).
-
-type_compatible(?type, ?type) :-
-   type(?type).
+type_compatible(?type1, ?type2) :-
+   type(?type1),
+   ?type2 = ?type1.
 
 
 
@@ -48,7 +45,7 @@ type_compatible_up_to_field(?type1, ?type2, i + 1) :-
 type_compatible(?type1,?type2) :-
    struct_type_nfields(?type1,?nfields),
    struct_type_nfields(?type2,?nfields),
-   type_compatible_up_to_field(?type1,?type2,?nfields).
+   type_compatible_up_to_field(?type1,?type2,?nfields - 1).
 
 
 // Function types

@@ -65,6 +65,10 @@
 .output called_at_exit
 .output called_at_startup
 .output callgraph_edge
+.output callgraph_edge1
+.output callgraph_edge2
+.output callgraph_edge3
+.output callgraph_edge4
 .output callgraph_invalid_edge
 .output callgraph_inverted_edge
 .output calling_convention

@@ -36,7 +36,7 @@ $(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
 	souffle -c -o $@ master.project
 
 #$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-#	souffle -c --profile=cclyzer.log -o $@ master.project
+#	souffle --profile=cclyzer.log master.project
 
 
 all: $(LOGIC_CXX_OUT)

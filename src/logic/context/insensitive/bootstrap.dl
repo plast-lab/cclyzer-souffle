@@ -37,3 +37,7 @@ reachable_context(?ctx,?startupFunc):-
 reachable_context(?ctx,?exitFunc):-
    called_at_exit(?exitFunc),
    exit_context(?ctx).
+
+
+reachable_function(?func) :-
+   reachable_context(_, ?func).

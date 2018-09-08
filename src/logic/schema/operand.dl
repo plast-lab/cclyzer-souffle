@@ -118,3 +118,49 @@ operand_is_firstclass(Op) :-
 operand_is_pointer(Op) :-
    operand_has_type(Op, Type),
    pointer_type(Type).
+
+//////////////////////////////////
+
+
+
+.decl variable_path(?var: Variable, ?vPath: symbol)
+variable_path(?var, ?vPath) :-
+   variable(?var),
+   ?pathlen = max ?N : { 
+      variable(?var),
+      _string_iteration_trick(?N),
+      ?N < strlen(?var),
+      ?str = substr(?var, 0, ?N),
+      !contains(":", ?str)},
+   ?vPath = substr(?var,0,?pathlen).
+
+.decl _variable_rest_token0(?var: Variable, ?str: symbol)
+_variable_rest_token0(?var, ?str) :-
+   variable(?var),
+   variable_path(?var,?vPath),
+   ?str = substr(?var, strlen(?vPath) + 1 , strlen(?var)).
+
+.decl _variable_rest_token1(?var: Variable, ?str: symbol)
+_variable_rest_token1(?var, ?str) :-
+   variable(?var),
+   variable_path(?var,?vPath),
+   variable_in_fn_iterated(?var,?funcName),
+   ?str = substr(?var, strlen(?vPath)+ strlen(?funcName) + 1 , strlen(?var)).
+
+
+.decl variable_in_fn_iterated(?var: Variable, ?funcName: symbol)
+
+variable_in_fn_iterated(?var, ?funcName) :-
+   _variable_rest_token0(?var,?rest),
+   ?len = max ?N : { 
+      _variable_rest_token0(?var,?rest),
+      _string_iteration_trick(?N),
+      ?N < strlen(?rest),
+      ?str = substr(?rest, 0, ?N),
+      !contains(":", ?str)},
+   ?funcName = cat("@", substr(?rest,0,?len)).
+
+variable_in_function(?var,?func) :-
+   variable_in_fn_iterated(?var, ?funcName),
+   function_has_name(?func, ?funcName).
+

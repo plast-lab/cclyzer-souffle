@@ -477,10 +477,12 @@
 .output va_arg_target
 .output var_points_to
 .output var_points_to_sizes
+.output variable_in_fn_iterated
 .output variable_in_function
 .output variable_is_firstclass
 .output variable_is_label
 .output variable_is_pointer
+.output variable_path
 .output vector_compatible_types
 .output vector_pointer_type
 .output visibility

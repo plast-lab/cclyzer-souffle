@@ -66,7 +66,7 @@ heap_allocation(?typedAlloc),
    untyped_allocation(?allocInstr, ?alloc),
    type_indication(?type, ?aCtx, ?alloc),
    instruction_assigns_to(?allocInstr, ?var),
-   _variable_in_function(?var, ?funcName),
+   variable_in_function(?var, ?funcName),
    variable_has_name(?var, ?name),
    ?typedAlloc= cat(cat(cat(cat(cat(cat("*typed_heap_alloc", ?funcName), "[" ), ?type ), " " ), ?name ), "]").
 

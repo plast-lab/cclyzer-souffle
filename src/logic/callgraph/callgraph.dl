@@ -12,6 +12,7 @@
 // This auxiliary predicate is derived directly from the instruction
 // edges
 
+
 static_callgraph_fn_edge(Caller, Callee) :-
    static_callgraph_edge(CallerInstr, Callee),
    instruction_in_function(CallerInstr, Caller).

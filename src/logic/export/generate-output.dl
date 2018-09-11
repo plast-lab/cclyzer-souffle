@@ -91,6 +91,7 @@
 .output constant_points_to
 .output constant_references_function
 .output constant_references_variable
+.output constant_to_int
 .output constructor_class_type
 .output context
 .output context_getinvoc

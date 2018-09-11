@@ -278,7 +278,7 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input alias_has_visibility(IO="file", delimiter="\t", filename="alias_has_visibility.csv")
 
 
-.decl _constant_to_int(?const: symbol, ?val: number
+.decl _constant_to_int(?const: symbol, ?val: number)
 // anantoni: The following input relations have been commented out since Souffle does not support unsigned 64-bit
 // integers, which appear in several benchmarks
 //

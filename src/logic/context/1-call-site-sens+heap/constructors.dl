@@ -36,8 +36,13 @@ context_item_invoc(?ctxItem, ?invoc) :-
 context_item(?ctxItem)
  , context_item_by_invoc(?instr, ?ctxItem)
  :-
-   (call_instruction(?instr) ;
-   invoke_instruction(?instr)),
+   call_instruction(?instr),
+   ?ctxItem = ?instr.
+
+context_item(?ctxItem)
+ , context_item_by_invoc(?instr, ?ctxItem)
+ :-
+   invoke_instruction(?instr),
    ?ctxItem = ?instr.
 
 
@@ -45,9 +50,12 @@ context_item(?ctxItem)
 .decl matches_string_context(?str:symbol)
 
 matches_string_context(?str):-
-   ?str = "<<empty-context>>";
-   ?str = "<<main-context>>";
-   ?str = "<<startup-context>>";
+   ?str = "<<empty-context>>".
+matches_string_context(?str):-
+   ?str = "<<main-context>>".
+matches_string_context(?str):-
+   ?str = "<<startup-context>>".
+matches_string_context(?str):-
    ?str = "<<exit-context>>".
 
 .decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)

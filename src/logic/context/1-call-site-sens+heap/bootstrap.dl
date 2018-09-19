@@ -67,10 +67,12 @@ exit_context(?ctx)
 
 reachable_context(?ctx, ?func) :-
    main_function(?func),
-   main_context(?ctx)
- ; called_at_startup(?func),
-   startup_context(?ctx)
- ; called_at_exit(?func),
+   main_context(?ctx).
+reachable_context(?ctx, ?func) :-
+   called_at_startup(?func),
+   startup_context(?ctx).
+reachable_context(?ctx, ?func) :-
+   called_at_exit(?func),
    exit_context(?ctx).
 
 reachable_function(?func) :-

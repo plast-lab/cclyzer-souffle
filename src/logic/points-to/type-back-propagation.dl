@@ -52,10 +52,11 @@ type_indication(?type, ?aCtx, ?alloc) :-
    untyped_allocation(?allocInstr, ?alloc),
    pointer_type_has_component(?ptrType,?type),
    pointer_type_base_component(?ptrType, ?baseType),
-   sized_alloc_instr(?allocInstr, ?size),
-   type_has_size(?baseType,?baseSize),
-   ?numElements = ?size / ?baseSize,
-   ?size = ?numElements * ?baseSize.
+   sized_alloc_instr(?allocInstr, size),
+   type_has_size(?baseType,baseSize),
+   numElements = size / baseSize,
+   modulo = size % numElements,
+   modulo = 0.
 
 
 .decl _assign_rebase_alloc(?typedAlloc: HeapAllocation, ?aCtx: AllocationContext, ?alloc: Allocation, ?var: Variable)

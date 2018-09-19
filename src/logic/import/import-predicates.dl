@@ -278,16 +278,26 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input alias_has_visibility(IO="file", delimiter="\t", filename="alias_has_visibility.csv")
 
 
-.decl _constant_to_int(?const: symbol, ?val: number)
+
 // anantoni: The following input relations have been commented out since Souffle does not support unsigned 64-bit
 // integers, which appear in several benchmarks
 //
 // .input constant_hashes_to(IO="file", delimiter="\t", filename="constant_hashes_to.csv")
-// .input _constant_to_int(IO="file", delimiter="\t", filename="constant_to_int.csv")
 .input constant_has_value(IO="file", delimiter="\t", filename="constant_has_value.csv")
 
-constant_to_int(?cons, ?val) :-
-   _constant_to_int(?cons, ?val).
+
+//.decl constant_to_int(?const: symbol, ?val: number)
+.decl _constant_to_small_symbol_int(?const: symbol, ?val: symbol)
+.decl __constant_to_symbol_int(?const: symbol, ?val: symbol)
+.input __constant_to_symbol_int(IO="file", delimiter="\t", filename="constant_to_int.csv")
+
+constant_to_int(?c, ?value):-
+   ?value = to_number(?val),
+   _constant_to_small_symbol_int(?c, ?val).
+
+_constant_to_small_symbol_int(?c, ?val):-
+   __constant_to_symbol_int(?c, ?val).
+
 
 .decl _constant_in_function(v0:symbol, v1:symbol)
 .decl _variable_in_function(v0:symbol, v1:symbol)

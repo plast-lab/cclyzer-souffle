@@ -16,10 +16,8 @@
 
 // Reflexivity
 
-alloc_aliases(?alloc1, ?alloc2) :-
-   allocation(?alloc1),
-   allocation(?alloc2),
-   ?alloc1 = ?alloc2.
+alloc_aliases(?alloc, ?alloc) :-
+   allocation(?alloc).
 
 // Transitivity
 
@@ -122,6 +120,10 @@ alloc_matches(?alloc1, ?alloc2) :-
 // When loading from an allocation we must also consider the more
 // specific matching allocations and merge their points-to sets also.
 
+.decl var_points_to9(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.output var_points_to9
+
+var_points_to9(?aCtx, ?alloc, ?ctx, ?toVar),
 var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
    reachable_load(?instrFunc, ?toVar, ?fromAddress),
    reachable_context(?ctx, ?instrFunc),

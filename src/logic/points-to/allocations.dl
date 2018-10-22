@@ -1,5 +1,15 @@
 /// 1. Alloca Instructions
 
+.decl var_points_to6(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
+.decl var_points_to7(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
+.decl var_points_to8(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
+
+.output var_points_to6
+.output var_points_to7
+.output var_points_to8
+
+
+var_points_to6(?aCtx, ?stackAlloc, ?ctx, ?var),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
    stack_allocation(?stackAlloc),
@@ -26,6 +36,7 @@ allocation_type(?stackAlloc, ?type) :-
 
 /// 2. Parameters with pass-by-value semantics
 
+var_points_to7(?aCtx, ?stackAlloc, ?ctx, ?param),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
    stack_allocation(?stackAlloc),
@@ -64,7 +75,7 @@ allocation_type(?stackAlloc, ?type) :-
 //---------------------------------------------------------------------
 
 
-
+var_points_to8(?aCtx, ?heapAlloc, ?ctx, ?var),
 alloc_context(?aCtx),
 alloc_context_new(?item,?aCtx),
 var_points_to(?aCtx, ?heapAlloc, ?ctx, ?var),
@@ -120,11 +131,12 @@ heap_allocation_by_realloc(?insn, ?heapAlloc) :-
 // all sorts of places that have nothing to do with each other, and
 // will probably involve many heterogeneous types.
 
-//heap_allocation:types(Type, ACtx, HeapAlloc) <-
-//  heap_allocation(HeapAlloc),
-//   operand_points_to(ACtx, HeapAlloc, _, Var),
-//   operand:type[Var] = PtrType,
-//   pointer_type:component[PtrType] = Type.
+.decl heap_allocation_types(?type: Type, ?aCtx: AllocationContext, ?heapAlloc: HeapAllocation)
+heap_allocation_types(?type, ?aCtx, ?heapAlloc) :-
+   heap_allocation(?heapAlloc),
+   operand_points_to(?aCtx, ?heapAlloc, _, ?var),
+   operand_has_type(?var, ?ptrType),
+   pointer_type_has_component(?ptrType, ?type).
 
 
 //---------------------------------------------------------------------
@@ -165,7 +177,16 @@ allocation_type(?alloc, ?type):-
    global_allocation_by_function(?func, ?alloc),
    function_has_type(?func,?type).
 
+//----------------------------------
+// [Additional pseudo-allocations]
+//----------------------------------
 
+
+// An unknown location points to an unknown location
+
+ptr_points_to(?aCtx, ?unknown, ?aCtx, ?unknown) :-
+   empty_alloc_context(?aCtx),
+   unknown_location(?unknown).
 /*
 //------------------------------------------------------------------------------
 // [Sanity checks]

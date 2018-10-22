@@ -1,7 +1,31 @@
 //------------------------------------------------------------------------------
 // Constant aliases
 //------------------------------------------------------------------------------
+.decl constant_points_to1(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to2(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to3(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to4(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to5(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to6(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to7(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to8(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to9(?otherConstant: symbol, ?alloc: symbol)
+.decl constant_points_to10(?otherConstant: symbol, ?alloc: symbol)
 
+.output constant_points_to1
+.output constant_points_to2
+.output constant_points_to3
+.output constant_points_to4
+.output constant_points_to5
+.output constant_points_to6
+.output constant_points_to7
+.output constant_points_to8
+.output constant_points_to9
+.output constant_points_to10
+
+
+
+constant_points_to1(?otherConstant, ?alloc),
 constant_points_to(?otherConstant, ?alloc)
  :-
    aliased_constants(?otherConstant, ?constant),
@@ -17,6 +41,7 @@ constant_points_to(?otherConstant, ?alloc)
 //
 // Example: (int *) 0xabcd
 
+constant_points_to2(?constant, ?unknown),
 constant_points_to(?constant, ?unknown) :-
    inttoptr_constant_expression(?constant),
    unknown_location(?unknown).
@@ -28,6 +53,7 @@ constant_points_to(?constant, ?unknown) :-
 // A pointer may be masqueraded into an integer (or something else),
 // but the associated memory locations are still valid.
 
+constant_points_to3(?intConstant, ?alloc),
 constant_points_to(?intConstant, ?alloc) :-
    ptrtoint_constant_expression_from(?intConstant, ?ptrConstant),
    constant_points_to(?ptrConstant, ?alloc).
@@ -36,6 +62,7 @@ constant_points_to(?intConstant, ?alloc) :-
 // bitcast constant expression
 //------------------------------------------------------------------------------
 
+constant_points_to4(?outerConstant, ?alloc),
 constant_points_to(?outerConstant, ?alloc) :-
    bitcast_constant_expression_from(?outerConstant, ?innerConstant),
    constant_points_to(?innerConstant, ?alloc).
@@ -54,14 +81,26 @@ constant_points_to(?outerConstant, ?alloc) :-
 // expression up to some index
 
 .decl gep_constant_expr_points_to(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
+.decl gep_constant_expr_points_to1(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
+.decl gep_constant_expr_points_to2(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
+.decl gep_constant_expr_points_to3(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
+.decl gep_constant_expr_points_to4(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
+.decl gep_constant_expr_points_to5(?cExpr: GetElementPtrConstantExpression, ?index: number, ?alloc: Allocation)
 
+.output gep_constant_expr_points_to1
+.output gep_constant_expr_points_to2
+.output gep_constant_expr_points_to3
+.output gep_constant_expr_points_to4
+.output gep_constant_expr_points_to5
+
+gep_constant_expr_points_to1(?cExpr, 0, ?alloc),
 gep_constant_expr_points_to(?cExpr, 0, ?alloc) :-
    getelementptr_constant_expression_base(?cExpr, ?base),
    constant_points_to(?base, ?alloc).
 
 
 // First index as above
-
+gep_constant_expr_points_to2(?cExpr, 1, ?alloc),
 gep_constant_expr_points_to(?cExpr, 1, ?alloc)
  :-
    gep_constant_expr_points_to(?cExpr, 0, ?alloc),
@@ -69,18 +108,18 @@ gep_constant_expr_points_to(?cExpr, 1, ?alloc)
    getelementptr_constant_expression_index(?cExpr, 0, ?constant),
    constant_to_int(?constant, 0).
 
-
+gep_constant_expr_points_to3(?cExpr, 1, ?region),
 gep_constant_expr_points_to(?cExpr, 1, ?region)
  :-
-   gep_constant_expr_points_to(?cExpr, 1, ?alloc),
+   gep_constant_expr_points_to(?cExpr, 0, ?alloc),
    basic_allocation(?alloc),
-   getelementptr_constant_expression_index(?cExpr, 1, ?constant),
+   getelementptr_constant_expression_index(?cExpr, 0, ?constant),
    constant_to_int(?constant, ?index),
    alloc_subregion_at_array_index(?alloc, ?index, ?region).
 
 
 // Rest of the indices
-
+gep_constant_expr_points_to4(?cExpr, ?nextIndex, ?region),
 gep_constant_expr_points_to(?cExpr, ?nextIndex, ?region)
  :-
    gep_constant_expr_points_to(?cExpr, ?index, ?alloc),
@@ -95,7 +134,9 @@ gep_constant_expr_points_to(?cExpr, ?nextIndex, ?region)
    // get subobject for given index
    alloc_subregion_at_array_index(?alloc, ?constantIndex, ?region).
 
-
+.output _constant_expression_next_index
+.output _getelementptr_constant_expression_interm_type
+gep_constant_expr_points_to5(?cExpr, ?nextIndex, ?region),
 gep_constant_expr_points_to(?cExpr, ?nextIndex, ?region)
  :-
    gep_constant_expr_points_to(?cExpr, ?index, ?alloc),
@@ -110,6 +151,7 @@ gep_constant_expr_points_to(?cExpr, ?nextIndex, ?region)
    alloc_subregion_at_field(?alloc, ?field, ?region).
 
 
+constant_points_to5(?cExpr, ?alloc) ,
 constant_points_to(?cExpr, ?alloc) :-
    getelementptr_constant_expression_nindices(?cExpr, ?total),
    gep_constant_expr_points_to(?cExpr, ?total, ?alloc).

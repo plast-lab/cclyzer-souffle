@@ -284,6 +284,7 @@
 .output heap_allocation_by_new
 .output heap_allocation_by_realloc
 .output heap_allocation_by_type_instruction
+.output heap_allocation_types
 .output hidden_visibility
 .output icmp_condition
 .output icmp_condition__eq

@@ -6,7 +6,6 @@
 // variables. Named variables will point to their respective stack
 // allocations.
 
-//UNFINISHED
 
 .decl var_points_to(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?var: Variable)
 
@@ -30,23 +29,31 @@
 
 .decl operand_points_to(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
 
+.decl operand_points_to1(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
+.decl operand_points_to2(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
+
+.output operand_points_to1
+.output operand_points_to2
+
+operand_points_to1(?aCtx, ?alloc, ?ctx, ?ptrVar),
 operand_points_to(?aCtx, ?alloc, ?ctx, ?ptrVar) :-
-   variable(?ptrVar),
    var_points_to(?aCtx, ?alloc, ?ctx, ?ptrVar).
 
+operand_points_to2(?aCtx, ?alloc, ?ctx, ?cons),
 operand_points_to(?aCtx, ?alloc, ?ctx, ?cons) :-
    empty_alloc_context(?aCtx),
-   constant(?cons),
    constant_in_function(?cons, ?enclosingFunc),
    constant_points_to(?cons, ?alloc),
    reachable_context(?ctx, ?enclosingFunc).
-/*
-// Sanity checks
-var_points_to(_, _, Ctx, Var)
- , variable:in_function[Var] = EnclosingFunc
- ->
-   reachable_context(Ctx, EnclosingFunc).
 
+
+// Sanity checks
+
+reachable_context(?ctx, ?enclosingFunc) :-
+   variable_in_function(?var, ?enclosingFunc),
+   var_points_to(_, _, ?ctx, ?var).
+
+/*
 operand_points_to(_, _, Ctx, Operand)
  , operand:in_function[Operand] = EnclosingFunc
  ->

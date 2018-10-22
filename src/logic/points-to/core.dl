@@ -1,5 +1,6 @@
 
 // Model null as a specific memory location
+constant_points_to6(?constant, ?null),
 constant_points_to(?constant, ?null) :-
    nullptr_constant(?constant),
    null_location(?null).
@@ -8,20 +9,24 @@ constant_points_to(?constant, ?null) :-
 // constants. They should be matched to the corresponding global
 // allocation.
 
+constant_points_to7(?constant, ?alloc),
 constant_points_to(?constant, ?alloc) :-
    global_variable_constant_name(?constant, ?name),
    global_variable_has_name(?gVar, ?name),
    global_allocation_by_variable(?gVar, ?alloc).
 
+constant_points_to8(?constant, ?alloc),
 constant_points_to(?constant, ?alloc) :-
    function_constant_fn_name(?constant, ?fName),
    function_has_name(?func, ?fName),
    global_allocation_by_function(?func, ?alloc).
 
+constant_points_to9(?constant, ?alloc),
 constant_points_to(?constant, ?alloc) :-
    constant_references_variable(?constant, ?gVar),
    global_allocation_by_variable(?gVar, ?alloc).
 
+constant_points_to10(?constant, ?alloc),
 constant_points_to(?constant, ?alloc) :-
    constant_references_function(?constant, ?func),
    global_allocation_by_function(?func, ?alloc).
@@ -47,8 +52,14 @@ constant_points_to(?constant, ?alloc) :-
 // result of the `call instruction`.
 //----------------------------------------------------------------------
 
+.decl var_points_to2(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.decl var_points_to3(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.decl var_points_to4(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.output var_points_to2
+.output var_points_to3
+.output var_points_to4
 
-
+var_points_to2(?aCtx, ?alloc, ?ctx, ?toVar),
 var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
    assign_instruction(?instrFunc, ?toVar, ?value),
    operand_points_to(?aCtx, ?alloc, ?ctx, ?value), // TODO: consider adding type check
@@ -70,6 +81,7 @@ assign_instruction(?instrFunc, ?toVar, ?value) :-
    instruction_in_function(?instr, ?instrFunc).
 
 // `inttoptr` instructions
+var_points_to3(?aCtx, ?unknown, ?ctx, ?toVar),
 var_points_to(?aCtx, ?unknown, ?ctx, ?toVar) :-
    empty_alloc_context(?aCtx),
    unknown_location(?unknown),
@@ -139,9 +151,9 @@ reachable_load(?instrFunc, ?toVar, ?fromAddress) :-
    instruction_assigns_to(?instr, ?toVar),
    instruction_in_function(?instr, ?instrFunc).
 
+var_points_to4(?aCtx, ?alloc, ?ctx, ?toVar),
 var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
    reachable_load(?instrFunc, ?toVar, ?fromAddress),
    reachable_context(?ctx, ?instrFunc),
    operand_points_to(?baseACtx, ?baseAlloc, ?ctx, ?fromAddress),
    ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc). // TODO: consider adding type check
-

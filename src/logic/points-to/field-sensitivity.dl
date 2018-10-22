@@ -23,11 +23,44 @@
 // INDEX, when its base points to object BASEALLOC.
 
 .decl gep_points_to(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to1(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to2(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to3(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to4(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to5(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to6(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to7(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to8(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to9(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to10(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to11(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to12(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to13(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to14(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+.decl gep_points_to15(?insn: GetElementPtrInstruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
 
+.output gep_points_to1
+.output gep_points_to2
+.output gep_points_to3
+.output gep_points_to4
+.output gep_points_to5
+.output gep_points_to6
+.output gep_points_to7
+.output gep_points_to8
+.output gep_points_to9
+.output gep_points_to10
+.output gep_points_to11
+.output gep_points_to12
+.output gep_points_to13
+.output gep_points_to14
+.output gep_points_to15
+
+gep_points_to1(?insn, ?index, ?baseAlloc, ?alloc),
 gep_points_to(?insn, ?index, ?baseAlloc, ?alloc) :-
    _inv_gep_points_to(?someAlloc, ?baseAlloc, ?index, ?insn),
    alloc_aliases(?alloc, ?someAlloc).
 
+gep_points_to2(?insn, 0, ?baseAlloc, ?baseAlloc),
 gep_points_to(?insn, 0, ?baseAlloc, ?baseAlloc) :-
    !gep_is_vector_based(?insn),
    getelementptr_instruction_base(?insn, ?base),
@@ -55,6 +88,7 @@ _inv_gep_points_to(?alloc, ?baseAlloc, ?index, ?insn) :-
 // had been an array allocation, whenever the base allocation flows to
 // the address operand of some GEP instruction.
 
+gep_points_to3(?insn, 0, ?baseAlloc, ?zeroAliasAlloc),
 gep_points_to(?insn, 0, ?baseAlloc, ?zeroAliasAlloc)
  :-
    gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
@@ -72,6 +106,7 @@ _gep_with_zero_base_offset(?insn) :-
    getelementptr_instruction_index(?insn, 0, ?indexOp),
    constant_to_int(?indexOp, 0).
 
+gep_points_to4(?insn, 1, ?baseAlloc, ?alloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?alloc)
  :-
    _gep_with_zero_base_offset(?insn),
@@ -108,6 +143,7 @@ _array_subobjects_at_rel_offset(?alloc, ?offset, ?newAlloc) :-
    ?offset = ?index2 - ?index1,
    ?offset > 0.
 
+gep_points_to5(?insn, 1, ?baseAlloc, ?newAlloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
  :-
    _nonzero_gep_points_to(?insn, ?declaredType, ?index, ?baseAlloc, ?alloc),
@@ -127,6 +163,7 @@ _star_subobj_of_base_subobj(?alloc, ?index, ?newAlloc) :-
    alloc_subregion_at_array_index(?base, ?index, ?alloc),
    alloc_subregion_at_any_array_index(?base, ?newAlloc).
 
+gep_points_to6(?insn, 1, ?baseAlloc, ?newAlloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
  :-
    // This rule may be turned on/off via configuration
@@ -152,6 +189,7 @@ _star_subobj_of_array_subobj(?alloc, ?baseType, ?index, ?newAlloc) :-
    alloc_subregion_at_array_index(?base, ?index, ?alloc),
    alloc_subregion_at_any_array_index(?base, ?newAlloc).
 
+gep_points_to7(?insn, 1, ?baseAlloc, ?newAlloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
  :-
    // This rule may be turned on/off via configuration
@@ -183,6 +221,7 @@ _unknown_gep_points_to(?insn, ?declaredType, ?baseAlloc, ?alloc) :-
    _gep_with_unknown_base_offset(?insn),
    getelementptr_instruction_interm_type(?insn, 1, ?declaredType).
 
+gep_points_to8(?insn, 1, ?baseAlloc, ?newAlloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
  :-
    _unknown_gep_points_to(?insn, ?declaredType, ?baseAlloc, ?alloc),
@@ -200,6 +239,7 @@ gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
 // will not change anything. Thus, it suffices to propagate the
 // existing allocation
 
+gep_points_to9(?insn, 1, ?baseAlloc, ?alloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?alloc)
  :-
    gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
@@ -220,6 +260,7 @@ _gep_addr_points_to_baseobj(?alloc, ?baseAlloc, ?insn) :-
    // base object
    basic_allocation(?alloc).
 
+gep_points_to10(?insn, 1, ?baseAlloc, ?indexedAlloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
  :-
    // GEP instruction points to base allocation
@@ -230,6 +271,7 @@ gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
    // get subojbect at this array index
    alloc_subregion_at_array_index(?alloc, ?index, ?indexedAlloc).
 
+gep_points_to11(?insn, 1, ?baseAlloc, ?indexedAlloc),
 gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
  :-
    // GEP instruction points to base allocation
@@ -244,6 +286,7 @@ gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
 // 6. It also possible that a struct type is treated as an array of
 // bytes, in which case we must match the byte offset to some field
 
+gep_points_to12(?insn, 1, ?baseAlloc, ?allocField),
 gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
  :-
    gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
@@ -279,7 +322,7 @@ gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc)
    alloc_subregion(?alloc).
 
 // Case of unknown index
-
+gep_points_to13(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc),
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
  :-
    gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
@@ -292,7 +335,7 @@ gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
 
 
 // Case of known constant index
-
+gep_points_to14(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc),
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
  :-
    gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
@@ -305,7 +348,7 @@ gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
 
 
 // Case of field access
-
+gep_points_to15(?insn, ?nextIndex, ?baseAlloc, ?allocField),
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?allocField)
  :-
    gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
@@ -339,6 +382,12 @@ _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn) :-
    operand_points_to(?aCtx, ?baseAlloc, ?ctx, ?base).
 
 // TODO type compatibility
+.decl var_points_to10(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
+.output var_points_to10
+.output _gep_last_index_points_to
+.output _gep_address_ctx_points_to
+
+var_points_to10(?aCtx, ?alloc, ?ctx, ?toVar),
 var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
    _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn),
    _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn),

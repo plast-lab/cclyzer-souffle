@@ -72,10 +72,10 @@ schema_invalid_constant(Constant, __FILE__, __LINE__) :-
    constant(Constant),
    !constant_has_value(Constant, _).
 
-schema_invalid_constant(Constant, __FILE__, __LINE__) :-
-   schema_sanity(),
-   constant(Constant),
-   !constant_hashes_to(Constant, _).
+//schema_invalid_constant(Constant, __FILE__, __LINE__) :-
+//   schema_sanity(),
+//   constant(Constant),
+//   !constant_hashes_to(Constant, _).
 
 // Constants cannot be labels
 schema_invalid_constant(Constant, __FILE__, __LINE__) :-

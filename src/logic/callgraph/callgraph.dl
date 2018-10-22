@@ -43,13 +43,15 @@ callgraph_invalid_edge(CallerInstr, Callee, __FILE__, __LINE__) :-
 // also reachable. This accounts for the static part of the
 // call-graph.
 
-static_callgraph_edge(CallerInstr, Callee)
+reachable_context(CallerInstr, Callee)
+ , static_callgraph_edge(CallerInstr, Callee)
  , reachable_function(Callee)
  :-
    reachable_instruction(CallerInstr),
    call_instruction_fn_target(CallerInstr, Callee).
 
-static_callgraph_edge(CallerInstr, Callee)
+reachable_context(CallerInstr, Callee)
+ , static_callgraph_edge(CallerInstr, Callee)
  , reachable_function(Callee)
  :-
    reachable_instruction(CallerInstr),

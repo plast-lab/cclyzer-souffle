@@ -1,0 +1,53 @@
+.decl reach_context(?insn: symbol, ?func: symbol)
+.output reach_context
+
+reach_context(?ctx, ?func) :-
+   main_function(?func),
+   main_context(?ctx).
+reach_context(?ctx, ?func) :-
+   called_at_startup(?func),
+   startup_context(?ctx).
+reach_context(?ctx, ?func) :-
+   called_at_exit(?func),
+   exit_context(?ctx).
+
+reach_context(?insn, ?func):-
+   reach_instruction(?insn),
+   call_instruction(?insn),
+   call_instruction_fn_target(?insn, ?func).
+
+.decl reach_function(?func: symbol)
+.output reach_function
+reach_function(?func):-
+   reach_context(_, ?func).
+
+.decl reach_instruction(?insn: symbol)
+.output reach_instruction
+reach_instruction(?insn):-
+   reach_function(?func),
+   instruction_in_function(?insn, ?func).
+
+reach_context(?insn, ?func):-
+   reach_instruction(?insn),
+   invoke_instruction(?insn),
+   invoke_instruction_fn_target(?insn, ?func).
+
+//------
+
+
+
+context(?calleeCtx)
+ , context_new(?callerInstr, ?calleeCtx)
+ , reach_context(?callerInstr, ?callee) :-
+   callgraph_edge( ?calleeCtx, ?callee, _, ?callerInstr).
+
+
+
+
+
+
+
+
+
+
+

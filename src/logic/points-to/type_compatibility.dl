@@ -12,12 +12,10 @@
 
 .decl type_compatible(?type1:Type, ?type2:Type)
 
-type_compatible(?type1, ?type2) :-
-   type(?type1),
-   ?type2 = ?type1.
-
-
-
+type_compatible(?type, ?type) :-
+   type(?type),
+   ! ?type= "fp128",	//why are they appearing here, but not in cclyzer?
+   ! ?type= "half".
 
 // Struct types
 

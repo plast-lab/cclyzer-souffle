@@ -64,13 +64,29 @@ exit_context(?ctx)
 //---------------------------------------------------------
 
 .decl reachable_context(?ctx:Context, ?func:FunctionDecl)
+.decl reachable_context1(?ctx:Context, ?func:FunctionDecl)
+.decl reachable_context2(?ctx:Context, ?func:FunctionDecl)
+.decl reachable_context3(?ctx:Context, ?func:FunctionDecl)
 
+.output reachable_context1
+.output reachable_context2
+.output reachable_context3
+
+context_new(?item,?ctx),
+context(?ctx):-
+   reachable_context(?ctx,?item).
+
+reachable_context1(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
    main_function(?func),
    main_context(?ctx).
+
+reachable_context2(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
    called_at_startup(?func),
    startup_context(?ctx).
+
+reachable_context3(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
    called_at_exit(?func),
    exit_context(?ctx).

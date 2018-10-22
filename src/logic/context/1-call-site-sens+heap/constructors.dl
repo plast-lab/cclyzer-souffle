@@ -33,17 +33,15 @@
 context_item_invoc(?ctxItem, ?invoc) :-
    context_item_by_invoc(?invoc, ?ctxItem).
 
-context_item(?ctxItem)
- , context_item_by_invoc(?instr, ?ctxItem)
+context_item(?instr)
+ , context_item_by_invoc(?instr, ?instr)
  :-
-   call_instruction(?instr),
-   ?ctxItem = ?instr.
+   call_instruction(?instr).
 
-context_item(?ctxItem)
- , context_item_by_invoc(?instr, ?ctxItem)
+context_item(?instr)
+ , context_item_by_invoc(?instr, ?instr)
  :-
-   invoke_instruction(?instr),
-   ?ctxItem = ?instr.
+   invoke_instruction(?instr).
 
 
 // Dummy context items (needed for empty contexts)

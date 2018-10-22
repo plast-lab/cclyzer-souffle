@@ -69,11 +69,11 @@ alloc_subregion(?newAlloc)
    struct_type(?type),
    struct_type_field(?type, ?field, ?fieldType),
 
-   (struct_type_field_name(?type,?field, ?fieldName),
-    ?newAlloc= cat(cat(cat(cat(?alloc,"."),?fieldName),"/"),to_string(?field))
+   ((struct_type_field_name(?type,?field, ?fieldName),
+    ?newAlloc= cat(cat(cat(cat(?alloc,"."),?fieldName),"/"),to_string(?field)))
     ;
-    !struct_type_field_name(?type,?field, _),
-    ?newAlloc= cat(cat(?alloc,".?/"),to_string(?field))).
+    (!struct_type_field_name(?type,?field, _),
+    ?newAlloc= cat(cat(?alloc,".?/"),to_string(?field)))).
 
 
 //---------------------------------------------------------------

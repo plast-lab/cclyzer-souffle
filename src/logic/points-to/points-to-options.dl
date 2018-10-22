@@ -9,10 +9,12 @@
 
 .decl user_options_entrypoints(?value: symbol)
 
-reachable_context(?ctx, ?f) :-
-   empty_context(?ctx),
-   user_options_entrypoints("library"),
-   function(?f).
+//user_options_entrypoints("library").
+
+//reachable_context(?ctx, ?f) :-
+//   empty_context(?ctx),
+//   user_options_entrypoints("library"),
+//   function(?f).
 
 
 //------------------------------------------------------------------------------
@@ -30,8 +32,10 @@ user_options_pointer_arithmetic(?value) :-
  ; ?value = "off".
 
 .decl analyze_pointer_arithmetic()
-analyze_pointer_arithmetic() :-
-   user_options_pointer_arithmetic("on").
+//analyze_pointer_arithmetic() :-
+//   user_options_pointer_arithmetic("on").
+
+//user_options_pointer_arithmetic("on").
 
 //------------------------------------------------------------------------------
 // [Handle optimized code]
@@ -50,10 +54,10 @@ analyze_pointer_arithmetic() :-
 
 .decl user_options_optimized_code(?value: symbol)
 
-user_options_optimized_code(?value) :-
-   ?value = "on"
- ; ?value = "off".
+//user_options_optimized_code(?value) :-
+//   ?value = "on"
+// ; ?value = "off".
 
 .decl inlined_constructors()
-inlined_constructors() :-
-   user_options_optimized_code("on").
+//inlined_constructors() :-
+//   user_options_optimized_code("on").

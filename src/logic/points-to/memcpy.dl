@@ -16,8 +16,12 @@
 
 memcpy_call(?memcpyInstr, ?callerCtx, ?to, ?from) :-
    function_has_name(?callee, ?name),
-   ( match("@memcpy%", ?name)
-   ; match("@llvm.memcpy%", ?name) ),
+   (
+   "@memcpy"=substr(?name,0,7);
+   "@llvm.memcpy"=substr(?name,0,12)
+   ),
+//   ( match("@memcpy%", ?name)
+//   ; match("@llvm.memcpy%", ?name) ),
    callgraph_edge(_, ?callee, ?callerCtx, ?memcpyInstr),
    actual_arg(?memcpyInstr, 0, ?to),
    actual_arg(?memcpyInstr, 1, ?from).

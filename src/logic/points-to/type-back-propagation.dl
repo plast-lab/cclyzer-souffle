@@ -1,4 +1,3 @@
-
 .decl heap_allocation_by_type_instruction(?type: Type, ?insn: Instruction, ?heapAlloc: HeapAllocation)
 
 // Mark all heap allocations that do not carry any type information
@@ -6,18 +5,22 @@
 .decl untyped_allocation(?insn: Instruction, ?alloc: Allocation)
 
 untyped_allocation(?insn, ?alloc) :-
-   heap_allocation_by_malloc(?insn, ?alloc)
- ; heap_allocation_by_calloc(?insn, ?alloc)
- ; heap_allocation_by_realloc(?insn, ?alloc).
+   heap_allocation_by_instruction(?insn, ?alloc).
 
 
 // Type indication for *untyped* allocation
 
 .decl type_indication(?type: Type, ?aCtx: AllocationContext, ?alloc: Allocation)
+.decl type_indication1(?type: Type, ?aCtx: AllocationContext, ?alloc: Allocation)
+.decl type_indication2(?type: Type, ?aCtx: AllocationContext, ?alloc: Allocation)
+.decl type_indication3(?type: Type, ?aCtx: AllocationContext, ?alloc: Allocation)
 
+.output type_indication1
+.output type_indication2
+.output type_indication3
 
 // Only bitcast instructions are considered type indications for now
-
+type_indication1(?type, ?aCtx, ?alloc),
 type_indication(?type, ?aCtx, ?alloc) :-
    bitcast_instruction_to_type(?instr,?ptrType),
    bitcast_instruction_from_operand(?instr,?fromOperand),
@@ -28,6 +31,7 @@ type_indication(?type, ?aCtx, ?alloc) :-
    !sized_alloc_instr(?allocInstr,_),
    pointer_type_has_component(?ptrType,?type).
 
+type_indication2(?type, ?aCtx, ?alloc),
 type_indication(?type, ?aCtx, ?alloc) :-
    reachable_instruction(?instr),
    bitcast_instruction_to_type(?instr,?ptrType),
@@ -42,6 +46,7 @@ type_indication(?type, ?aCtx, ?alloc) :-
 
 // In case of known size, we must also allow pointer types whose base
 // component may perfectly divide the known size of the allocation.
+type_indication3(?type, ?aCtx, ?alloc),
 type_indication(?type, ?aCtx, ?alloc) :-
    reachable_instruction(?instr),
    bitcast_instruction_to_type(?instr,?ptrType),
@@ -54,23 +59,28 @@ type_indication(?type, ?aCtx, ?alloc) :-
    pointer_type_base_component(?ptrType, ?baseType),
    sized_alloc_instr(?allocInstr, size),
    type_has_size(?baseType,baseSize),
-   numElements = size / baseSize,
-   modulo = size % numElements,
-   modulo = 0.
+   size = (size / baseSize) * baseSize.
 
+heap_allocation(?typedAlloc):-
+   heap_allocation_by_type_instruction(_, _, ?typedAlloc).
 
 .decl _assign_rebase_alloc(?typedAlloc: HeapAllocation, ?aCtx: AllocationContext, ?alloc: Allocation, ?var: Variable)
-heap_allocation(?typedAlloc),
-   heap_allocation_by_type_instruction(?type, ?allocInstr, ?typedAlloc), 
+heap_allocation_by_type_instruction(?type, ?allocInstr, ?typedAlloc), 
    _assign_rebase_alloc(?typedAlloc, ?aCtx, ?alloc, ?var)
  :-
    untyped_allocation(?allocInstr, ?alloc),
    type_indication(?type, ?aCtx, ?alloc),
    instruction_assigns_to(?allocInstr, ?var),
-   variable_in_function(?var, ?funcName),
+   variable_in_function(?var, ?func),
    variable_has_name(?var, ?name),
+   function_has_name(?func, ?funcName),
    ?typedAlloc= cat(cat(cat(cat(cat(cat("*typed_heap_alloc", ?funcName), "[" ), ?type ), " " ), ?name ), "]").
 
+.decl var_points_to5(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.output var_points_to5
+.output _assign_rebase_alloc
+
+var_points_to5(?aCtx, ?typedAlloc, ?ctx, ?var),
 var_points_to(?aCtx, ?typedAlloc, ?ctx, ?var) :-
    _assign_rebase_alloc(?typedAlloc, ?aCtx, ?alloc, ?var),
    var_points_to(?aCtx, ?alloc, ?ctx, ?var).

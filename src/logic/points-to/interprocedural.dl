@@ -8,6 +8,10 @@
 callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee) :-
    callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
 
+.decl reachable_context4(?calleeCtx: Context, ?callee: FunctionDecl)
+.output reachable_context4
+
+reachable_context4(?calleeCtx, ?callee),
 reachable_context(?calleeCtx, ?callee) :-
    callgraph_inverted_edge(_, _, ?calleeCtx, ?callee).
 
@@ -22,9 +26,15 @@ function_by_location(?alloc, ?callee) :-
 
 callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
  :-
-   callgraph_edge1(?calleeCtx, ?callee, ?callerCtx, ?callerInstr);
-   callgraph_edge2(?calleeCtx, ?callee, ?callerCtx, ?callerInstr);
-   callgraph_edge3(?calleeCtx, ?callee, ?callerCtx, ?callerInstr);
+   callgraph_edge1(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
+callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+ :-
+   callgraph_edge2(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
+callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+ :-
+   callgraph_edge3(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
+callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+ :-
    callgraph_edge4(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
 
 
@@ -39,7 +49,7 @@ context(?calleeCtx)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = ?callerInstr.
+   context_item_by_invoc(?calleeCtx, ?newItem).
 
 context(?calleeCtx)
  , context_new(?newItem, ?calleeCtx)
@@ -51,7 +61,7 @@ context(?calleeCtx)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = ?callerInstr.
+   context_item_by_invoc(?calleeCtx, ?newItem).
 
 // Indirect function calls (via function pointers)
 context(?calleeCtx)
@@ -69,7 +79,7 @@ context(?calleeCtx)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = ?callerInstr.
+   ?calleeCtx=?callerInstr.
 
 context(?calleeCtx)
  , context_new(?newItem, ?calleeCtx)
@@ -85,7 +95,7 @@ context(?calleeCtx)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx = ?callerInstr.
+   context_item_by_invoc(?calleeCtx, ?newItem).
 
 
 //------------------------------------------------------------------------------
@@ -95,6 +105,10 @@ context(?calleeCtx)
 // Interprocedural assignment due to function call
 .decl interp_assignment(?toCtx: Context, ?toVar: Variable, ?fromCtx: Context, ?fromValue: Operand)
 
+.decl var_points_to1(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?toVar: symbol)
+.output var_points_to1
+
+var_points_to1(?aCtx, ?alloc, ?toCtx, ?toVar),
 var_points_to(?aCtx, ?alloc, ?toCtx, ?toVar) :-
    interp_assignment(?toCtx, ?toVar, ?fromCtx, ?fromValue),
    operand_points_to(?aCtx, ?alloc, ?fromCtx, ?fromValue).
@@ -111,7 +125,7 @@ actual_arg(?callInstr, ?index, ?argument) :-
 
 // Actual argument to formal parameter `assignment`
 interp_assignment(?calleeCtx, ?param, ?callerCtx, ?argument) :-
-   //callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
+   callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
    callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee),   //redundant OPT clause?
    actual_arg(?callerInstr, ?index, ?argument),
    function_param(?callee, ?index, ?param),

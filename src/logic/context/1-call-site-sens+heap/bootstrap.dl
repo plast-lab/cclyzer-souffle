@@ -72,7 +72,6 @@ exit_context(?ctx)
 .output reachable_context2
 .output reachable_context3
 
-context_new(?item,?ctx),
 context(?ctx):-
    reachable_context(?ctx,?item).
 

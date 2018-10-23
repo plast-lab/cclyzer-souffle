@@ -9,12 +9,12 @@
 
 .decl user_options_entrypoints(?value: symbol)
 
-//user_options_entrypoints("library").
+user_options_entrypoints("library").
 
-//reachable_context(?ctx, ?f) :-
-//   empty_context(?ctx),
-//   user_options_entrypoints("library"),
-//   function(?f).
+reachable_context(?ctx, ?f) :-
+   empty_context(?ctx),
+   user_options_entrypoints("library"),
+   function(?f).
 
 
 //------------------------------------------------------------------------------
@@ -27,9 +27,9 @@
 
 .decl user_options_pointer_arithmetic(?value: symbol)
 
-user_options_pointer_arithmetic(?value) :-
-   ?value = "on"
- ; ?value = "off".
+//user_options_pointer_arithmetic(?value) :-
+//   ?value = "on"
+// ; ?value = "off".
 
 .decl analyze_pointer_arithmetic()
 //analyze_pointer_arithmetic() :-

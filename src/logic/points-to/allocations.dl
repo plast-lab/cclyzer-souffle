@@ -183,7 +183,10 @@ allocation_type(?alloc, ?type):-
 
 
 // An unknown location points to an unknown location
+.decl ptr_points_to1(?aCtx: symbol, ?unknown: symbol, ?aCtx2: symbol, ?unknown2: symbol)
+.output ptr_points_to1
 
+ptr_points_to1(?aCtx, ?unknown, ?aCtx, ?unknown),
 ptr_points_to(?aCtx, ?unknown, ?aCtx, ?unknown) :-
    empty_alloc_context(?aCtx),
    unknown_location(?unknown).

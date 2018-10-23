@@ -7,7 +7,7 @@
 
 .type Context = ContextItem
 .type AllocationContext = ContextItem
-.type ContextItem = symbol
+.type ContextItem = symbol | Instruction
 
 
 .decl context(?ctx:Context)
@@ -33,15 +33,17 @@
 context_item_invoc(?ctxItem, ?invoc) :-
    context_item_by_invoc(?invoc, ?ctxItem).
 
-context_item(?instr)
- , context_item_by_invoc(?instr, ?instr)
+context_item(?instr1)
+ , context_item_by_invoc(?instr1, ?instr2)
  :-
-   call_instruction(?instr).
+   call_instruction(?instr1),
+   ?instr1= ?instr2.
 
-context_item(?instr)
- , context_item_by_invoc(?instr, ?instr)
+context_item(?instr1)
+ , context_item_by_invoc(?instr1, ?instr2)
  :-
-   invoke_instruction(?instr).
+   invoke_instruction(?instr1),
+   ?instr1=?instr2.
 
 
 // Dummy context items (needed for empty contexts)

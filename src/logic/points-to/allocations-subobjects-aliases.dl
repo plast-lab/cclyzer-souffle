@@ -32,13 +32,22 @@ alloc_aliases(?alloc1, ?alloc2) :-
 
 // Aliases have the same points-to sets
 
+.decl ptr_points_to6(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
+.decl ptr_points_to7(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
+.decl ptr_points_to8(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
+.output ptr_points_to6
+.output ptr_points_to7
+.output ptr_points_to8
+
+
+ptr_points_to6(?aCtx, ?alloc, ?baseACtx, ?baseAlloc1),
 ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc1) :-
    ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc2),
    alloc_aliases(?baseAlloc1, ?baseAlloc2).
 
 // When a pointer points to an allocation, it must also point to all
 // of its aliases
-
+ptr_points_to7(?aCtx, ?alloc1, ?baseACtx, ?baseAlloc),
 ptr_points_to(?aCtx, ?alloc1, ?baseACtx, ?baseAlloc) :-
    ptr_points_to(?aCtx, ?alloc2, ?baseACtx, ?baseAlloc),
    alloc_aliases(?alloc1, ?alloc2).
@@ -135,7 +144,7 @@ var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
 // direction. We do that by extending the points-to set of an
 // allocation by the points-to sets of all more generic allocations,
 // ie, those that can pattern match it.
-
+ptr_points_to8(?aCtx, ?alloc, ?ptrACtx, ?origAlloc),
 ptr_points_to(?aCtx, ?alloc, ?ptrACtx, ?origAlloc) :-
    ptr_points_to(?aCtx, ?alloc, ?ptrACtx, ?moreGenericAlloc),
    alloc_matches(?origAlloc, ?moreGenericAlloc).

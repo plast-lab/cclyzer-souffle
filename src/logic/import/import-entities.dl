@@ -115,5 +115,5 @@
 
 
 
-.input reachable_context(IO="file", delimiter="\t", filename="reachable_context_facts.csv")
-.input var_points_to(IO="file", delimiter="\t", filename="var_points_to_facts.csv")
+//.input reachable_context(IO="file", delimiter="\t", filename="reachable_context_facts.csv")
+//.input var_points_to(IO="file", delimiter="\t", filename="var_points_to_facts.csv")

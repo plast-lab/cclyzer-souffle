@@ -135,7 +135,10 @@ reachable_store(?instrFunc, ?toAddress, ?value) :-
    store_instruction_address(?instr, ?toAddress),
    instruction_in_function(?instr, ?instrFunc).
 
+.decl ptr_points_to5(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
+.output ptr_points_to5
 
+ptr_points_to5(?aCtx, ?alloc, ?baseACtx, ?baseAlloc),
 ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc) :-
    reachable_store(?instrFunc, ?toAddress, ?value),
    reachable_context(?ctx, ?instrFunc),

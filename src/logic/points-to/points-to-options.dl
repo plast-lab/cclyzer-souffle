@@ -9,7 +9,7 @@
 
 .decl user_options_entrypoints(?value: symbol)
 
-user_options_entrypoints("library").
+//user_options_entrypoints("library").
 
 reachable_context(?ctx, ?f) :-
    empty_context(?ctx),

@@ -382,7 +382,7 @@ _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn) :-
    operand_points_to(?aCtx, ?baseAlloc, ?ctx, ?base).
 
 // TODO type compatibility
-.decl var_points_to10(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
+.decl var_points_to10(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
 .output var_points_to10
 .output _gep_last_index_points_to
 .output _gep_address_ctx_points_to

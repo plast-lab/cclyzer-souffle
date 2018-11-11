@@ -52,9 +52,9 @@ constant_points_to(?constant, ?alloc) :-
 // result of the `call instruction`.
 //----------------------------------------------------------------------
 
-.decl var_points_to2(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
-.decl var_points_to3(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
-.decl var_points_to4(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.decl var_points_to2(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
+.decl var_points_to3(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
+.decl var_points_to4(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
 .output var_points_to2
 .output var_points_to3
 .output var_points_to4
@@ -135,7 +135,7 @@ reachable_store(?instrFunc, ?toAddress, ?value) :-
    store_instruction_address(?instr, ?toAddress),
    instruction_in_function(?instr, ?instrFunc).
 
-.decl ptr_points_to5(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
+.decl ptr_points_to5(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
 .output ptr_points_to5
 
 ptr_points_to5(?aCtx, ?alloc, ?baseACtx, ?baseAlloc),

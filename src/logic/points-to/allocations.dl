@@ -1,8 +1,8 @@
 /// 1. Alloca Instructions
 
-.decl var_points_to6(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
-.decl var_points_to7(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
-.decl var_points_to8(ACtx: symbol, TypedAlloc: symbol, Ctx: symbol, Var: symbol)
+.decl var_points_to6(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+.decl var_points_to7(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+.decl var_points_to8(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
 
 .output var_points_to6
 .output var_points_to7

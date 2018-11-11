@@ -32,9 +32,9 @@ alloc_aliases(?alloc1, ?alloc2) :-
 
 // Aliases have the same points-to sets
 
-.decl ptr_points_to6(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
-.decl ptr_points_to7(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
-.decl ptr_points_to8(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?to: symbol)
+.decl ptr_points_to6(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
+.decl ptr_points_to7(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
+.decl ptr_points_to8(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
 .output ptr_points_to6
 .output ptr_points_to7
 .output ptr_points_to8
@@ -129,7 +129,7 @@ alloc_matches(?alloc1, ?alloc2) :-
 // When loading from an allocation we must also consider the more
 // specific matching allocations and merge their points-to sets also.
 
-.decl var_points_to9(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.decl var_points_to9(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
 .output var_points_to9
 
 var_points_to9(?aCtx, ?alloc, ?ctx, ?toVar),

@@ -55,7 +55,7 @@ called_at_exit(?dtor)
    pointer_type_has_component(?ptrType, ?recvType).
 
 
-.decl var_points_to11(?aCtx: symbol, ?recvObj: symbol, ?exitCtx: symbol, ?this: symbol)
+.decl var_points_to11(?aCtx: symbol, ?recvObj: symbol, ?exitCtx: Context, ?this: symbol)
 .output var_points_to11
 
 var_points_to11(?aCtx, ?recvObj, ?exitCtx, ?this),

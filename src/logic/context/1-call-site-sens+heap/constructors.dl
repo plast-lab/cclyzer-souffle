@@ -18,8 +18,24 @@
 // Context Constructors
 //-----------------------------------------------------
 
-.decl context_new(?item:ContextItem, ?ctx:Context)
+//.decl context_new(?item:ContextItem, ?ctx:Context)
 .decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
+
+
+.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem)
+.decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem, ?ctx: Context)
+
+context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
+   context_request(?callerCtx, ?aCtx, ?invoc),
+   ?ctx=?invoc.
+
+
+.decl alloc_context_request(?invoc: ContextItem)
+.decl alloc_context_response(?invoc: ContextItem, ?ctx: AllocationContext)
+
+alloc_context_response(?invoc, ?aCtx) :-
+   alloc_context_request(?invoc),
+   ?aCtx=?invoc.
 
 
 //-----------------------------------------------------
@@ -94,7 +110,7 @@ context_new(?newItem, ?calleeCtx) :-
 
 .decl context_getitem(?ctx:Context, ?item:ContextItem)
 context_getitem(?ctx, ?item):-
-   context_new(?item, ?ctx).
+   context_response(_,_,?item, ?ctx).
 
 .decl alloc_context_getitem(?ctx:AllocationContext, ?item:ContextItem)
 alloc_context_getitem(?ctx, ?item):-

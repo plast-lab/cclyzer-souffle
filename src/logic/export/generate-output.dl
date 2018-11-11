@@ -65,10 +65,6 @@
 .output called_at_exit
 .output called_at_startup
 .output callgraph_edge
-.output callgraph_edge1
-.output callgraph_edge2
-.output callgraph_edge3
-.output callgraph_edge4
 .output callgraph_invalid_edge
 .output callgraph_inverted_edge
 .output calling_convention
@@ -103,7 +99,8 @@
 .output context_item
 .output context_item_by_invoc
 .output context_item_invoc
-.output context_new
+.output context_response
+.output context_request
 .output cxx_alloc_exception
 .output cxx_atexit_function
 .output cxx_new_function
@@ -346,7 +343,6 @@
 .output memcpy
 .output memcpy_call
 .output memcpy_pass_by_value
-.output merge
 .output metadata_type
 .output minimal_suffix
 .output minimal_suffix_len
@@ -403,7 +399,6 @@
 .output reachable_store
 .output reachable_var
 .output reachable_vars
-.output record
 .output region_contains
 .output registers_atexit
 .output registers_dtor_atexit

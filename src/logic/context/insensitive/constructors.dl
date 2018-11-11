@@ -1,8 +1,6 @@
 .type Context
 .type AllocationContext
 
-//Since the constructors do not have parameters to initiallize a record, I use the $ sign.
-
 
 .decl context(?ctx:Context)
 .decl alloc_context(?aCtx:AllocationContext)

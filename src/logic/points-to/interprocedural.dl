@@ -19,29 +19,19 @@ reachable_context(?calleeCtx, ?callee) :-
 function_by_location(?alloc, ?callee) :-
    global_allocation_by_function(?callee, ?alloc).
 
-.decl callgraph_edge1(?calleeCtx: Context, ?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
-.decl callgraph_edge2(?calleeCtx: Context, ?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
-.decl callgraph_edge3(?calleeCtx: Context, ?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
-.decl callgraph_edge4(?calleeCtx: Context, ?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
 
-callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
- :-
-   callgraph_edge1(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
-callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
- :-
-   callgraph_edge2(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
-callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
- :-
-   callgraph_edge3(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
-callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
- :-
-   callgraph_edge4(?calleeCtx, ?callee, ?callerCtx, ?callerInstr).
+
+
+.decl callgraph_edge_interm(?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
+
+callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?newItem) :-
+   callgraph_edge_interm(?callee, ?callerCtx, ?newItem),
+   context_response(?callerCtx, _, ?newItem, ?calleeCtx).
 
 
 // Direct function calls
-context(?calleeCtx)
- , context_new(?newItem, ?calleeCtx)
- , callgraph_edge1(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+context_request(?callerCtx, ?emptyACtx, ?newItem)
+ , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    direct_call_instruction(?callerInstr),
    call_instruction_fn_target(?callerInstr, ?callee),
@@ -49,11 +39,11 @@ context(?calleeCtx)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_item_by_invoc(?calleeCtx, ?newItem).
+   empty_alloc_context(?emptyACtx).
 
-context(?calleeCtx)
- , context_new(?newItem, ?calleeCtx)
- , callgraph_edge2(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+
+context_request(?callerCtx, ?emptyACtx, ?newItem)
+ , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    direct_invoke_instruction(?callerInstr),
    invoke_instruction_fn_target(?callerInstr, ?callee),
@@ -61,12 +51,11 @@ context(?calleeCtx)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_item_by_invoc(?calleeCtx, ?newItem).
+   empty_alloc_context(?emptyACtx).
 
 // Indirect function calls (via function pointers)
-context(?calleeCtx)
- , context_new(?newItem, ?calleeCtx)
- , callgraph_edge3(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+context_request(?callerCtx, ?emptyACtx, ?newItem)
+ , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    indirect_call_instruction(?callerInstr),
    call_instruction_fn_operand(?callerInstr, ?funcOp),
@@ -79,11 +68,10 @@ context(?calleeCtx)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   ?calleeCtx=?callerInstr.
+   empty_alloc_context(?emptyACtx).
 
-context(?calleeCtx)
- , context_new(?newItem, ?calleeCtx)
- , callgraph_edge4(?calleeCtx, ?callee, ?callerCtx, ?callerInstr)
+context_request(?callerCtx, ?emptyACtx, ?newItem)
+ , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    invoke_instruction(?callerInstr),
    invoke_instruction_fn_operand(?callerInstr, ?funcOp),
@@ -95,7 +83,7 @@ context(?calleeCtx)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_item_by_invoc(?calleeCtx, ?newItem).
+   empty_alloc_context(?emptyACtx).
 
 
 //------------------------------------------------------------------------------
@@ -105,7 +93,7 @@ context(?calleeCtx)
 // Interprocedural assignment due to function call
 .decl interp_assignment(?toCtx: Context, ?toVar: Variable, ?fromCtx: Context, ?fromValue: Operand)
 
-.decl var_points_to1(?aCtx: symbol, ?alloc: symbol, ?toCtx: symbol, ?toVar: symbol)
+.decl var_points_to1(?aCtx: symbol, ?alloc: symbol, ?toCtx: Context, ?toVar: symbol)
 .output var_points_to1
 
 var_points_to1(?aCtx, ?alloc, ?toCtx, ?toVar),

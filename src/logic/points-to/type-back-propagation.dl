@@ -76,7 +76,7 @@ heap_allocation_by_type_instruction(?type, ?allocInstr, ?typedAlloc),
    function_has_name(?func, ?funcName),
    ?typedAlloc= cat(cat(cat(cat(cat(cat("*typed_heap_alloc", ?funcName), "[" ), ?type ), " " ), ?name ), "]").
 
-.decl var_points_to5(?aCtx: symbol, ?alloc: symbol, ?ctx: symbol, ?toVar: symbol)
+.decl var_points_to5(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
 .output var_points_to5
 .output _assign_rebase_alloc
 

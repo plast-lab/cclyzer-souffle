@@ -1,26 +1,26 @@
 .decl empty_context(?ctx:Context)
 empty_context(?ctx):-
-   context_new(?ctx). 
+   context_response(_, _, _, ?ctx).
 
 
 .decl empty_alloc_context(?ctx:AllocationContext)
 empty_alloc_context(?aCtx):-
-   alloc_context_new(?aCtx).
+   alloc_context_new(_, ?aCtx).
 
 
 .decl main_context(?ctx:Context)
 main_context(?ctx):-
-   context_new(?ctx).
+   context_response(_, _, _, ?ctx).
 
 .decl startup_context(?ctx:Context)
 startup_context(?ctx):-
-   context_new(?ctx).
+   context_response(_, _, _, ?ctx).
 
 
 .decl exit_context(?ctx:Context)
 
 exit_context(?ctx):-
-   context_new(?ctx).
+   context_response(_, _, _, ?ctx).
 
 
 .decl reachable_context(?ctx:Context, ?main:FunctionDecl)

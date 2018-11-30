@@ -30,7 +30,7 @@ cclyzer::factgen(FileIt firstFile, FileIt endFile,
 #if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
     llvm::LLVMContext context;
 #else
-    llvm::LLVMContext &context = llvm::getGlobalContext();
+    llvm::LLVMContext context;
 #endif
     llvm::SMDiagnostic err;
 

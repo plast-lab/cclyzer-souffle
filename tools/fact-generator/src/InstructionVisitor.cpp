@@ -356,15 +356,15 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
     writeInstrOperand(pred::invoke::exc_label, iref, II.getUnwindDest());
 
     // Function Attributes
-    const llvm::AttributeSet &Attrs = II.getAttributes();
+    const llvm::AttributeList &Attrs = II.getAttributes();
 
-    if (Attrs.hasAttributes(llvm::AttributeSet::ReturnIndex))
+    if (Attrs.hasAttributes(llvm::AttributeList::ReturnIndex))
     {
-        string attrs = Attrs.getAsString(llvm::AttributeSet::ReturnIndex);
+        string attrs = Attrs.getAsString(llvm::AttributeList::ReturnIndex);
         gen.writeFact(pred::invoke::ret_attr, iref, attrs);
     }
 
-    gen.writeFnAttributes<pred::invoke>(iref, Attrs);
+    gen.writeFnAttributes<pred::invoke>(iref, Attrs.getFnAttributes());
 
     // TODO: Why not CallingConv::C
     if (II.getCallingConv() != llvm::CallingConv::C) {
@@ -486,13 +486,13 @@ InstructionVisitor::visitAtomicCmpXchgInst(const llvm::AtomicCmpXchgInst &AXI)
 
     llvm::AtomicOrdering successOrd = AXI.getSuccessOrdering();
     llvm::AtomicOrdering failureOrd = AXI.getFailureOrdering();
-    llvm::SynchronizationScope synchScope = AXI.getSynchScope();
+    llvm::SyncScope::ID synchScope = AXI.getSyncScopeID();
 
     string successOrdStr = gen.refmode<llvm::AtomicOrdering>(successOrd);
     string failureOrdStr = gen.refmode<llvm::AtomicOrdering>(failureOrd);
 
     // default synchScope: crossthread
-    if (synchScope == llvm::SingleThread)
+    if (synchScope == llvm::SyncScope::SingleThread)
         gen.writeFact(pred::instruction::flag, iref, "singlethread");
 
     if (!successOrdStr.empty())
@@ -681,14 +681,14 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
     }
 
     // Attributes
-    const llvm::AttributeSet &Attrs = CI.getAttributes();
+    const llvm::AttributeList &Attrs = CI.getAttributes();
 
-    if (Attrs.hasAttributes(llvm::AttributeSet::ReturnIndex)) {
-        string attrs = Attrs.getAsString(llvm::AttributeSet::ReturnIndex);
+    if (Attrs.hasAttributes(llvm::AttributeList::ReturnIndex)) {
+        string attrs = Attrs.getAsString(llvm::AttributeList::ReturnIndex);
         gen.writeFact(pred::call::ret_attr, iref, attrs);
     }
 
-    gen.writeFnAttributes<pred::call>(iref, Attrs);
+    gen.writeFnAttributes<pred::call>(iref, Attrs.getFnAttributes());
 }
 
 

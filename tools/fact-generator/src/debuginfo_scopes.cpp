@@ -37,11 +37,11 @@ DebugInfoProcessor::Impl::write_di_namespace::write(
     const llvm::DINamespace& dinamespace, const refmode_t& nodeId, DIProc& proc)
 {
     const string name = dinamespace.getName();
-    const unsigned line = dinamespace.getLine();
+    //const unsigned line = dinamespace.getLine();
 
     proc.writeFact(pred::di_namespace::id, nodeId);
     proc.writeFact(pred::di_namespace::name, nodeId, name);
-    proc.writeFact(pred::di_namespace::line, nodeId, line);
+    //proc.writeFact(pred::di_namespace::line, nodeId, line);
 
     // Record file information for namespace
     if (const llvm::DIFile *difile = dinamespace.getFile()) {
@@ -199,7 +199,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
 
     // Record virtuality and virtual index
     if (unsigned virtuality = disubprogram.getVirtuality()) {
-        const char *virtualityStr = llvm::dwarf::VirtualityString(virtuality);
+        const char *virtualityStr = llvm::dwarf::VirtualityString(virtuality).data();
         proc.writeFact(pred::di_subprogram::virtuality, nodeId, virtualityStr);
 
         unsigned virtIdx = disubprogram.getVirtualIndex();

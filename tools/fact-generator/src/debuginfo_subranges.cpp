@@ -16,7 +16,7 @@ DebugInfoProcessor::Impl::write_di_subrange::write(
 {
     proc.writeFact(pred::di_subrange::id, nodeId);
 
-    const int64_t count = disubrange.getCount();
+    llvm::DISubrange::CountType count = disubrange.getCount();
     const int64_t lowerBound = disubrange.getLowerBound();
 
     proc.writeFact(pred::di_subrange::count, nodeId, count);

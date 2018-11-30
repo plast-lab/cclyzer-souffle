@@ -77,7 +77,7 @@ DebugInfoProcessor::Impl::write_di_composite_type::write(
       case dwarf::Tag::DW_TAG_enumeration_type:
           proc.writeFact(pred::di_composite_type::enumerations, nodeId); break;
     }
-    const char *tagStr = dwarf::TagString(ditype.getTag());
+    const char *tagStr = dwarf::TagString(ditype.getTag()).data();
     proc.writeFact(pred::di_composite_type::kind, nodeId, tagStr);
 
     // Record ABI Identifier for this composite type
@@ -141,7 +141,7 @@ DebugInfoProcessor::Impl::write_di_derived_type::write(
     proc.writeFact(pred::di_derived_type::id, nodeId);
 
     // Record exact kind of derived type
-    const char *tagStr = dwarf::TagString(ditype.getTag());
+    const char *tagStr = dwarf::TagString(ditype.getTag()).data();
     proc.writeFact(pred::di_derived_type::kind, nodeId, tagStr);
 
     // Record base type

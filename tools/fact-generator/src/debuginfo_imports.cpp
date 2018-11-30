@@ -1,4 +1,3 @@
-#include <llvm/Support/Dwarf.h>
 #include "DebugInfoProcessorImpl.hpp"
 #include "debuginfo_predicate_groups.hpp"
 

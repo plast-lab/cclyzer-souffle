@@ -139,13 +139,13 @@ cclyzer::utils::to_string(llvm::AtomicOrdering ordering)
       case AtomicOrdering::AcquireRelease:         atomic = "acq_rel";   break;
       case AtomicOrdering::SequentiallyConsistent: atomic = "seq_cst";   break;
 #else
-      case llvm::NotAtomic:              atomic = "";          break;
-      case llvm::Unordered:              atomic = "unordered"; break;
-      case llvm::Monotonic:              atomic = "monotonic"; break;
-      case llvm::Acquire:                atomic = "acquire";   break;
-      case llvm::Release:                atomic = "release";   break;
-      case llvm::AcquireRelease:         atomic = "acq_rel";   break;
-      case llvm::SequentiallyConsistent: atomic = "seq_cst";   break;
+      case llvm::AtomicOrdering::NotAtomic:              atomic = "";          break;
+      case llvm::AtomicOrdering::Unordered:              atomic = "unordered"; break;
+      case llvm::AtomicOrdering::Monotonic:              atomic = "monotonic"; break;
+      case llvm::AtomicOrdering::Acquire:                atomic = "acquire";   break;
+      case llvm::AtomicOrdering::Release:                atomic = "release";   break;
+      case llvm::AtomicOrdering::AcquireRelease:         atomic = "acq_rel";   break;
+      case llvm::AtomicOrdering::SequentiallyConsistent: atomic = "seq_cst";   break;
 #endif
       default:
           llvm::errs() << "Unrecognized atomic ordering type: "

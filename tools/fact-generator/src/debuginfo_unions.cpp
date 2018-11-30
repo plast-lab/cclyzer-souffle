@@ -17,12 +17,12 @@ namespace dwarf = llvm::dwarf;
 // Helper method to record union attributes
 //------------------------------------------------------------------------------
 
-template<typename P, typename writer, typename T> void
+template<typename P, typename W, typename T> void
 DebugInfoProcessor::Impl::recordUnionAttribute(
     const refmode_t& nodeId, const llvm::TypedDINodeRef<T>& attribute)
 {
     typedef P pred;
-    typedef di_recorder<T, writer> recorder;
+    typedef di_recorder<T, W> recorder;
 
     if (attribute) {
         using llvm::MDString;
@@ -49,14 +49,15 @@ DebugInfoProcessor::Impl::recordFlags(
 {
     if (flags) {
         // Split flags inside vector
-        typedef SmallVector<unsigned,8> FlagVectorT;
+        llvm::DINode::DIFlags f = llvm::DINode::getFlag((const char*) flags);
+        typedef SmallVector<llvm::DINode::DIFlags ,8> FlagVectorT;
         FlagVectorT flagsVector;
-        llvm::DINode::splitFlags(flags, flagsVector);
+        llvm::DINode::splitFlags(f, flagsVector);
 
         for (FlagVectorT::iterator it = flagsVector.begin(),
                  end = flagsVector.end(); it != end; ++it )
         {
-            const char *flag = llvm::DINode::getFlagString(*it);
+            const char *flag = llvm::DINode::getFlagString(*it).data();
             writeFact(pred, nodeId, flag);
         }
     }

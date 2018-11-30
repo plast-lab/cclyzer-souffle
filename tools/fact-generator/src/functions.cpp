@@ -83,19 +83,19 @@ FactGenerator::writeFunction(
     if (func.hasAtLeastLocalUnnamedAddr()) {
     }
 #else
-    if (func.hasUnnamedAddr()) {
+    if (func.getUnnamedAddr() != llvm::Function::UnnamedAddr::None) {
         writeFact(pred::function::unnamed_addr, funcref);
     }
 #endif
 
     // Record function attributes TODO
-    const llvm::AttributeSet &Attrs = func.getAttributes();
+    const llvm::AttributeList &Attrs = func.getAttributes();
 
-    if (Attrs.hasAttributes(llvm::AttributeSet::ReturnIndex))
+    if (Attrs.hasAttributes(llvm::AttributeList::ReturnIndex))
         writeFact(pred::function::ret_attr, funcref,
-                  Attrs.getAsString(llvm::AttributeSet::ReturnIndex));
+                  Attrs.getAsString(llvm::AttributeList::ReturnIndex));
 
-    writeFnAttributes<pred::function>(funcref, Attrs);
+    writeFnAttributes<pred::function>(funcref, Attrs.getFnAttributes());
 
     if (func.isDeclaration()) {
         // Record as a function declaration entity
@@ -143,13 +143,13 @@ void FactGenerator::writeFnAttributes(
 {
     using llvm::AttributeSet;
 
-    for (unsigned i = 0; i < allAttrs.getNumSlots(); ++i)
+    for (unsigned i = 0; i < allAttrs.getNumAttributes(); ++i)
     {
-        unsigned index = allAttrs.getSlotIndex(i);
+        unsigned index = static_cast<unsigned int>(allAttrs.getAttribute(llvm::Attribute::AttrKind::None).getValueAsInt());
 
         // Write out each attribute for this slot
         for (AttributeSet::iterator
-                 it = allAttrs.begin(i), end = allAttrs.end(i);
+                 it = allAttrs.begin(), end = allAttrs.end();
              it != end; ++it)
         {
             std::string attr = it->getAsString();
@@ -161,10 +161,10 @@ void FactGenerator::writeFnAttributes(
 
             // Record attribute by kind
             switch (index) {
-              case AttributeSet::AttrIndex::ReturnIndex:
+                case llvm::AttributeList::AttrIndex::ReturnIndex:
                   writeFact(PredGroup::ret_attr, refmode, attr);
                   break;
-              case AttributeSet::AttrIndex::FunctionIndex:
+                case llvm::AttributeList::AttrIndex::FunctionIndex:
                   writeFact(PredGroup::fn_attr, refmode, attr);
                   break;
               default:

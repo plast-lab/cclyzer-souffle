@@ -91,11 +91,11 @@ DebugInfoProcessor::Impl::write_di_global_variable::write(
     }
 
     // Record LLVM global variable association
-    if (const llvm::Constant *gv = divar.getVariable())
+/*    if (const llvm::Constant *gv = divar.getVariable())
     {
         std::string name = "@" + gv->getName().str();
         proc.writeFact(pred::di_global_var::variable, nodeId, name);
-    }
+    }*/
 }
 
 void

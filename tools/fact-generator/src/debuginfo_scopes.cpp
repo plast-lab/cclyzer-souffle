@@ -133,7 +133,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
     }
 #endif
 #else
-#error Unsupported LLVM version
+//#error Unsupported LLVM version
 #endif
 
     //-----------------------------------------------------------------
@@ -210,7 +210,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
     proc.recordFlags(pred::di_subprogram::flag, nodeId, disubprogram.getFlags());
 
     // Record variables
-    const auto& variables = disubprogram.getVariables();
+    /*const auto& variables = disubprogram.getVariables();
     for (size_t i = 0; i < variables.size(); ++i) {
         // Record variable
         refmode_t varId = record_di_variable::record(*variables[i], proc);
@@ -218,7 +218,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
         // Record variable - subprogram association
         proc.writeFact(pred::di_subprogram::variable, nodeId, i, varId);
     }
-
+*/
     // Record template parameters
     const auto& tplParams = disubprogram.getTemplateParams();
     for (size_t i = 0; i < tplParams.size(); ++i) {

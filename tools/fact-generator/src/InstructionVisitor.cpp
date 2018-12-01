@@ -309,10 +309,10 @@ InstructionVisitor::visitSwitchInst(const llvm::SwitchInst &SI)
         Case != CasesEnd; Case++)
     {
         writeInstrOperand(pred::switch_::case_value,
-                          iref, Case.getCaseValue(), index);
+                          iref, Case->getCaseValue(), index);
 
         writeInstrOperand(pred::switch_::case_label,
-                          iref, Case.getCaseSuccessor(), index++);
+                          iref, Case->getCaseSuccessor(), index++);
     }
 
     gen.writeFact(pred::switch_::ncases, iref, SI.getNumCases());
@@ -865,10 +865,10 @@ InstructionVisitor::writeOptimizationInfo(refmode_t iref, const llvm::User *u)
 
     if (const FPMathOperator *fpo = dyn_cast<const FPMathOperator>(u)) {
 
-        if (fpo->hasUnsafeAlgebra()) {
+        /*if (fpo->hasUnsafeAlgebra()) {
             gen.writeFact(pred::instruction::flag, iref, "fast");
         }
-        else {
+        else {*/
             if (fpo->hasNoNaNs())
                 gen.writeFact(pred::instruction::flag, iref, "nnan");
 
@@ -880,7 +880,7 @@ InstructionVisitor::writeOptimizationInfo(refmode_t iref, const llvm::User *u)
 
             if (fpo->hasAllowReciprocal())
                 gen.writeFact(pred::instruction::flag, iref, "arcp");
-        }
+        //}
     }
 
     if (const OverflowingBinaryOperator *obo = dyn_cast<OverflowingBinaryOperator>(u)) {

@@ -75,8 +75,7 @@ namespace cclyzer {
         template<typename V, typename... Vs>
         void write(const std::string& hdr, const V& fld, const Vs&... flds)
         {
-            static_assert( all_serializable<V, Vs...>::value,
-                           "All types must be serializable" );
+            static_assert( all_serializable<V, Vs...>::value, "All types must be serializable" );
             out << hdr;
             appendFields(fld, flds...);
             out << "\n";

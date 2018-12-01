@@ -33,7 +33,7 @@ FactGenerator::writeFunction(
     }
 # endif
 #else
-# error Unsupported LLVM version
+//# error Unsupported LLVM version
 #endif
 
     // Record function type signature
@@ -113,7 +113,7 @@ FactGenerator::writeFunction(
 #if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
         writeFact(pred::function::section, funcref, func.getSection().str());
 #else
-        writeFact(pred::function::section, funcref, func.getSection());
+        //writeFact(pred::function::section, funcref, func.getSection());
 #endif
     }
 

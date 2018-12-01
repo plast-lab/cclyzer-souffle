@@ -49,7 +49,8 @@ DebugInfoProcessor::Impl::recordFlags(
 {
     if (flags) {
         // Split flags inside vector
-        llvm::DINode::DIFlags f = llvm::DINode::getFlag((const char*) flags);
+        string fl = std::to_string(flags);
+        llvm::DINode::DIFlags f = llvm::DINode::getFlag(fl);
         typedef SmallVector<llvm::DINode::DIFlags ,8> FlagVectorT;
         FlagVectorT flagsVector;
         llvm::DINode::splitFlags(f, flagsVector);

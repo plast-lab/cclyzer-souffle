@@ -34,7 +34,10 @@ FactGenerator::writeFunction(
     }
 # endif
 #else
-//# error Unsupported LLVM version
+    if (const llvm::DISubprogram *subprogram = func.getSubprogram()) {
+        refmode_t subprogramId = refmode<llvm::DINode>(*subprogram);
+        writeFact(pred::di_subprogram::function, subprogramId, funcref);
+    }
 #endif
 
     // Record function type signature
@@ -144,19 +147,19 @@ void FactGenerator::writeFnAttributes(
 {
     using llvm::AttributeList;
 
-    for (auto allAttr : allAttrs)//unsigned i = 0; i < allAttrs.getNumAttrSets(); ++i)
+    for (unsigned i = allAttrs.index_begin(), e = allAttrs.index_end(); i != e; ++i)//(auto allAttr : allAttrs)//unsigned i = 0; i < allAttrs.getNumAttrSets(); ++i)
     {
         uint64_t index;// = static_cast<unsigned int>(allAttr.getAttribute(llvm::Attribute::AttrKind::None).getValueAsInt());
 
         // Write out each attribute for this slot
         for (llvm::AttributeSet::iterator
-                 it = allAttr.begin(), end = allAttr.end();
+                 it = allAttrs.getAttributes(i).begin(), end = allAttrs.getAttributes(i).end();
              it != end; ++it)
         {
             std::string attr = it->getAsString();
             attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
 
-            index = it->getValueAsInt();
+            index = i;//it->getValueAsInt();
 
             // Record target-dependent attributes
             if (it->isStringAttribute()){
@@ -172,6 +175,7 @@ void FactGenerator::writeFnAttributes(
                   writeFact(PredGroup::fn_attr, refmode, attr);
                   break;
               default:
+                  //std::cout << index << std::endl;
                   writeFact(PredGroup::param_attr, refmode, index - 1, attr);
                   break;
             }

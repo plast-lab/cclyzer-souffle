@@ -5,6 +5,7 @@
 #include "debuginfo_predicate_groups.hpp"
 #include "predicate_groups.hpp"
 #include "FactGenerator.hpp"
+#include <iostream>
 
 using cclyzer::FactGenerator;
 namespace pred = cclyzer::predicates;
@@ -95,7 +96,7 @@ FactGenerator::writeFunction(
         writeFact(pred::function::ret_attr, funcref,
                   Attrs.getAsString(llvm::AttributeList::ReturnIndex));
 
-    writeFnAttributes<pred::function>(funcref, Attrs.getFnAttributes());
+    writeFnAttributes<pred::function>(funcref, Attrs);
 
     if (func.isDeclaration()) {
         // Record as a function declaration entity
@@ -113,7 +114,7 @@ FactGenerator::writeFunction(
 #if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
         writeFact(pred::function::section, funcref, func.getSection().str());
 #else
-        //writeFact(pred::function::section, funcref, func.getSection());
+        writeFact(pred::function::section, funcref, func.getSection().data());
 #endif
     }
 
@@ -139,25 +140,28 @@ FactGenerator::writeFunction(
 template<typename PredGroup>
 void FactGenerator::writeFnAttributes(
     const refmode_t &refmode,
-    const llvm::AttributeSet allAttrs)
+    const llvm::AttributeList allAttrs)
 {
-    using llvm::AttributeSet;
+    using llvm::AttributeList;
 
-    for (unsigned i = 0; i < allAttrs.getNumAttributes(); ++i)
+    for (auto allAttr : allAttrs)//unsigned i = 0; i < allAttrs.getNumAttrSets(); ++i)
     {
-        unsigned index = static_cast<unsigned int>(allAttrs.getAttribute(llvm::Attribute::AttrKind::None).getValueAsInt());
+        uint64_t index;// = static_cast<unsigned int>(allAttr.getAttribute(llvm::Attribute::AttrKind::None).getValueAsInt());
 
         // Write out each attribute for this slot
-        for (AttributeSet::iterator
-                 it = allAttrs.begin(), end = allAttrs.end();
+        for (llvm::AttributeSet::iterator
+                 it = allAttr.begin(), end = allAttr.end();
              it != end; ++it)
         {
             std::string attr = it->getAsString();
             attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
 
+            index = it->getValueAsInt();
+
             // Record target-dependent attributes
-            if (it->isStringAttribute())
+            if (it->isStringAttribute()){
                 writeFact(pred::attribute::target_dependent, attr);
+            }
 
             // Record attribute by kind
             switch (index) {
@@ -179,12 +183,12 @@ void FactGenerator::writeFnAttributes(
 
 template void FactGenerator::writeFnAttributes<pred::function>(
     const refmode_t &refmode,
-    const llvm::AttributeSet Attrs);
+    const llvm::AttributeList Attrs);
 
 template void FactGenerator::writeFnAttributes<pred::call>(
     const refmode_t &refmode,
-    const llvm::AttributeSet Attrs);
+    const llvm::AttributeList Attrs);
 
 template void FactGenerator::writeFnAttributes<pred::invoke>(
     const refmode_t &refmode,
-    const llvm::AttributeSet Attrs);
+    const llvm::AttributeList Attrs);

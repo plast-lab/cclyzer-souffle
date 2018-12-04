@@ -71,7 +71,7 @@ class cclyzer::FactGenerator
     /* Auxiliary fact writing methods */
 
     template<typename PredGroup>
-    void writeFnAttributes(const refmode_t&, const llvm::AttributeSet);
+    void writeFnAttributes(const refmode_t&, const llvm::AttributeList);
 
     template<typename PredGroup, class ConstantType>
     void writeConstantWithOperands(const ConstantType&, const refmode_t&);

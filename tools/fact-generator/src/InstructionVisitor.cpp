@@ -364,7 +364,7 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
         gen.writeFact(pred::invoke::ret_attr, iref, attrs);
     }
 
-    gen.writeFnAttributes<pred::invoke>(iref, Attrs.getFnAttributes());
+    gen.writeFnAttributes<pred::invoke>(iref, Attrs);
 
     // TODO: Why not CallingConv::C
     if (II.getCallingConv() != llvm::CallingConv::C) {
@@ -688,7 +688,7 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
         gen.writeFact(pred::call::ret_attr, iref, attrs);
     }
 
-    gen.writeFnAttributes<pred::call>(iref, Attrs.getFnAttributes());
+    gen.writeFnAttributes<pred::call>(iref, Attrs);
 }
 
 

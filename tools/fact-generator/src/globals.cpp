@@ -116,7 +116,7 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
 #if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
         writeFact(pred::global_var::section, id, gv.getSection().str());
 #else
-        //writeFact(pred::global_var::section, id, gv.getSection());
+        writeFact(pred::global_var::section, id, gv.getSection().data());
 #endif
     }
 

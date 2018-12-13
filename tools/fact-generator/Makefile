@@ -13,7 +13,7 @@ CXXFLAGS += -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter    \
             -pedantic -Wno-long-long -ffunction-sections -fdata-sections  \
             -O3
 
-LLVM_CONFIG ?= llvm-config
+LLVM_CONFIG ?= llvm-config-7
 
 #-----------------------------------
 # Configure paths

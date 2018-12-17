@@ -30,7 +30,7 @@ callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?newItem) :-
 
 
 // Direct function calls
-context_request(?callerCtx, ?emptyACtx, ?newItem)
+context_request(?callerCtx, ?aCtx, ?newItem)
  , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    direct_call_instruction(?callerInstr),
@@ -39,10 +39,10 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   context_response(_, ?aCtx, ?callerInstr, _).
 
 
-context_request(?callerCtx, ?emptyACtx, ?newItem)
+context_request(?callerCtx, ?aCtx, ?newItem)
  , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    direct_invoke_instruction(?callerInstr),
@@ -51,10 +51,10 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   context_response(_, ?aCtx, ?callerInstr, _).
 
 // Indirect function calls (via function pointers)
-context_request(?callerCtx, ?emptyACtx, ?newItem)
+context_request(?callerCtx, ?aCtx, ?newItem)
  , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    indirect_call_instruction(?callerInstr),
@@ -68,9 +68,9 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   context_response(_, ?aCtx, ?callerInstr, _).
 
-context_request(?callerCtx, ?emptyACtx, ?newItem)
+context_request(?callerCtx, ?aCtx, ?newItem)
  , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
  :-
    invoke_instruction(?callerInstr),
@@ -83,7 +83,7 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   context_response(_, ?aCtx, ?callerInstr, _).
 
 
 //------------------------------------------------------------------------------

@@ -432,9 +432,6 @@
 .output ptrtoint_instruction_from_type
 .output ptx_device_calling_convention
 .output ptx_kernel_calling_convention
-.output reachable_context1
-.output reachable_context2
-.output reachable_context3
 .output reachable_context4
 .output reachable_function
 .output reachable_instruction

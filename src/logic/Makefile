@@ -32,14 +32,14 @@ MODULES      := $(patsubst ./%/,%,$(dir $(HEADER_FILES)))
 
 LOGIC_CXX_OUT := $(OUTDIR)/cclyzer-analyze
 
-#$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-#	souffle -c -o $@ master.project
+$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
+	souffle -o $@ master.project
 
 #$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
 #	souffle --profile=cclyzer.log master.dl
 
-$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-	souffle -c -F ../../facts/ -D ../../results/ -o $@ master.project
+#$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
+#	souffle -c -F ../../facts/ -D ../../results/ -o $@ master.project
 
 all: $(LOGIC_CXX_OUT)
 

@@ -8,7 +8,7 @@
 .output var_points_to7
 .output var_points_to8
 
-
+context_request(?ctx, ?aCtx, ?item),
 var_points_to6(?aCtx, ?stackAlloc, ?ctx, ?var),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
@@ -36,6 +36,7 @@ allocation_type(?stackAlloc, ?type) :-
 
 /// 2. Parameters with pass-by-value semantics
 
+context_request(?ctx, ?aCtx, ?item),
 var_points_to7(?aCtx, ?stackAlloc, ?ctx, ?param),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
@@ -75,6 +76,7 @@ allocation_type(?stackAlloc, ?type) :-
 //---------------------------------------------------------------------
 
 
+context_request(?ctx, ?aCtx, ?item),
 var_points_to8(?aCtx, ?heapAlloc, ?ctx, ?var),
 alloc_context(?aCtx),
 alloc_context_new(?item,?aCtx),

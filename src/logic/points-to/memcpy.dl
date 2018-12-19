@@ -35,7 +35,7 @@ memcpy_call(?memcpyInstr, ?callerCtx, ?to, ?from) :-
 // pairs.
 
 // Bitwise copy semantics that respect type information
-.decl memcpy(?insn: Instruction, ?toCtx: AllocationContext, ?to: Allocation, ?fromCtx: AllocationContext , ?from: Allocation)
+.decl memcpy(?insn: Instruction, ?toCtx: AContext, ?to: Allocation, ?fromCtx: AContext , ?from: Allocation)
 
 memcpy(?instr, ?toACtx, ?toALias, ?fromACtx, ?fromAlias)
  :-
@@ -130,22 +130,14 @@ _rec_memcpy_to_ptr(?instr, ?to, ?from) :-
    ptr_compatible_allocation(?to).
 
 // Copy points-to set of copied objects
-.decl ptr_points_to2(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.decl ptr_points_to3(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.output ptr_points_to2
-.output ptr_points_to3
-
-
-ptr_points_to2(?aCtx, ?alloc, ?toCtx, ?to),
-ptr_points_to(?aCtx, ?alloc, ?toCtx, ?to) :-
+ptr_points_to(?actx, ?alloc, ?toCtx, ?to) :-
    _rec_memcpy_to_ptr(?instr, ?to, ?from),
    region_contains(?toOuter, ?to),
    region_contains(?fromOuter, ?from),
    memcpy(?instr, ?toCtx, ?toOuter, ?fromCtx, ?fromOuter),
-   ptr_points_to(?aCtx, ?alloc, ?fromCtx, ?from).
+   ptr_points_to(?actx, ?alloc, ?fromCtx, ?from).
 
-ptr_points_to3(?aCtx, ?alloc, ?toCtx, ?to),
-ptr_points_to(?aCtx, ?alloc, ?toCtx, ?to) :-
+ptr_points_to(?actx, ?alloc, ?toCtx, ?to) :-
    _rec_memcpy_to_ptr(?instr, ?to, ?from),
    memcpy(?instr, ?toCtx, ?to, ?fromCtx, ?from),
-   ptr_points_to(?aCtx, ?alloc, ?fromCtx, ?from).
+   ptr_points_to(?actx, ?alloc, ?fromCtx, ?from).

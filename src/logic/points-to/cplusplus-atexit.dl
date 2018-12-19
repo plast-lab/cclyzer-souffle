@@ -39,14 +39,14 @@ registers_dtor_atexit(?callCtx, ?dtorOperand, ?recvOperand) :-
 
 // Model effects of `__cxa_atexit`
 
-.decl _dtor_accepts_recv(?aCtx: AllocationContext, ?recvObj: GlobalAllocation , ?dtor: FunctionDecl)
+.decl _dtor_accepts_recv(?actx: AContext, ?recvObj: GlobalAllocation , ?dtor: FunctionDecl)
 
 called_at_exit(?dtor)
- , _dtor_accepts_recv(?aCtx, ?recvObj, ?dtor)
+ , _dtor_accepts_recv(?actx, ?recvObj, ?dtor)
  :-
    registers_dtor_atexit(?ctx, ?dtorOperand, ?recvOperand),
    operand_points_to(_, ?dtorObj, ?ctx, ?dtorOperand),
-   operand_points_to(?aCtx, ?someObj, ?ctx, ?recvOperand),
+   operand_points_to(?actx, ?someObj, ?ctx, ?recvOperand),
    alloc_aliases(?recvObj, ?someObj),
    allocation_type(?recvObj, ?recvType),
    function_by_location(?dtorObj, ?dtor),
@@ -54,13 +54,8 @@ called_at_exit(?dtor)
    function_type_param(?dtorType, 0, ?ptrType),
    pointer_type_has_component(?ptrType, ?recvType).
 
-
-.decl var_points_to11(?aCtx: symbol, ?recvObj: symbol, ?exitCtx: Context, ?this: symbol)
-.output var_points_to11
-
-var_points_to11(?aCtx, ?recvObj, ?exitCtx, ?this),
-var_points_to(?aCtx, ?recvObj, ?exitCtx, ?this) :-
+var_points_to(?actx, ?recvObj, ?exitCtx, ?this) :-
    exit_context(?exitCtx),
-   _dtor_accepts_recv(?aCtx, ?recvObj, ?dtor),
+   _dtor_accepts_recv(?actx, ?recvObj, ?dtor),
    reachable_context(?exitCtx, ?dtor),
    function_param(?dtor, 0, ?this).

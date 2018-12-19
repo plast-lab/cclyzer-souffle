@@ -19,7 +19,7 @@ stripctx_operand_points_to(?to, ?from) :-
    operand_points_to(_, ?to, _, ?from).
 
 // Forward declaration
-.decl ptr_points_to_no_zero_aliases(?toCtx: AllocationContext, ?to: Allocation, ?fromCtx: AllocationContext, ?from: Allocation)
+.decl ptr_points_to_no_zero_aliases(?toCtx: AContext, ?to: Allocation, ?fromCtx: AContext, ?from: Allocation)
 
 .decl stripctx_filtered_ptr_points_to(?to: Allocation, ?from: Allocation)
 stripctx_filtered_ptr_points_to(?to, ?from) :-

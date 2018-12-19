@@ -43,11 +43,7 @@ array_indices__no_typecomp(?constantType, ?index) :-
 // A constant may point to a global allocation, so if used to
 // initialize another global allocation, we have to track the
 // resulting dereference edge.
-.decl ptr_points_to4(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.output ptr_points_to4
-
-ptr_points_to4(?aCtx, ?someAlloc, ?aCtx, ?alloc),
-ptr_points_to(?aCtx, ?someAlloc, ?aCtx, ?alloc) :-
-   empty_alloc_context(?aCtx),
+ptr_points_to(?actx, ?someAlloc, ?actx, ?alloc) :-
+   empty_acontext(?actx),
    initialized_by_constant(?alloc, ?constant),
    constant_points_to(?constant, ?someAlloc).

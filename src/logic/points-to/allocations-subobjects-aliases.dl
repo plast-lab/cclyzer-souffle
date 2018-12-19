@@ -32,24 +32,14 @@ alloc_aliases(?alloc1, ?alloc2) :-
 
 // Aliases have the same points-to sets
 
-.decl ptr_points_to6(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.decl ptr_points_to7(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.decl ptr_points_to8(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.output ptr_points_to6
-.output ptr_points_to7
-.output ptr_points_to8
-
-
-ptr_points_to6(?aCtx, ?alloc, ?baseACtx, ?baseAlloc1),
-ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc1) :-
-   ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc2),
+ptr_points_to(?actx, ?alloc, ?baseACtx, ?baseAlloc1) :-
+   ptr_points_to(?actx, ?alloc, ?baseACtx, ?baseAlloc2),
    alloc_aliases(?baseAlloc1, ?baseAlloc2).
 
 // When a pointer points to an allocation, it must also point to all
 // of its aliases
-ptr_points_to7(?aCtx, ?alloc1, ?baseACtx, ?baseAlloc),
-ptr_points_to(?aCtx, ?alloc1, ?baseACtx, ?baseAlloc) :-
-   ptr_points_to(?aCtx, ?alloc2, ?baseACtx, ?baseAlloc),
+ptr_points_to(?actx, ?alloc1, ?baseACtx, ?baseAlloc) :-
+   ptr_points_to(?actx, ?alloc2, ?baseACtx, ?baseAlloc),
    alloc_aliases(?alloc1, ?alloc2).
 
 
@@ -129,22 +119,17 @@ alloc_matches(?alloc1, ?alloc2) :-
 // When loading from an allocation we must also consider the more
 // specific matching allocations and merge their points-to sets also.
 
-.decl var_points_to9(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
-.output var_points_to9
-
-var_points_to9(?aCtx, ?alloc, ?ctx, ?toVar),
-var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+var_points_to(?actx, ?alloc, ?ctx, ?toVar) :-
    reachable_load(?instrFunc, ?toVar, ?fromAddress),
    reachable_context(?ctx, ?instrFunc),
    operand_points_to(?baseACtx, ?origAlloc, ?ctx, ?fromAddress),
    alloc_matches(?lessGenericAlloc, ?origAlloc),
-   ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?lessGenericAlloc).
+   ptr_points_to(?actx, ?alloc, ?baseACtx, ?lessGenericAlloc).
 
 // We must also ensure that matching is considered in the opposite
 // direction. We do that by extending the points-to set of an
 // allocation by the points-to sets of all more generic allocations,
 // ie, those that can pattern match it.
-ptr_points_to8(?aCtx, ?alloc, ?ptrACtx, ?origAlloc),
-ptr_points_to(?aCtx, ?alloc, ?ptrACtx, ?origAlloc) :-
-   ptr_points_to(?aCtx, ?alloc, ?ptrACtx, ?moreGenericAlloc),
+ptr_points_to(?actx, ?alloc, ?ptrACtx, ?origAlloc) :-
+   ptr_points_to(?actx, ?alloc, ?ptrACtx, ?moreGenericAlloc),
    alloc_matches(?origAlloc, ?moreGenericAlloc).

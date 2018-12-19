@@ -1,106 +1,28 @@
-//------------------------------------------------------------------------------
-// [1 Call-site Sensitive + Heap Analysis]
-//
-// In this analysis, context and alocation context is in both cases
-// the latest invocation instruction.
-//------------------------------------------------------------------------------
-
-.type Context = ContextItem
-.type AllocationContext = ContextItem
 .type ContextItem = symbol
+.type Context = [ci: ContextItem]
+.type AContext = [ci: ContextItem]
 
 
 .decl context(?ctx:Context)
-.decl alloc_context(?allocCtx:AllocationContext)
+.decl acontext(?allocCtx:AContext)
 .decl context_item(?item:ContextItem)
 
 //-----------------------------------------------------
 // Context Constructors
 //-----------------------------------------------------
 
-.decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
-
-.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem)
-.decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem, ?ctx: Context)
+.decl context_request(?callerCtx: Context, ?actx: AContext, ?invoc: Instruction, ?tofunction: Function)
+.decl context_response(?callerCtx: Context, ?actx: AContext, ?invoc: Instruction, ?ctx: Context)
+.decl acontext_new(?item:ContextItem, ?actx:AContext)
 
 context(?ctx),
-context_item(?invoc),
-alloc_context(?aCtx),
-alloc_context_new(?invoc, ?aCtx),
-context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
-   ?callerCtx=?aCtx,
-   ?aCtx=?invoc,
-   ?invoc=?ctx,
-   ?ctx="<<empty-context>>".
+context_response(?callerCtx, ?actx, ?invoc, ?ctx) :-
+   context_request(?callerCtx, ?actx, ?invoc, _),
+   ?ctx = ["<<empty-context>>"].
 
 
+.decl AContextFromContext(?ctx: Context, ?actx: AContext)
 
-//-----------------------------------------------------
-// Context Item Constructors
-//-----------------------------------------------------
-
-.decl context_item_by_invoc(?invoc:Instruction, ?ctxItem:ContextItem)
-.decl context_item_invoc(?ctxItem:ContextItem, ?invoc:Instruction)
-
-
-context_item_invoc(?ctxItem, ?invoc) :-
-   context_item_by_invoc(?invoc, ?ctxItem).
-
-context_item(?instr2)
- , context_item_by_invoc(?instr1, ?instr2)
- :-
-   call_instruction(?instr1),
-   ?instr2="<<empty-context>>".
-
-context_item(?instr2)
- , context_item_by_invoc(?instr1, ?instr2)
- :-
-   invoke_instruction(?instr1),
-   ?instr2="<<empty-context>>".
-
-
-// Dummy context items (needed for empty contexts)
-.decl matches_string_context(?str:symbol)
-
-matches_string_context(?str):-
-   ?str = "<<empty-context>>".
-
-.decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)
-context_item(?ctxItem)
- , dummy_context_item_by_str(?str,?ctxItem)
- :-
-   matches_string_context(?str),
-   ?ctxItem=?str.
-
-//-----------------------------------------------------
-// Unpacking context items
-//-----------------------------------------------------
-
-.decl context_getitem(?ctx:Context, ?item:ContextItem)
-context_getitem(?ctx, ?item):-
-   context_response(_,_,?item, ?ctx).
-
-.decl alloc_context_getitem(?ctx:AllocationContext, ?item:ContextItem)
-alloc_context_getitem(?ctx, ?item):-
-   alloc_context_new(?item, ?ctx).
-
-.decl context_getinvoc(?ctx:Context, ?invoc:Instruction)
-context_getinvoc(?ctx, ?invoc):-
-   context_getitem(?ctx, ?item),
-   context_item_invoc(?item, ?invoc).
-
-.decl alloc_context_getinvoc(?ctx:AllocationContext, ?invoc:Instruction)
-alloc_context_getinvoc(?ctx, ?invoc) :-
-   alloc_context_getitem(?ctx, ?item),
-   context_item_invoc(?item, ?invoc).
-
-
-//Already generated output relations of 2-call-sensitivity
-.decl context_getinvoc0(?dummy : number)
-.decl context_getitem0(?dummy : number)
-.decl context_getinvoc1(?dummy : number)
-.decl context_getitem1(?dummy : number)
-
-.decl reachable_context1(?ctx: Context, ?func: FunctionDecl)
-.decl reachable_context2(?ctx: Context, ?func: FunctionDecl)
-.decl reachable_context3(?ctx: Context, ?func: FunctionDecl)
+AContextFromContext(?ctx, ?actx) :-
+  empty_context(?ctx),
+  empty_acontext(?actx).

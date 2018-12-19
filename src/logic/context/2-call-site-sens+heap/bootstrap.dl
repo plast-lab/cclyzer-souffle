@@ -11,12 +11,12 @@ empty_context(?ctx)
  :-
    ?ctx=["<<empty-context>>", "<<empty-context>>"].
 
-.decl empty_alloc_context(?ctx:AllocationContext)
-empty_alloc_context(?aCtx)
- , alloc_context(?aCtx)
- , alloc_context_new(?aCtx, ?aCtx)
+.decl empty_acontext(?ctx:AContext)
+empty_acontext(?actx)
+ , acontext(?actx)
+ , acontext_new(?actx, ?actx)
  :-
-   ?aCtx="<<empty-context>>".
+   ?actx="<<empty-context>>".
 
 // Special context for when called from main
 //context_item(CtxItem)

@@ -7,7 +7,7 @@
 // allocations.
 
 
-.decl var_points_to(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?var: Variable)
+.decl var_points_to(?actx: AContext, ?alloc: Allocation, ?ctx: Context, ?var: Variable)
 
 // This is the equivalent relation that tracks flow of allocations
 // among program constants. Note that references to global variables
@@ -27,21 +27,21 @@
 
 // Intermediate relations
 
-.decl operand_points_to(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
+.decl operand_points_to(?actx: AContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
 
-.decl operand_points_to1(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
-.decl operand_points_to2(?aCtx: AllocationContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
+.decl operand_points_to1(?actx: AContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
+.decl operand_points_to2(?actx: AContext, ?alloc: Allocation, ?ctx: Context, ?operand: Operand)
 
 .output operand_points_to1
 .output operand_points_to2
 
-operand_points_to1(?aCtx, ?alloc, ?ctx, ?ptrVar),
-operand_points_to(?aCtx, ?alloc, ?ctx, ?ptrVar) :-
-   var_points_to(?aCtx, ?alloc, ?ctx, ?ptrVar).
+operand_points_to1(?actx, ?alloc, ?ctx, ?ptrVar),
+operand_points_to(?actx, ?alloc, ?ctx, ?ptrVar) :-
+   var_points_to(?actx, ?alloc, ?ctx, ?ptrVar).
 
-operand_points_to2(?aCtx, ?alloc, ?ctx, ?cons),
-operand_points_to(?aCtx, ?alloc, ?ctx, ?cons) :-
-   empty_alloc_context(?aCtx),
+operand_points_to2(?actx, ?alloc, ?ctx, ?cons),
+operand_points_to(?actx, ?alloc, ?ctx, ?cons) :-
+   empty_acontext(?actx),
    constant_in_function(?cons, ?enclosingFunc),
    constant_points_to(?cons, ?alloc),
    reachable_context(?ctx, ?enclosingFunc).
@@ -67,7 +67,7 @@ operand_points_to(_, _, Ctx, Operand)
 // an allocation will point to another memory allocation when
 // dereferenced.
 
-.decl ptr_points_to(?aCtx: AllocationContext, ?alloc: Allocation, ?ptrACtx: AllocationContext, ?ptrAlloc: Allocation)
+.decl ptr_points_to(?actx: AContext, ?alloc: Allocation, ?ptrACtx: AContext, ?ptrAlloc: Allocation)
 
 
 //----------------------------

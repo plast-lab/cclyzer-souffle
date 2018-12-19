@@ -1,0 +1,10 @@
+#include "schema/schema-project.dl"
+#include "import/import-project.dl"
+#include "symbol-lookup/symbol-lookup-project.dl"
+#include "callgraph/call-graph-project.dl"
+#include "export/export-project.dl"
+#include "points-to/points-to-project.dl"
+#include "context/insensitive/insensitive-project.dl"
+//#include "context/1-call-site-sens+heap/1-call-site-sens+heap.project"
+//#include "context/2-call-site-sens+heap/2-call-site-sens+heap.project"
+

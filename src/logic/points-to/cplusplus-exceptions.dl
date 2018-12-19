@@ -143,11 +143,11 @@ cxx_throw_instruction_exception(?excObj, ?throwInsn) :-
    actual_arg(?throwInsn, 0, ?exc),
    stripctx_operand_points_to(?excObj, ?exc).
 
-.decl cxx_throw_instruction_full_exception(?aCtx: AllocationContext, ?excObj: ExceptionObject, ?throwInsn: Instruction)
-cxx_throw_instruction_full_exception(?aCtx, ?excObj, ?throwInsn) :-
+.decl cxx_throw_instruction_full_exception(?actx: AContext, ?excObj: ExceptionObject, ?throwInsn: Instruction)
+cxx_throw_instruction_full_exception(?actx, ?excObj, ?throwInsn) :-
    cxx_throw_instruction(?throwInsn),
    actual_arg(?throwInsn, 0, ?exc),
-   operand_points_to(?aCtx, ?excObj, _, ?exc).
+   operand_points_to(?actx, ?excObj, _, ?exc).
 
 //------------------------------------------------
 // * Throw Instr associates typeinfo object
@@ -204,26 +204,26 @@ cxx_throw_instruction_no_dtor(?throwInsn) :-
 // We can use the destructor and the typeinfo object supplied to a
 // throw instruction, as type indications for the exception object.
 
-.decl type_indication4(?type: Type, ?aCtx: AllocationContext, ?excObj: symbol)
-.decl type_indication5(?type: Type, ?aCtx: AllocationContext, ?excObj: symbol)
+.decl type_indication4(?type: Type, ?actx: AContext, ?excObj: symbol)
+.decl type_indication5(?type: Type, ?actx: AContext, ?excObj: symbol)
 
 .output type_indication4
 .output type_indication5
 
 
-type_indication4(?type, ?aCtx, ?excObj),
-type_indication(?type, ?aCtx, ?excObj)
+type_indication4(?type, ?actx, ?excObj),
+type_indication(?type, ?actx, ?excObj)
  :-
    untyped_allocation(_, ?excObj),
-   cxx_throw_instruction_full_exception(?aCtx, ?excObj, ?throwInsn),
+   cxx_throw_instruction_full_exception(?actx, ?excObj, ?throwInsn),
    cxx_throw_instruction_destructor(?dtor, ?throwInsn),
    destructor_class_type(?dtor, ?type).
 
-type_indication5(?classType, ?aCtx, ?excObj),
-type_indication(?classType, ?aCtx, ?excObj)
+type_indication5(?classType, ?actx, ?excObj),
+type_indication(?classType, ?actx, ?excObj)
  :-
    untyped_allocation(_, ?excObj),
-   cxx_throw_instruction_full_exception(?aCtx, ?excObj, ?throwInsn),
+   cxx_throw_instruction_full_exception(?actx, ?excObj, ?throwInsn),
    cxx_throw_instruction_typeinfo(?typeInfo, ?throwInsn),
    class_type_typeinfo(?classType, ?typeInfo).
 

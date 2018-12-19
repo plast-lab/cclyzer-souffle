@@ -19,47 +19,26 @@ reachable_context(?calleeCtx, ?callee) :-
 function_by_location(?alloc, ?callee) :-
    global_allocation_by_function(?callee, ?alloc).
 
-
-
-
-.decl callgraph_edge_interm(?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
-
-callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?newItem) :-
-   callgraph_edge_interm(?callee, ?callerCtx, ?newItem),
-   context_response(?callerCtx, _, ?newItem, ?calleeCtx).
-
-
 // Direct function calls
-context_request(?callerCtx, ?emptyACtx, ?newItem)
- , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
- :-
+context_request(?callerCtx, ?emptyACtx, ?callerInstr, ?callee) :-
    direct_call_instruction(?callerInstr),
    call_instruction_fn_target(?callerInstr, ?callee),
    instruction_in_function(?callerInstr, ?instrFunc),
    reachable_context(?callerCtx, ?instrFunc),
-   // Extra
-   context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   empty_acontext(?emptyACtx).
 
-
-context_request(?callerCtx, ?emptyACtx, ?newItem)
- , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
- :-
+context_request(?callerCtx, ?emptyACtx, ?callerInstr, ?callee) :-
    direct_invoke_instruction(?callerInstr),
    invoke_instruction_fn_target(?callerInstr, ?callee),
    instruction_in_function(?callerInstr, ?instrFunc),
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
-   context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   empty_acontext(?emptyACtx).
 
 // Indirect function calls (via function pointers)
-context_request(?callerCtx, ?emptyACtx, ?newItem)
- , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
- :-
+context_request(?callerCtx, ?emptyACtx, ?callerInstr, ?callee) :-
    indirect_call_instruction(?callerInstr),
    call_instruction_fn_operand(?callerInstr, ?funcOp),
-
    operand_points_to(_, ?funcLoc, ?callerCtx, ?funcOp),
    function_by_location(?funcLoc, ?callee),
    function_has_type(?callee, ?actualType),
@@ -67,11 +46,9 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
    pointer_type_has_component(?funcOpType, ?declaredType),
    type_compatible(?actualType, ?declaredType),
    // Extra
-   context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   empty_acontext(?emptyACtx).
 
-context_request(?callerCtx, ?emptyACtx, ?newItem)
- , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
+context_request(?callerCtx, ?emptyACtx, ?callerInstr, ?callee)
  :-
    invoke_instruction(?callerInstr),
    invoke_instruction_fn_operand(?callerInstr, ?funcOp),
@@ -82,10 +59,12 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
    pointer_type_has_component(?funcOpType, ?declaredType),
    type_compatible(?actualType, ?declaredType),
    // Extra
-   context_item_by_invoc(?callerInstr, ?newItem),
-   empty_alloc_context(?emptyACtx).
+   empty_acontext(?emptyACtx).
 
-
+reachable_context(?calleeCtx, ?tofunction),
+callgraph_edge(?calleeCtx, ?tofunction, ?callerCtx, ?invocation) :-
+  context_request(?callerCtx, ?emptyACtx, ?invocation, ?tofunction),
+  context_response(?callerCtx, ?emptyACtx, ?invocation, ?calleeCtx).
 //------------------------------------------------------------------------------
 //  Interprocedural Assignments
 //------------------------------------------------------------------------------
@@ -93,13 +72,9 @@ context_request(?callerCtx, ?emptyACtx, ?newItem)
 // Interprocedural assignment due to function call
 .decl interp_assignment(?toCtx: Context, ?toVar: Variable, ?fromCtx: Context, ?fromValue: Operand)
 
-.decl var_points_to1(?aCtx: symbol, ?alloc: symbol, ?toCtx: Context, ?toVar: symbol)
-.output var_points_to1
-
-var_points_to1(?aCtx, ?alloc, ?toCtx, ?toVar),
-var_points_to(?aCtx, ?alloc, ?toCtx, ?toVar) :-
+var_points_to(?actx, ?alloc, ?toCtx, ?toVar) :-
    interp_assignment(?toCtx, ?toVar, ?fromCtx, ?fromValue),
-   operand_points_to(?aCtx, ?alloc, ?fromCtx, ?fromValue).
+   operand_points_to(?actx, ?alloc, ?fromCtx, ?fromValue).
 
 // Actual argument of function call
 

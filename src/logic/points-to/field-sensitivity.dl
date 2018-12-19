@@ -376,19 +376,16 @@ _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn) :-
    gep_points_to(?insn, ?total, ?baseAlloc, ?alloc),
    getelementptr_instruction_nindices(?insn, ?total).
 
-.decl _gep_address_ctx_points_to(?ctx: Context, ?aCtx: AllocationContext, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction)
-_gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn) :-
+.decl _gep_address_ctx_points_to(?ctx: Context, ?actx: AContext, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction)
+_gep_address_ctx_points_to(?ctx, ?actx, ?baseAlloc, ?insn) :-
    getelementptr_instruction_base(?insn, ?base),
-   operand_points_to(?aCtx, ?baseAlloc, ?ctx, ?base).
+   operand_points_to(?actx, ?baseAlloc, ?ctx, ?base).
 
 // TODO type compatibility
-.decl var_points_to10(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-.output var_points_to10
 .output _gep_last_index_points_to
 .output _gep_address_ctx_points_to
 
-var_points_to10(?aCtx, ?alloc, ?ctx, ?toVar),
-var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+var_points_to(?actx, ?alloc, ?ctx, ?toVar) :-
    _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn),
-   _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn),
+   _gep_address_ctx_points_to(?ctx, ?actx, ?baseAlloc, ?insn),
    instruction_assigns_to(?insn, ?toVar).

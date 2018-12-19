@@ -5,13 +5,13 @@
 // the latest invocation instruction.
 //------------------------------------------------------------------------------
 
-.type Context = ContextItem
-.type AllocationContext = ContextItem
 .type ContextItem = symbol | Instruction
+.type Context = [ci: ContextItem]
+.type AContext = [ci :ContextItem]
 
 
 .decl context(?ctx:Context)
-.decl alloc_context(?allocCtx:AllocationContext)
+.decl acontext(?allocCtx:AContext)
 .decl context_item(?item:ContextItem)
 
 //-----------------------------------------------------
@@ -19,23 +19,23 @@
 //-----------------------------------------------------
 
 //.decl context_new(?item:ContextItem, ?ctx:Context)
-.decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
+.decl acontext_new(?item:ContextItem, ?actx:AContext)
 
 
-.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem)
-.decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem, ?ctx: Context)
+.decl context_request(?callerCtx: Context, ?actx: AContext, ?invoc: Instruction, ?tofunction: Function)
+.decl context_response(?callerCtx: Context, ?actx: AContext, ?invoc: Instruction, ?ctx: Context)
 
-context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
-   context_request(?callerCtx, ?aCtx, ?invoc),
-   ?ctx=?invoc.
+context_response(?callerCtx, ?actx, ?invoc, ?ctx) :-
+   context_request(?callerCtx, ?actx, ?invoc, _),
+   ?ctx = [?invoc].
 
 
-.decl alloc_context_request(?invoc: ContextItem)
-.decl alloc_context_response(?invoc: ContextItem, ?ctx: AllocationContext)
+.decl acontext_request(?invoc: ContextItem)
+.decl acontext_response(?invoc: ContextItem, ?ctx: AContext)
 
-alloc_context_response(?invoc, ?aCtx) :-
-   alloc_context_request(?invoc),
-   ?aCtx=?invoc.
+acontext_response(?invoc, ?actx) :-
+   acontext_request(?invoc),
+   ?actx = [?invoc].
 
 
 //-----------------------------------------------------
@@ -84,18 +84,18 @@ context_item(?ctxItem)
 //-----------------------------------------------------
 // Macro-constructors
 //-----------------------------------------------------
-.decl record(?ctx: Context, ?alloc: Allocation, ?aCtx: AllocationContext)
+.decl record(?ctx: Context, ?alloc: Allocation, ?actx: AContext)
 // record[Ctx, Alloc] = ACtx ->
-//    context(Ctx), allocation(Alloc), alloc_context(ACtx).
-.decl merge(?callerCtx: Context, ?invoc: Instruction, ?aCtx: AllocationContext, ?alloc: Allocation, ?calleeCtx: Context)
+//    context(Ctx), allocation(Alloc), acontext(ACtx).
+.decl merge(?callerCtx: Context, ?invoc: Instruction, ?actx: AContext, ?alloc: Allocation, ?calleeCtx: Context)
 // merge[CallerCtx, Invoc, ACtx, Alloc] = CalleeCtx ->
 //    context(CallerCtx), context(CalleeCtx),
-//    instruction(Invoc), alloc_context(ACtx), allocation(Alloc).
+//    instruction(Invoc), acontext(ACtx), allocation(Alloc).
 
 // // Macro-definitions
 /*
-alloc_context_new(?item, ?aCtx) :-
-   record(?ctx, _, ?aCtx),
+acontext_new(?item, ?actx) :-
+   record(?ctx, _, ?actx),
    context_new(?item, ?ctx).
 
 
@@ -112,18 +112,18 @@ context_new(?newItem, ?calleeCtx) :-
 context_getitem(?ctx, ?item):-
    context_response(_,_,?item, ?ctx).
 
-.decl alloc_context_getitem(?ctx:AllocationContext, ?item:ContextItem)
-alloc_context_getitem(?ctx, ?item):-
-   alloc_context_new(?item, ?ctx).
+.decl acontext_getitem(?ctx:AContext, ?item:ContextItem)
+acontext_getitem(?ctx, ?item):-
+   acontext_new(?item, ?ctx).
 
 .decl context_getinvoc(?ctx:Context, ?invoc:Instruction)
 context_getinvoc(?ctx, ?invoc):-
    context_getitem(?ctx, ?item),
    context_item_invoc(?item, ?invoc).
 
-.decl alloc_context_getinvoc(?ctx:AllocationContext, ?invoc:Instruction)
-alloc_context_getinvoc(?ctx, ?invoc) :-
-   alloc_context_getitem(?ctx, ?item),
+.decl acontext_getinvoc(?ctx:AContext, ?invoc:Instruction)
+acontext_getinvoc(?ctx, ?invoc) :-
+   acontext_getitem(?ctx, ?item),
    context_item_invoc(?item, ?invoc).
 
 

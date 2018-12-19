@@ -52,17 +52,9 @@ constant_points_to(?constant, ?alloc) :-
 // result of the `call instruction`.
 //----------------------------------------------------------------------
 
-.decl var_points_to2(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
-.decl var_points_to3(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
-.decl var_points_to4(?aCtx: symbol, ?alloc: symbol, ?ctx: Context, ?toVar: symbol)
-.output var_points_to2
-.output var_points_to3
-.output var_points_to4
-
-var_points_to2(?aCtx, ?alloc, ?ctx, ?toVar),
-var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+var_points_to(?actx, ?alloc, ?ctx, ?toVar) :-
    assign_instruction(?instrFunc, ?toVar, ?value),
-   operand_points_to(?aCtx, ?alloc, ?ctx, ?value), // TODO: consider adding type check
+   operand_points_to(?actx, ?alloc, ?ctx, ?value), // TODO: consider adding type check
    reachable_context(?ctx, ?instrFunc).
 
 .decl assign_instruction(?instrFunc: Function, ?toVar: Variable, ?value: Operand)
@@ -81,9 +73,8 @@ assign_instruction(?instrFunc, ?toVar, ?value) :-
    instruction_in_function(?instr, ?instrFunc).
 
 // `inttoptr` instructions
-var_points_to3(?aCtx, ?unknown, ?ctx, ?toVar),
-var_points_to(?aCtx, ?unknown, ?ctx, ?toVar) :-
-   empty_alloc_context(?aCtx),
+var_points_to(?actx, ?unknown, ?ctx, ?toVar) :-
+   empty_acontext(?actx),
    unknown_location(?unknown),
    inttoptr_instruction(?instr),
    instruction_assigns_to(?instr, ?toVar),
@@ -135,14 +126,10 @@ reachable_store(?instrFunc, ?toAddress, ?value) :-
    store_instruction_address(?instr, ?toAddress),
    instruction_in_function(?instr, ?instrFunc).
 
-.decl ptr_points_to5(?aCtx: symbol, ?alloc: symbol, ?toCtx: AllocationContext, ?to: symbol)
-.output ptr_points_to5
-
-ptr_points_to5(?aCtx, ?alloc, ?baseACtx, ?baseAlloc),
-ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc) :-
+ptr_points_to(?actx, ?alloc, ?baseACtx, ?baseAlloc) :-
    reachable_store(?instrFunc, ?toAddress, ?value),
    reachable_context(?ctx, ?instrFunc),
-   operand_points_to(?aCtx, ?alloc, ?ctx, ?value),
+   operand_points_to(?actx, ?alloc, ?ctx, ?value),
    operand_points_to(?baseACtx, ?baseAlloc, ?ctx, ?toAddress),
    ptr_compatible_allocation(?baseAlloc).
 
@@ -154,9 +141,8 @@ reachable_load(?instrFunc, ?toVar, ?fromAddress) :-
    instruction_assigns_to(?instr, ?toVar),
    instruction_in_function(?instr, ?instrFunc).
 
-var_points_to4(?aCtx, ?alloc, ?ctx, ?toVar),
-var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
+var_points_to(?actx, ?alloc, ?ctx, ?toVar) :-
    reachable_load(?instrFunc, ?toVar, ?fromAddress),
    reachable_context(?ctx, ?instrFunc),
    operand_points_to(?baseACtx, ?baseAlloc, ?ctx, ?fromAddress),
-   ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc). // TODO: consider adding type check
+   ptr_points_to(?actx, ?alloc, ?baseACtx, ?baseAlloc). // TODO: consider adding type check

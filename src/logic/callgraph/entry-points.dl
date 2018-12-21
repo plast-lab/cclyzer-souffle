@@ -9,6 +9,7 @@ reachable_function(Func) :-
 
 entry_point(Func) :-
    main_function(Func)
+ ; rust_main_function(Func)
  ; called_at_startup(Func).
 
 //-----------------------------------------------------------------------
@@ -20,6 +21,14 @@ entry_point(Func) :-
 main_function(MainFn) :-
    function_has_name(MainFn, "@main"),
    function(MainFn).
+
+.decl rust_main_function(func:Function)
+.output rust_main_function
+
+rust_main_function(MainFn) :-
+   function_has_name(MainFn, name),
+   function(MainFn),
+   match("@_Z.*main.*", name).
 
 //-----------------------------------------------------------------------
 // C Runtime performs initializations before running main() by calling

@@ -46,8 +46,8 @@ callgraph_invalid_edge(CallerInstr, Callee, __FILE__, __LINE__) :-
 .decl static_callgraph_edge_interm(?callerInstr: Instruction, ?callee: FunctionDecl)
 
 
-reachable_context(?ctx, Callee)
- , static_callgraph_edge(CallerInstr, Callee)
+reachable_context(?ctx, Callee),
+static_callgraph_edge(CallerInstr, Callee)
  :-
    static_callgraph_edge_interm(CallerInstr, Callee),
    instruction_in_function(CallerInstr, Func),

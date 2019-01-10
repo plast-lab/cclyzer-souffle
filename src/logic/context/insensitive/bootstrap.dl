@@ -19,10 +19,11 @@ startup_context(?ctx):-
 exit_context(?ctx) :-
    ?ctx = ["<<empty-context>>"].
 
-.decl reachable_context(?ctx:Context, ?main:FunctionDecl)
+.decl reachable_context(?ctx:Context, ?funcDecl:FunctionDecl)
 
 reachable_context(?ctx, ?main):-
-   main_function(?main),
+   (main_function(?main);
+    rust_main_function(?main)),
    main_context(?ctx).
 
 reachable_context(?ctx,?startupFunc):-

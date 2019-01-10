@@ -1,0 +1,57 @@
+.decl borrow_mut_instruction(?instruction:Instruction)
+.output borrow_mut_instruction
+
+borrow_mut_instruction(?instruction) :-
+   callgraph_edge(_, ?function, _, ?instruction),
+   match(".*borrow_mut.*", ?function),
+   !match(".*try_borrow_mut.*", ?function).
+
+.decl drop_in_place_instruction(?instruction:Instruction)
+.output drop_in_place_instruction
+
+drop_in_place_instruction(?instruction) :-
+  callgraph_edge(_, ?function, _, ?instruction),
+  match(".*drop_in_place.*", ?function).
+
+.decl instruction_follows_instruction(?instruction1:Instruction, ?instruction2:Instruction)
+.output instruction_follows_instruction
+
+instruction_follows_instruction(?instruction1, ?instruction2) :-
+  next_instruction(?instruction2, ?instruction1).
+
+instruction_follows_instruction(?instruction1, ?instruction2) :-
+  instruction_follows_instruction(?intermInstruction, ?instruction2),
+  next_instruction(?intermInstruction, ?instruction1).
+
+.decl consecutive_borrow_muts(?borrow_mut1:Instruction, ?borrow_mut2:Instruction)
+.output consecutive_borrow_muts
+
+consecutive_borrow_muts(?borrow_mut1, ?borrow_mut2) :-
+  borrow_mut_instruction(?borrow_mut1),
+  borrow_mut_instruction(?borrow_mut2),          
+  instruction_follows_instruction(?borrow_mut2, ?borrow_mut1),
+  actual_arg(?borrow_mut1, 0, ?var),
+  actual_arg(?borrow_mut2, 0, ?var).
+
+.decl consecutive_borrow_muts_with_drop(?borrow_mut1:Instruction, ?borrow_mut2:Instruction)
+.output consecutive_borrow_muts_with_drop
+
+consecutive_borrow_muts_with_drop(?borrow_mut1, ?borrow_mut2) :-
+  consecutive_borrow_muts(?borrow_mut1, ?borrow_mut2),
+  drop_in_place_instruction(?drop),
+  instruction_follows_instruction(?drop, ?borrow_mut1),
+  instruction_follows_instruction(?borrow_mut2, ?drop),
+  actual_arg(?borrow_mut1, 0, ?var),
+  actual_arg(?drop, 0, ?var).
+
+.decl double_borrow_error(?borrow_mut1:Instruction, ?borrow_mut2:Instruction)
+.output double_borrow_error
+
+double_borrow_error(?borrow_mut1, ?borrow_mut2) :-
+  consecutive_borrow_muts(?borrow_mut1, ?borrow_mut2),
+  !consecutive_borrow_muts_with_drop(?borrow_mut1, ?borrow_mut2).
+
+
+
+
+  

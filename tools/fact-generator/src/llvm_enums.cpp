@@ -124,13 +124,13 @@ cclyzer::utils::to_string(llvm::AtomicOrdering ordering)
 {
     const char *atomic;
 
-#if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
+#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
     using llvm::AtomicOrdering;
 #endif
 
     // Newer LLVM versions use scoped enums
     switch (ordering) {
-#if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
+#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
       case AtomicOrdering::NotAtomic:              atomic = "";          break;
       case AtomicOrdering::Unordered:              atomic = "unordered"; break;
       case AtomicOrdering::Monotonic:              atomic = "monotonic"; break;

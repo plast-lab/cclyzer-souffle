@@ -91,11 +91,13 @@ DebugInfoProcessor::Impl::write_di_global_variable::write(
     }
 
     // Record LLVM global variable association
+#if LLVM_VERSION_MAJOR < 4  // DIGlobalVariable.getVariable eliminated
     if (const llvm::Constant *gv = divar.getVariable())
     {
         std::string name = "@" + gv->getName().str();
         proc.writeFact(pred::di_global_var::variable, nodeId, name);
     }
+#endif
 }
 
 void

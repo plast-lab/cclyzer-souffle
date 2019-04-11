@@ -16,7 +16,7 @@ namespace cclyzer {
     {
       public:
         Registry() {
-            all().insert(static_cast<const T*>(this));
+            all().insert((const T*)(this));
         }
 
         // Define iterator methods over class instances
@@ -33,7 +33,7 @@ namespace cclyzer {
 
       protected:
         ~Registry() {
-            all().erase(static_cast<const T*>(this));
+            all().erase((const T*)(this));
         }
 
         // Collection of instances

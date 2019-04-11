@@ -113,8 +113,9 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
 
     // Record section
     if (gv.hasSection()) {
-#if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
-        writeFact(pred::global_var::section, id, gv.getSection().str());
+#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
+        llvm::StringRef secStr = gv.getSection();
+        writeFact(pred::global_var::section, id, secStr.str());
 #else
         writeFact(pred::global_var::section, id, gv.getSection());
 #endif

@@ -24,17 +24,11 @@ FactGenerator::writeFunction(
     refmode_t linkage = refmode(func.getLinkage());
     refmode_t typeSignature = recordType(func.getFunctionType());
 
-#if LLVM_VERSION_MAJOR == 3
-# if LLVM_VERSION_MINOR >= 8
     // Record function subprogram
     if (const llvm::DISubprogram *subprogram = func.getSubprogram()) {
         refmode_t subprogramId = refmode<llvm::DINode>(*subprogram);
         writeFact(pred::di_subprogram::function, subprogramId, funcref);
     }
-# endif
-#else
-# error Unsupported LLVM version
-#endif
 
     // Record function type signature
     writeFact(pred::function::type, funcref, typeSignature);
@@ -74,7 +68,10 @@ FactGenerator::writeFunction(
     writeFact(pred::function::name, funcref, funcname);
 
     // Address not significant
-#if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
+    
+//#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
+    // NB: for macOS LLVM-3.9.0svn this does not work, i.e. the test should be
+#if LLVM_VERSION_MAJOR > 3
     if (func.hasGlobalUnnamedAddr()) {
         writeFact(pred::function::unnamed_addr, funcref);
     }
@@ -89,11 +86,11 @@ FactGenerator::writeFunction(
 #endif
 
     // Record function attributes TODO
-    const llvm::AttributeSet &Attrs = func.getAttributes();
+    const Attributes &Attrs = func.getAttributes();
 
-    if (Attrs.hasAttributes(llvm::AttributeSet::ReturnIndex))
+    if (Attrs.hasAttributes(Attributes::ReturnIndex))
         writeFact(pred::function::ret_attr, funcref,
-                  Attrs.getAsString(llvm::AttributeSet::ReturnIndex));
+                  Attrs.getAsString(Attributes::ReturnIndex));
 
     writeFnAttributes<pred::function>(funcref, Attrs);
 
@@ -110,8 +107,9 @@ FactGenerator::writeFunction(
 
     // Record section
     if (func.hasSection()) {
-#if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
-        writeFact(pred::function::section, funcref, func.getSection().str());
+#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
+        llvm::StringRef secStr = func.getSection();
+        writeFact(pred::function::section, funcref, secStr.str());
 #else
         writeFact(pred::function::section, funcref, func.getSection());
 #endif
@@ -139,32 +137,40 @@ FactGenerator::writeFunction(
 template<typename PredGroup>
 void FactGenerator::writeFnAttributes(
     const refmode_t &refmode,
-    const llvm::AttributeSet allAttrs)
+    const Attributes allAttrs)
 {
-    using llvm::AttributeSet;
 
+#if LLVM_VERSION_MAJOR < 5  // AttributeSet -> AttributeList
     for (unsigned i = 0; i < allAttrs.getNumSlots(); ++i)
     {
         unsigned index = allAttrs.getSlotIndex(i);
 
         // Write out each attribute for this slot
-        for (AttributeSet::iterator
-                 it = allAttrs.begin(i), end = allAttrs.end(i);
+        for (Attributes::iterator it = allAttrs.begin(i), end = allAttrs.end(i);
              it != end; ++it)
         {
-            std::string attr = it->getAsString();
+            llvm::Attribute attrib = *it;
+#else
+    // Write out each attribute for this slot
+    for (unsigned index = allAttrs.index_begin(), e = allAttrs.index_end(); index != e; ++index)
+    {
+        llvm::AttributeSet attrs = allAttrs.getAttributes(index);
+        for (const llvm::Attribute attrib : attrs)
+        {
+#endif
+            std::string attr = attrib.getAsString();
             attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
 
             // Record target-dependent attributes
-            if (it->isStringAttribute())
+            if (attrib.isStringAttribute())
                 writeFact(pred::attribute::target_dependent, attr);
 
             // Record attribute by kind
             switch (index) {
-              case AttributeSet::AttrIndex::ReturnIndex:
+              case Attributes::AttrIndex::ReturnIndex:
                   writeFact(PredGroup::ret_attr, refmode, attr);
                   break;
-              case AttributeSet::AttrIndex::FunctionIndex:
+              case Attributes::AttrIndex::FunctionIndex:
                   writeFact(PredGroup::fn_attr, refmode, attr);
                   break;
               default:
@@ -179,12 +185,12 @@ void FactGenerator::writeFnAttributes(
 
 template void FactGenerator::writeFnAttributes<pred::function>(
     const refmode_t &refmode,
-    const llvm::AttributeSet Attrs);
+    const Attributes Attrs);
 
 template void FactGenerator::writeFnAttributes<pred::call>(
     const refmode_t &refmode,
-    const llvm::AttributeSet Attrs);
+    const Attributes Attrs);
 
 template void FactGenerator::writeFnAttributes<pred::invoke>(
     const refmode_t &refmode,
-    const llvm::AttributeSet Attrs);
+    const Attributes Attrs);

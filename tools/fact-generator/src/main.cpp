@@ -27,7 +27,7 @@ cclyzer::factgen(FileIt firstFile, FileIt endFile,
     using cclyzer::FactGenerator;
     using cclyzer::FactWriter;
 
-#if LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9
+#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
     llvm::LLVMContext context;
 #else
     llvm::LLVMContext &context = llvm::getGlobalContext();

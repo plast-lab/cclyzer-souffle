@@ -1,3 +1,6 @@
+#if LLVM_VERSION_MAJOR >= 7
+#include <llvm/IR/Constants.h>
+#endif
 #include "DebugInfoProcessorImpl.hpp"
 #include "debuginfo_predicate_groups.hpp"
 
@@ -16,11 +19,18 @@ DebugInfoProcessor::Impl::write_di_subrange::write(
 {
     proc.writeFact(pred::di_subrange::id, nodeId);
 
-    const int64_t count = disubrange.getCount();
+    int64_t count = 0;
+#if LLVM_VERSION_MAJOR < 7
+    count = disubrange.getCount();
+#else
+    auto *CI = disubrange.getCount().dyn_cast<llvm::ConstantInt *>(); 
+    count = CI->getSExtValue();
+#endif
     const int64_t lowerBound = disubrange.getLowerBound();
 
     proc.writeFact(pred::di_subrange::count, nodeId, count);
 
     if (lowerBound)
         proc.writeFact(pred::di_subrange::lower_bound, nodeId, lowerBound);
+
 }

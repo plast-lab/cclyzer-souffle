@@ -29,10 +29,10 @@ FactGenerator::writeLocalVariables()
 
         // Record variable name part
         size_t idx = varId.find_last_of("%!");
-	if (idx != llvm::StringRef::npos) {
+	    if (idx != llvm::StringRef::npos) {
         	std::string varName = varId.substr(idx);
         	writeFact(pred::variable::name, varId, varName);
-	}
+	    }
     }
 
     variableTypes.clear();

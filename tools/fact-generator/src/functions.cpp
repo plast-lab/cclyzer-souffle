@@ -69,9 +69,9 @@ FactGenerator::writeFunction(
 
     // Address not significant
     
-//#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
+#if LLVM_VERSION_MAJOR > 3 || (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 9)
     // NB: for macOS LLVM-3.9.0svn this does not work, i.e. the test should be
-#if LLVM_VERSION_MAJOR > 3
+    //#if LLVM_VERSION_MAJOR > 3 or equivalent to force else case
     if (func.hasGlobalUnnamedAddr()) {
         writeFact(pred::function::unnamed_addr, funcref);
     }

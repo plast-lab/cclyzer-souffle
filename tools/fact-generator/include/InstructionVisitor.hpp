@@ -156,13 +156,17 @@ class cclyzer::InstructionVisitor
         using namespace llvm;
 
         AtomicOrdering order = instr.getOrdering();
-        SynchronizationScope synchScope = instr.getSynchScope();
-
+        
         refmode_t atomic = gen.refmode<AtomicOrdering>(order);
 
         // default synchScope: crossthread
-        if (synchScope == SingleThread)
+#if LLVM_VERSION_MAJOR < 5  // getSynchScope -> getSyncScopeID
+        if (instr.getSynchScope() == SingleThread) {
+#else
+        if (instr.getSyncScopeID() == SyncScope::SingleThread) {
+#endif
             gen.writeFact(predicates::instruction::flag, iref, "singlethread");
+        }
 
         if (!atomic.empty())
             gen.writeFact(P::ordering, iref, atomic);

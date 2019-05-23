@@ -11,7 +11,8 @@ include $(LEVEL)/src/common.mk
 CXXFLAGS += -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter    \
             -Wwrite-strings -Wcast-qual -Wmissing-field-initializers      \
             -pedantic -Wno-long-long -ffunction-sections -fdata-sections  \
-            -O3
+            -O1  
+# Linux supports -O3 but macOS for some reason does not
 
 LLVM_CONFIG ?= llvm-config
 
@@ -45,7 +46,7 @@ CPPFLAGS += $(shell $(LLVM_CONFIG) --cppflags)
 LDFLAGS  += $(shell $(LLVM_CONFIG) --ldflags)
 LDLIBS   += $(shell $(LLVM_CONFIG) --libs core irreader)
 LDLIBS   += $(filter-out -lz,$(shell $(LLVM_CONFIG) --system-libs))
-LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options
+LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options 
 
 
 #-----------------------------------
@@ -53,7 +54,7 @@ LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options
 #-----------------------------------
 
 CPPFLAGS += $(addprefix -I ,$(include_dirs))
-CXXFLAGS += -fPIC -g -std=c++11
+CXXFLAGS += -fPIC -g -std=c++11 
 
 $(outdir)/%.o: %.cpp | $(outdir)
 	$(COMPILE.cpp) -o $@ $<
@@ -71,8 +72,8 @@ $(library): $(objects) | $(LIBDIR)
 
 py_objects := $(addprefix $(outdir)/,PyFactGen.o PyFactGen.d) $(library)
 
-$(py_objects): CXXFLAGS += $(shell python-config --includes)
-$(py_objects): LDFLAGS  += $(shell python-config --ldflags)
+$(py_objects): CXXFLAGS += $(shell python-config --includes) 
+$(py_objects): LDFLAGS  += $(shell python-config --ldflags) 
 $(py_objects): LDLIBS   += -lboost_python
 
 #-----------------------------------

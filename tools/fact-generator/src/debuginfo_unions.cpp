@@ -17,12 +17,12 @@ namespace dwarf = llvm::dwarf;
 // Helper method to record union attributes
 //------------------------------------------------------------------------------
 
-template<typename P, typename writer, typename T> void
+template<typename P, typename W, typename T> void
 DebugInfoProcessor::Impl::recordUnionAttribute(
     const refmode_t& nodeId, const llvm::TypedDINodeRef<T>& attribute)
 {
     typedef P pred;
-    typedef di_recorder<T, writer> recorder;
+    typedef di_recorder<T, W> recorder;
 
     if (attribute) {
         using llvm::MDString;
@@ -47,17 +47,27 @@ void
 DebugInfoProcessor::Impl::recordFlags(
     const Predicate& pred, const refmode_t& nodeId, unsigned flags)
 {
+#if LLVM_VERSION_MAJOR < 4  // unsigned -> llvm::DINode::DIFlags
+    typedef unsigned Flags;
+#else
+    typedef llvm::DINode::DIFlags Flags;
+#endif
     if (flags) {
         // Split flags inside vector
-        typedef SmallVector<unsigned,8> FlagVectorT;
+        typedef SmallVector<Flags,8> FlagVectorT;
         FlagVectorT flagsVector;
-        llvm::DINode::splitFlags(flags, flagsVector);
+        llvm::DINode::splitFlags((Flags)flags, flagsVector);
 
         for (FlagVectorT::iterator it = flagsVector.begin(),
                  end = flagsVector.end(); it != end; ++it )
         {
+#if LLVM_VERSION_MAJOR < 4  // const char * -> StringRef
             const char *flag = llvm::DINode::getFlagString(*it);
             writeFact(pred, nodeId, flag);
+#else
+            llvm::StringRef flag = llvm::DINode::getFlagString(*it);
+            writeFact(pred, nodeId, flag.str());
+#endif
         }
     }
 }

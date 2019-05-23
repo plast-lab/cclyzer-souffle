@@ -33,8 +33,13 @@ DebugInfoProcessor::Impl::generateDebugInfo(
     typedef llvm::DebugInfoFinder::type_iterator di_type_iterator;
     typedef llvm::DebugInfoFinder::scope_iterator di_scope_iterator;
     typedef llvm::DebugInfoFinder::subprogram_iterator di_subprogram_iterator;
-    typedef llvm::DebugInfoFinder::global_variable_iterator di_global_var_iterator;
     typedef llvm::DebugInfoFinder::compile_unit_iterator di_comp_unit_iterator;
+
+#if LLVM_VERSION_MAJOR < 4  // DIGlobalVariable -> DIGlobalVariableExpression
+    typedef llvm::DebugInfoFinder::global_variable_iterator di_global_var_iterator;
+#else
+    typedef llvm::DebugInfoFinder::global_variable_expression_iterator di_global_var_iterator;
+#endif
 
     // Get global variable iterator
     llvm::iterator_range<di_global_var_iterator> allVars =
@@ -44,8 +49,14 @@ DebugInfoProcessor::Impl::generateDebugInfo(
     for (di_global_var_iterator iVar = allVars.begin(), E = allVars.end();
          iVar != E; ++iVar)
     {
+#if LLVM_VERSION_MAJOR < 4  // DIGlobalVariable -> DIGlobalVariableExpression
         const llvm::DIGlobalVariable &divar = **iVar;
         record_di_variable::record(divar, *this);
+#else
+        const llvm::DIGlobalVariableExpression &divarex = **iVar;
+        const llvm::DIGlobalVariable &divar = *divarex.getVariable();
+        record_di_variable::record(divar, *this);
+#endif
     }
 
     // Get subprogram iterator

@@ -1,7 +1,11 @@
-#include <llvm/Support/Dwarf.h>
 #include "DebugInfoProcessorImpl.hpp"
 #include "debuginfo_predicate_groups.hpp"
 
+#if LLVM_VERSION_MAJOR < 5 // Support/Dwarf -> BinaryFormat/Dwarf
+#include <llvm/Support/Dwarf.h>
+#else
+#include <llvm/BinaryFormat/Dwarf.h>
+#endif
 
 using cclyzer::DebugInfoProcessor;
 using cclyzer::refmode_t;

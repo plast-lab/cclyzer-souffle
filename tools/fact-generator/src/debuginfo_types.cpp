@@ -184,7 +184,11 @@ DebugInfoProcessor::Impl::write_di_subroutine_type::write(
     auto typeArray = ditype.getTypeArray();
 
     for (size_t i = 0; i < typeArray.size(); ++i) {
+#if LLVM_VERSION_MAJOR >= 9
+        if (const llvm::DIType *type = typeArray[i]) {
+#else
         if (const llvm::DITypeRef type = typeArray[i]) {
+#endif
             const llvm::Metadata& meta = *type;
 
             if (const MDString *mds = dyn_cast<MDString>(&meta)) {

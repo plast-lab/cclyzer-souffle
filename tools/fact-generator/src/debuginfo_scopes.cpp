@@ -133,7 +133,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
         refmode_t funcref = proc.refmEngine.refmode<llvm::Function>(*func);
         proc.writeFact(pred::di_subprogram::function, nodeId, funcref);
     }
-#endif
+#endif
 
 
     //-----------------------------------------------------------------

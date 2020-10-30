@@ -19,7 +19,11 @@ namespace dwarf = llvm::dwarf;
 
 template<typename P, typename W, typename T> void
 DebugInfoProcessor::Impl::recordUnionAttribute(
+#if LLVM_VERSION_MAJOR >= 9
+    const refmode_t& nodeId, const T* attribute)
+#else
     const refmode_t& nodeId, const llvm::TypedDINodeRef<T>& attribute)
+#endif
 {
     typedef P pred;
     typedef di_recorder<T, W> recorder;
@@ -76,50 +80,83 @@ DebugInfoProcessor::Impl::recordFlags(
 // Explicit template instantiations
 //------------------------------------------------------------------------------
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_subprogram::containing_type,
-                       DebugInfoProcessor::Impl::write_di_type>(
-    const refmode_t &, const llvm::DITypeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_subprogram::containing_type,
+                        DebugInfoProcessor::Impl::write_di_type >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIType *);
+#else
+        const refmode_t &, const llvm::DITypeRef &);
+#endif
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_subprogram::scope,
-                       DebugInfoProcessor::Impl::write_di_scope>(
-    const refmode_t &, const llvm::DIScopeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_subprogram::scope,
+                        DebugInfoProcessor::Impl::write_di_scope >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIScope *);
+#else
+        const refmode_t &, const llvm::DIScopeRef &);
+#endif
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_template_param::type,
-                       DebugInfoProcessor::Impl::write_di_type>(
-    const refmode_t &, const llvm::DITypeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_template_param::type,
+                        DebugInfoProcessor::Impl::write_di_type >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIType *);
+#else
+        const refmode_t &, const llvm::DITypeRef &);
+#endif
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_variable::type,
-                       DebugInfoProcessor::Impl::write_di_type>(
-    const refmode_t &, const llvm::DITypeRef & );
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_composite_type::basetype,
-                       DebugInfoProcessor::Impl::write_di_type>(
-    const refmode_t &, const llvm::DITypeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_variable::type,
+                        DebugInfoProcessor::Impl::write_di_type >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIType *);
+#else
+        const refmode_t &, const llvm::DITypeRef &);
+#endif
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_composite_type::vtable,
-                       DebugInfoProcessor::Impl::write_di_type>(
-    const refmode_t &, const llvm::DITypeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_composite_type::basetype,
+                        DebugInfoProcessor::Impl::write_di_type >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIType *);
+#else
+        const refmode_t &, const llvm::DITypeRef &);
+#endif
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_derived_type::basetype,
-                       DebugInfoProcessor::Impl::write_di_type>(
-    const refmode_t &, const llvm::DITypeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_composite_type::vtable,
+                        DebugInfoProcessor::Impl::write_di_type >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIType *);
+#else
+        const refmode_t &, const llvm::DITypeRef &);
+#endif
 
-template void
-DebugInfoProcessor::Impl
-::recordUnionAttribute<pred::di_type::scope,
-                       DebugInfoProcessor::Impl::write_di_scope>(
-    const refmode_t &, const llvm::DIScopeRef & );
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_derived_type::basetype,
+                        DebugInfoProcessor::Impl::write_di_type >(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIType *);
+#else
+        const refmode_t &, const llvm::DITypeRef &);
+#endif
+
+    template void
+    DebugInfoProcessor::Impl
+    ::recordUnionAttribute<pred::di_type::scope,
+                        DebugInfoProcessor::Impl::write_di_scope>(
+#if LLVM_VERSION_MAJOR >= 9
+        const refmode_t &, const llvm::DIScope *);
+#else
+        const refmode_t &, const llvm::DIScopeRef &);
+#endif

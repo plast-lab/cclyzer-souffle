@@ -9,6 +9,7 @@
 #include "ForwardingFactWriter.hpp"
 #include "RefmodeEngine.hpp"
 
+
 class cclyzer::DebugInfoProcessor::Impl
     : private Demangler,
       private ForwardingFactWriter
@@ -187,8 +188,12 @@ class cclyzer::DebugInfoProcessor::Impl
     void write_di_type_common(const llvm::DIType &, const refmode_t &);
 
     /* Helper method to write union attributes */
-    template<typename P, typename writer, typename T>
-    void recordUnionAttribute(const refmode_t &, const llvm::TypedDINodeRef<T> & );
+    template<typename P, typename writer , typename T >
+#if LLVM_VERSION_MAJOR >= 9
+    void recordUnionAttribute(const refmode_t &, const T *);
+#else
+    void recordUnionAttribute(const refmode_t &, const llvm::TypedDINodeRef<T> &);
+#endif
 
     /* Helper method to write bit flags */
     void recordFlags(const Predicate &, const refmode_t &, unsigned);

@@ -27,7 +27,12 @@ DebugInfoProcessor::Impl::write_di_tpl_param::write(
     proc.writeFact(pred::di_template_param::id, nodeId);
 
     const std::string name = diparam.getName();
+
+#if LLVM_VERSION_MAJOR >= 9
+    const llvm::DIType *type = diparam.getType();
+#else
     const llvm::DITypeRef& type = diparam.getType();
+#endif
 
     // Record template parameter name
     if (!name.empty())

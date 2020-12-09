@@ -27,7 +27,13 @@ DebugInfoProcessor::Impl::generateDebugInfo(
 {
     using llvm::DICompositeType;
     using llvm::DIDerivedType;
+
+#if LLVM_VERSION_MAJOR >= 9
+    using llvm::DIScope;
+#else
     using llvm::DIScopeRef;
+#endif
+
     using llvm::MDString;
     using llvm::Metadata;
     typedef llvm::DebugInfoFinder::type_iterator di_type_iterator;

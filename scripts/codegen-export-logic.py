@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import fnmatch
@@ -80,7 +80,7 @@ def main():
 
     # Create output file
     outputpreds = filter(lambda p: not p.startswith('_'), outputpreds)
-    generate_output_logic(args.output_file, outputpreds)
+    generate_output_logic(args.output_file, list(outputpreds))
 
 
 if __name__ == '__main__':

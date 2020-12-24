@@ -7,8 +7,8 @@ if not(folder.endswith('/')):
     folder=folder+'/'
 os.rename(folder+'constant_to_int.csv', folder+'constant_to_int.csv.bak')
 
-csv_in = open(folder+'constant_to_int.csv.bak', 'rb')
-csv_out = open(folder+'constant_to_int.csv', 'wb')
+csv_in = open(folder+'constant_to_int.csv.bak', 'r')
+csv_out = open(folder+'constant_to_int.csv', 'w')
 
 
 writer = csv.writer(csv_out, delimiter='\t')

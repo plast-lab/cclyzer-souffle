@@ -373,8 +373,9 @@ gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?allocField)
 
 .decl _gep_last_index_points_to(?alloc: Allocation, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction) 
 _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn) :-
-   gep_points_to(?insn, ?total, ?baseAlloc, ?alloc),
-   getelementptr_instruction_nindices(?insn, ?total).
+   gep_points_to(?insn, ?last, ?baseAlloc, ?alloc),
+   getelementptr_instruction_nindices(?insn, ?n),
+   ?last = ?n - 1.
 
 .decl _gep_address_ctx_points_to(?ctx: Context, ?aCtx: AllocationContext, ?baseAlloc: Allocation, ?insn: GetElementPtrInstruction)
 _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn) :-

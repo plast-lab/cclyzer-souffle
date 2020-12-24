@@ -51,6 +51,7 @@ all: $(LOGIC_CXX_OUT)
 all: $(OUTDIR)/__init__.py
 
 $(OUTDIR)/__init__.py:
+	mkdir -p $(OUTDIR)
 	touch $@
 
 

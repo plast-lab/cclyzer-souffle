@@ -54,7 +54,7 @@ LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options
 #-----------------------------------
 
 CPPFLAGS += $(addprefix -I ,$(include_dirs))
-CXXFLAGS += -fPIC -g -std=c++11
+CXXFLAGS += -fPIC -g -std=c++14
 
 $(outdir)/%.o: %.cpp | $(outdir)
 	$(COMPILE.cpp) -o $@ $<

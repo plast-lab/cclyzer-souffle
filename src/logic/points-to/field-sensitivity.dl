@@ -393,3 +393,47 @@ var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
    _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn),
    _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn),
    instruction_assigns_to(?insn, ?toVar).
+
+//------------------------------------------------------------------------------
+// [Field Insensitive treatment of aggregates (`insertvalue`/`extractvalue` instructions)]
+//
+//------------------------------------------------------------------------------
+// <result> = insertvalue <aggregate type> <val>, <ty> <elt>, <idx>{, <idx>}*    ; yields <aggregate type>
+// assigns_to                        base           value       index
+
+.decl aggregate_points_to(?aCtx: AllocationContext , ?alloc: Allocation, ?aaCtx: AllocationContext , ?aggrAlloc: Allocation )
+
+
+aggregate_points_to(?vaCtx, ?valueAlloc, ?aCtx , ?newAggr ),
+var_points_to( ?aCtx , ?newAggr , ?ctx, ?toVar)
+ :-
+  insertvalue_instruction(?insn),
+  insertvalue_instruction_base(?insn, ?base),
+  insertvalue_instruction_value(?insn, ?value),
+  constant_has_value(?base, "undef"),
+  operand_points_to(?vaCtx, ?valueAlloc, ?ctx, ?value),
+  instruction_assigns_to(?insn, ?toVar),
+  ?newAggr = cat("aggr_alloc",?insn),
+  // Extra
+  context_getitem(?ctx, ?item),
+  ?aCtx=?item.
+  //?aCtx = ["<<empty_context>>"].
+  //empty_alloc_context(?aCtx). // REVIEW
+
+
+aggregate_points_to(?vaCtx, ?valueAlloc, ?aCtx, ?aggrAlloc),
+var_points_to(?aCtx, ?aggrAlloc, ?ctx, ?toVar)
+ :-
+  insertvalue_instruction(?insn),
+  insertvalue_instruction_base(?insn, ?base),
+  insertvalue_instruction_value(?insn, ?value),
+  operand_points_to(?aCtx, ?aggrAlloc, ?ctx, ?base),
+  operand_points_to(?vaCtx, ?valueAlloc, ?ctx, ?value),
+  instruction_assigns_to(?insn, ?toVar).  
+
+var_points_to(?vaCtx, ?valueAlloc, ?ctx, ?toVar) :-
+  extractvalue_instruction(?insn),
+  extractvalue_instruction_base(?insn, ?base),
+  operand_points_to(?aCtx, ?aggrAlloc, ?ctx, ?base),
+  aggregate_points_to(?vaCtx, ?valueAlloc, ?aCtx, ?aggrAlloc),
+  instruction_assigns_to(?insn, ?toVar).

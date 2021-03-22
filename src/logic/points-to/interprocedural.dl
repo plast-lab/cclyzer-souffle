@@ -128,7 +128,8 @@ function_returns_value(?retValue, ?inFunction) :-
    instruction_in_function(?retInsn, ?inFunction).
 
 interp_assignment(?callerCtx, ?toVar, ?calleeCtx, ?retValue) :-
-   call_instruction(?callerInstr),  // do not model `invoke` instructions yet
+   (call_instruction(?callerInstr);
+   invoke_instruction(?callerInstr)),
    //callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
    callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee),   //redundant OPT clause?
    function_returns_value(?retValue, ?callee),

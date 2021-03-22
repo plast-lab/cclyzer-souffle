@@ -48,13 +48,13 @@ basic_allocation(?alloc) :-
 .decl heap_allocation_by_malloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_calloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_realloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
-
+.decl heap_allocation_by_rust_alloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 
 
 .output heap_allocation_by_malloc
 .output heap_allocation_by_calloc
 .output heap_allocation_by_realloc
-                                     
+.output heap_allocation_by_rust_alloc                                     
 
 //---------------------------------------------------------------------------
 // [Pointer-compatible allocations]

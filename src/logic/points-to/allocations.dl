@@ -102,7 +102,8 @@ heap_allocation_by_instruction(?instr, ?heapAlloc) :-
 heap_alloc_function(?func) :-
    function_has_name(?func, "@malloc")
  ; function_has_name(?func, "@calloc")
- ; function_has_name(?func, "@realloc").
+ ; function_has_name(?func, "@realloc")
+ ; function_has_name(?func, "@__rust_alloc").
 
 heap_allocation(?heapAlloc),
 heap_allocation_by_malloc(?insn, ?heapAlloc) :-
@@ -122,7 +123,11 @@ heap_allocation_by_realloc(?insn, ?heapAlloc) :-
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).
 
-
+heap_allocation(?heapAlloc),
+heap_allocation_by_rust_alloc(?insn, ?heapAlloc) :-
+  function_has_name(?func, "@__rust_alloc"),
+  call_instruction_fn_target(?insn, ?func),
+  heap_allocation_by_instruction(?insn, ?heapAlloc).
 
 // !! Track heap allocation types !! Note that a single heap
 // allocation is just a series of bytes, which can flow to multiple

@@ -39,8 +39,7 @@ context_request(?callerCtx, ?aCtx, ?newItem)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_response(_, ?aCtx, ?callerInstr, _).
-
+   context_response(_, ?aCtx, ?newItem, _).
 
 context_request(?callerCtx, ?aCtx, ?newItem)
  , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
@@ -51,7 +50,7 @@ context_request(?callerCtx, ?aCtx, ?newItem)
    reachable_context(?callerCtx, ?instrFunc),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_response(_, ?aCtx, ?callerInstr, _).
+   context_response(_, ?aCtx, ?newItem, _).
 
 // Indirect function calls (via function pointers)
 context_request(?callerCtx, ?aCtx, ?newItem)
@@ -68,7 +67,7 @@ context_request(?callerCtx, ?aCtx, ?newItem)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_response(_, ?aCtx, ?callerInstr, _).
+   context_response(_, ?aCtx, ?newItem, _).
 
 context_request(?callerCtx, ?aCtx, ?newItem)
  , callgraph_edge_interm(?callee, ?callerCtx, ?newItem)
@@ -83,7 +82,7 @@ context_request(?callerCtx, ?aCtx, ?newItem)
    type_compatible(?actualType, ?declaredType),
    // Extra
    context_item_by_invoc(?callerInstr, ?newItem),
-   context_response(_, ?aCtx, ?callerInstr, _).
+   context_response(_, ?aCtx, ?newItem, _).
 
 
 //------------------------------------------------------------------------------

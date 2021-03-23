@@ -4,6 +4,19 @@
 #include "callgraph/callgraph.project"
 #include "export/export.project"
 #include "points-to/points-to.project"
-//#include "context/insensitive/insensitive.project"
-//#include "context/1-call-site-sens+heap/1-call-site-sens+heap.project"
+
+#include "analysis.config"
+
+#if defined(CONTEXT_INSENSITIVE)
+
+#include "context/insensitive/insensitive.project"
+
+#elif defined(ONE_CALL_SITE_SENSITIVE_HEAP)
+
+#include "context/1-call-site-sens+heap/1-call-site-sens+heap.project"
+
+#elif defined(TWO_CALL_SITE_SENSITIVE_HEAP)
+
 #include "context/2-call-site-sens+heap/2-call-site-sens+heap.project"
+
+#endif

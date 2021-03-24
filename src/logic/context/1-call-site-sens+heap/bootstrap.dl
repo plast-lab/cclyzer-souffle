@@ -81,7 +81,8 @@ context(?ctx):-
 
 reachable_context1(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
-   main_function(?func),
+   (main_function(?func);
+   rust_main_function(?func)),
    main_context(?ctx).
 
 reachable_context2(?ctx, ?func),

@@ -57,7 +57,8 @@ exit_context(?ctx)
 .decl reachable_context(?ctx:Context, ?func:FunctionDecl)
 
 reachable_context(?ctx, ?func) :-
-   main_function(?func),
+   (main_function(?func);
+   rust_main_function(?func)),
    main_context(?ctx)
  ; called_at_startup(?func),
    startup_context(?ctx)

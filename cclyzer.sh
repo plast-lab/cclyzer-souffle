@@ -1,8 +1,11 @@
 #!/bin/bash
+
 ANALYSIS_CONFIG="src/logic/analysis.config"
+
 if [ -f "$ANALYSIS_CONFIG" ]; then
     rm $ANALYSIS_CONFIG
 fi
+
 usage() {
     echo "Usage: $0 PARAMETERS [OPTIONS]"
     echo "PARAMETERS:"
@@ -14,6 +17,7 @@ usage() {
                                            2-call-site-sensitive+heap"
     exit 1;
 }
+
 while getopts "i:a::" o; do
     case "${o}" in
         i)
@@ -27,9 +31,11 @@ while getopts "i:a::" o; do
             ;;
     esac
 done
+
 if ((OPTIND == 1)); then
     usage
 fi
+
 shift $((OPTIND-1))
 if [ ! -f "$INPUT_FILE" ]; then
     echo Input file "$INPUT_FILE" not found!
@@ -41,7 +47,7 @@ mkdir facts
 bin/fact-generator -o facts/ "$INPUT_FILE"
 python3 cti.py facts/
 mkdir -p results
-touch "$ANALYSIS_CONFIG"
+
 if [ "$ANALYSIS" = "context-insensitive" ]; then
     echo "#define CONTEXT_INSENSITIVE" >> "$ANALYSIS_CONFIG"
 elif [ "$ANALYSIS" = "1-call-site-sensitive+heap" ]; then
@@ -49,7 +55,9 @@ elif [ "$ANALYSIS" = "1-call-site-sensitive+heap" ]; then
 elif [ "$ANALYSIS" = "2-call-site-sensitive+heap" ]; then
     echo "#define TWO_CALL_SITE_SENSITIVE_HEAP" >> "$ANALYSIS_CONFIG"
 else
-    echo "#define INSENSITIVE" >> "$ANALYSIS_CONFIG"
+    echo "#define CONTEXT_INSENSITIVE" >> "$ANALYSIS_CONFIG"
 fi
+
 souffle --profile=cclyzer.log -F facts/ -D results/ src/logic/master.project
 rm "$ANALYSIS_CONFIG"
+touch "$ANALYSIS_CONFIG"

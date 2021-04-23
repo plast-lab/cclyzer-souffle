@@ -1,5 +1,5 @@
 // Ordering as an enum
-.type Ordering
+.type Ordering <: symbol
 .decl ordering(o:Ordering)
 
 .decl unordered_ordering(o:Ordering)

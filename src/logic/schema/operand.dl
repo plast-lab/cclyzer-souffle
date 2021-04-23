@@ -7,7 +7,7 @@
 // or temporaries introduced by LLVM that hold intermediate expressions.
 //------------------------------------------------------------------------------
 
-.type Variable
+.type Variable <: symbol
 .decl variable(v:Variable)
 
 .decl variable_has_type(v:Variable, type:Type)
@@ -42,14 +42,14 @@ variable_is_firstclass(Var) :-
 // hierarchy is represented in `constants.logic`.
 //------------------------------------------------------------------------------
 
-.type Constant
+.type Constant <: symbol
 .decl constant(c:Constant)
 
 .decl constant_has_type(c:Constant, type:Type)
 .decl constant_has_value(c:Constant, val:symbol)
 
 // Precomputed hash-codes for constant values
-.decl constant_hashes_to(c:Constant, hashcode:number)
+// .decl constant_hashes_to(c:Constant, hashcode:number)
 
 // Previously derived. Now implemented as a macro
 #define constants_equal(X, Y)  \

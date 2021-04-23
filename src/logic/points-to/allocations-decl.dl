@@ -37,7 +37,7 @@ basic_allocation(?alloc) :-
 .decl stack_allocation_by_instruction(?insn:AllocaInstruction, ?stackAlloc:StackAllocation)
 .decl stack_allocation_by_parameter(?func:FunctionDecl, ?index:number, ?stackAlloc:StackAllocation)
 
-.decl heap_allocation_by_instruction(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
+.decl heap_allocation_by_instruction(?insn:Instruction, ?heapAlloc:HeapAllocation)
 
 .decl global_allocation_by_function(?func:FunctionDecl, ?globalAlloc:GlobalAllocation)
 .decl global_allocation_by_variable(?var:GlobalVariable, ?globalAlloc:GlobalAllocation)

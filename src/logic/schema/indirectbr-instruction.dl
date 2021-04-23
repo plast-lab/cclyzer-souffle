@@ -52,6 +52,7 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    indirectbr_instruction(Instr),
    indirectbr_instruction_label(Instr, Index, _),
    indirectbr_instruction_nlabels(Instr, Total),
+   Total = Total,
    (Index < 0 ; Index >= Total).
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-

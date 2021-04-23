@@ -84,16 +84,18 @@ context_item(?ctxItem)
 //-----------------------------------------------------
 // Macro-constructors
 //-----------------------------------------------------
-.decl record(?ctx: Context, ?alloc: Allocation, ?aCtx: AllocationContext)
+// .decl record(?ctx: Context, ?alloc: Allocation, ?aCtx: AllocationContext)
 // record[Ctx, Alloc] = ACtx ->
 //    context(Ctx), allocation(Alloc), alloc_context(ACtx).
-.decl merge(?callerCtx: Context, ?invoc: Instruction, ?aCtx: AllocationContext, ?alloc: Allocation, ?calleeCtx: Context)
+//
+// .decl merge(?callerCtx: Context, ?invoc: Instruction, ?aCtx: AllocationContext, ?alloc: Allocation, ?calleeCtx: Context)
+//
 // merge[CallerCtx, Invoc, ACtx, Alloc] = CalleeCtx ->
 //    context(CallerCtx), context(CalleeCtx),
 //    instruction(Invoc), alloc_context(ACtx), allocation(Alloc).
 
-// // Macro-definitions
 /*
+// Macro-definitions
 alloc_context_new(?item, ?aCtx) :-
    record(?ctx, _, ?aCtx),
    context_new(?item, ?ctx).
@@ -104,6 +106,7 @@ context_new(?newItem, ?calleeCtx) :-
    context_new(_,?callerCtx),
    context_item_by_invoc(?invoc, ?newItem).
 */
+
 //-----------------------------------------------------
 // Unpacking context items
 //-----------------------------------------------------

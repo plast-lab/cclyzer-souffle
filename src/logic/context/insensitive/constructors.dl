@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// [1 Call-site Sensitive + Heap Analysis]
+// [Context Insensitive Analysis]
 //
 // In this analysis, context and alocation context is in both cases
 // the latest invocation instruction.
@@ -7,8 +7,7 @@
 
 .type Context = ContextItem
 .type AllocationContext = ContextItem
-.type ContextItem = symbol
-
+.type ContextItem <: Instruction
 
 .decl context(?ctx:Context)
 .decl alloc_context(?allocCtx:AllocationContext)
@@ -66,8 +65,8 @@ matches_string_context(?str):-
    ?str = "<<empty-context>>".
 
 .decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)
-context_item(?ctxItem)
- , dummy_context_item_by_str(?str,?ctxItem)
+context_item(as(?ctxItem, ContextItem))
+ , dummy_context_item_by_str(?str, as(?ctxItem, ContextItem))
  :-
    matches_string_context(?str),
    ?ctxItem=?str.

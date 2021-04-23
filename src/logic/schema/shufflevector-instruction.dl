@@ -79,8 +79,9 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    shufflevector_instruction_second_vector(Instr, SecondVector),
    operand_has_type(FirstVector, FirstVectorType),
    operand_has_type(SecondVector, SecondVectorType),
-   ( FirstVectorType != InputType
-   ; SecondVectorType != InputType).
+   FirstVectorType = FirstVectorType,
+   SecondVectorType = SecondVectorType,
+   (FirstVectorType != InputType ; SecondVectorType != InputType).
 
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-

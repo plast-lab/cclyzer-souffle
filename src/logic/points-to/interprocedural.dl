@@ -22,7 +22,7 @@ function_by_location(?alloc, ?callee) :-
 
 
 
-.decl callgraph_edge_interm(?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: Instruction)
+.decl callgraph_edge_interm(?callee: FunctionDecl, ?callerCtx: Context, ?callerInstr: ContextItem)
 
 callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?newItem) :-
    callgraph_edge_interm(?callee, ?callerCtx, ?newItem),

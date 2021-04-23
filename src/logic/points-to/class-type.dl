@@ -189,12 +189,12 @@ typeinfo:single_inheritance(TypeInfo)
 _string_iteration_trick(0).
 _string_iteration_trick(?pos + 1) :- _string_iteration_trick(?pos), ?pos < 256.
 
-.decl relevant_suffix_position(?typeName: symbol, ?pos:number)
+.decl relevant_suffix_position(?typeName: StructType, ?pos:number)
 relevant_suffix_position(?typeName, ?pos) :-
    struct_type(?typeName),
    _string_iteration_trick(?pos), ?pos < strlen(?typeName).
 
-.decl suffix(?type:Type, ?suffix:symbol, ?suffixLen:number)
+.decl suffix(?type:StructType, ?suffix:symbol, ?suffixLen:number)
 .output suffix
 
 suffix(?type, ?suffix, ?suffixLen) :-
@@ -207,7 +207,7 @@ suffix(?type, ?type, ?suffixLen) :-
  struct_type(?type),
  ?suffixLen = strlen(?type).
 
-.decl minimal_suffix_len(?type:Type, ?suffixLen:number)
+.decl minimal_suffix_len(?type:StructType, ?suffixLen:number)
 .output minimal_suffix_len
 
 minimal_suffix_len(?type, ?suffixLen) :-
@@ -215,14 +215,12 @@ minimal_suffix_len(?type, ?suffixLen) :-
  ?suffixLen = min ?len : suffix(?type, _, ?len).
 
 // Computes the suffix after the last dot of a type name.
-.decl minimal_suffix(?type:Type, ?suffix:symbol)
+.decl minimal_suffix(?type:StructType, ?suffix:symbol)
 .output minimal_suffix
 
 minimal_suffix(?type, ?suffix) :-
  minimal_suffix_len(?type, ?suffixLen),
  suffix(?type, ?suffix, ?suffixLen).
-
-
 
 
 .decl template_type(?type:StructType)

@@ -57,7 +57,7 @@
 
 gep_points_to1(?insn, ?index, ?baseAlloc, ?alloc),
 gep_points_to(?insn, ?index, ?baseAlloc, ?alloc) :-
-   _inv_gep_points_to(?someAlloc, ?baseAlloc, ?index, ?insn),
+   gep_points_to(?insn, ?index, ?baseAlloc, ?someAlloc),
    alloc_aliases(?alloc, ?someAlloc).
 
 gep_points_to2(?insn, 0, ?baseAlloc, ?baseAlloc),
@@ -66,12 +66,6 @@ gep_points_to(?insn, 0, ?baseAlloc, ?baseAlloc) :-
    getelementptr_instruction_base(?insn, ?base),
    operand_points_to(_, ?baseAlloc, _, ?base).
 // TODO check type compatibility
-
-
-// Introduce inverted predicate to optimize indexing
-.decl _inv_gep_points_to(?alloc: Allocation, ?baseAlloc: Allocation, ?index: number, ?insn: GetElementPtrInstruction) 
-_inv_gep_points_to(?alloc, ?baseAlloc, ?index, ?insn) :-
-   gep_points_to(?insn, ?index, ?baseAlloc, ?alloc).
 
 
 // Guard configuration predicate for pointer arithmetic support

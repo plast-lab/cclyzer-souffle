@@ -2,7 +2,7 @@
 // [Types]
 //------------------------------------------------------------------------------
 
-.type Type
+.type Type <: symbol
 .decl type(t:Type)
 
 
@@ -19,12 +19,12 @@
 // [Primitive Types]
 //------------------------------------------------------------------------------
 
-.type PrimitiveType = Type
-.type IntegerType = PrimitiveType
-.type FPType = PrimitiveType
-.type VoidType = PrimitiveType
-.type LabelType = PrimitiveType
-.type MetadataType = PrimitiveType
+.type PrimitiveType <: Type
+.type IntegerType <: PrimitiveType
+.type FPType <: PrimitiveType
+.type VoidType <: PrimitiveType
+.type LabelType <: PrimitiveType
+.type MetadataType <: PrimitiveType
 
 .decl primitive_type(type:PrimitiveType)
 .decl integer_type(type:IntegerType)
@@ -111,14 +111,14 @@ ppc_fp128_type("ppc_fp128").
 
 // Type Hierarchy
 
-.type DerivedType = Type
-.type FunctionType = DerivedType
-.type PointerType = DerivedType
-.type VectorType = DerivedType
-.type AggregateType = DerivedType
-.type ArrayType = AggregateType
-.type StructType = AggregateType
-.type OpaqueStructType = StructType
+.type DerivedType <: Type
+.type FunctionType <: DerivedType
+.type PointerType <: DerivedType
+.type VectorType <: DerivedType
+.type AggregateType <: DerivedType
+.type ArrayType <: AggregateType
+.type StructType <: AggregateType
+.type OpaqueStructType <: StructType
 
 .decl derived_type(type:DerivedType)
 .decl function_type(type:FunctionType)

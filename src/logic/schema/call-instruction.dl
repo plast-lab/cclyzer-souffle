@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#call-instruction
 // keywords: instruction
 
-.type CallInstruction = Instruction
+.type CallInstruction <: Instruction
 .decl call_instruction(instr:CallInstruction)
 
 instruction(v) :- call_instruction(v).

@@ -237,10 +237,12 @@ switch_instruction_case(v0, v1, [v2, v3]) :-
 .input _landingpad_instruction_catch_clause(IO="file", delimiter="\t", filename="landingpad_instruction_catch_clause.csv")
 .input _landingpad_instruction_filter_clause(IO="file", delimiter="\t", filename="landingpad_instruction_filter_clause.csv")
 
-catch_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
+catch_clause([v2]),
+landingpad_instruction_clause(as(v0, LandingPadInstruction), v1, [v2]) :-
    _landingpad_instruction_catch_clause(v0, v1, v2).
 
-filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
+filter_clause([v2]),
+landingpad_instruction_clause(as(v0, LandingPadInstruction), v1, [v2]) :-
    _landingpad_instruction_filter_clause(v0, v1, v2).
 
 
@@ -294,13 +296,13 @@ filter_clause([v2]), landingpad_instruction_clause(v0, v1, [v2]) :-
 .input _constant_in_function(IO="file", delimiter="\t", filename="constant_in_fn.csv")
 .input _variable_in_function(IO="file", delimiter="\t", filename="variable_in_fn.csv")
 
-constant_in_function(Constant, Function) :-
-   _constant_in_function(Constant, FuncName),
-   function_has_name(Function, FuncName).
+constant_in_function(as(const, Constant), function) :-
+   _constant_in_function(const, functionName),
+   function_has_name(function, functionName).
 
-variable_in_function(Variable, Function) :-
-   _variable_in_function(Variable, FuncName),
-   function_has_name(Function, FuncName).
+variable_in_function(as(var, Variable), function) :-
+   _variable_in_function(var, functionName),
+   function_has_name(function, functionName).
 
 .input variable_has_debug_source_name(IO="file", delimiter="\t", filename="variable_has_debug_source_name.csv")
 .input variable_has_debug_decl_pos(IO="file", delimiter="\t", filename="variable_has_debug_decl_pos.csv")

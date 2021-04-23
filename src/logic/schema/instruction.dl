@@ -2,7 +2,7 @@
 // Instruction (EDB) Entities
 //------------------------------------
 
-.type Instruction
+.type Instruction <: symbol
 .decl instruction(instr:Instruction)
 
 // For constraints
@@ -25,7 +25,7 @@ instruction_returns_type(Instr, Type) :-
 
 
 // Instruction Flags
-.type Flag
+.type Flag <: symbol
 .decl flag(flag:Flag)
 .decl instruction_has_flag(instr:Instruction, flag:Flag)
 

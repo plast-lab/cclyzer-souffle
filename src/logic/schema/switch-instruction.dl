@@ -87,4 +87,5 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
    schema_sanity(),
    switch_instruction_ncases(Instr, Total),
    switch_instruction_case(Instr, Index, _),
+   Total = Total,
    (Index < 0 ; Index >= Total).

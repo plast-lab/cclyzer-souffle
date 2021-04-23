@@ -11,9 +11,10 @@ Set Up
 
 ### Install the Soufflé engine
 
-The Soufflé Datalog engine needs to be installed. We recommend using the latest
-stable version (2.0.2 at the time of writing) by cloning the Soufflé GitHub
-[repo](https://github.com/souffle-lang/souffle) and following the available
+The Soufflé Datalog engine needs to be installed. We recommend using the HEAD
+commit (until at least a few much needed improvements of version 2 become stable)
+by cloning the Soufflé GitHub [repo](https://github.com/souffle-lang/souffle)
+and following the available
 [instructions](https://souffle-lang.github.io/build) to build from source.
 
 The latest development version of Soufflé can also be installed via the package

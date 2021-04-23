@@ -14,15 +14,15 @@
 
 .decl vtable(?vt: VirtualTable, ?name: symbol)
 .decl typeinfo(?typeInfo: GlobalVariable)
-.decl vtable_typeinfo(?vt: VirtualTable,?typeInfo: GlobalVariable)
+.decl vtable_typeinfo(?vt: VirtualTable, ?typeInfo: GlobalVariable)
 
-.type VirtualTable = GlobalVariable
+.type VirtualTable <: GlobalVariable
 
 .decl typeinfo_vtable(?vt: VirtualTable, ?name: symbol)
 vtable(?vt, ?name) :-
    typeinfo_vtable(?vt, ?name).
 
-typeinfo_vtable(?vt, ?name) :-
+typeinfo_vtable(as(?vt, VirtualTable), ?name) :-
    external_linkage_type(?externalLinkage),
    global_variable_has_linkage_type(?vt, ?externalLinkage),
    global_variable_has_name(?vt, ?name),
@@ -69,7 +69,7 @@ constant_contains_vptr(?vt, ?outer) :-
 
 // Identify the actual type info objects throught their vpointers
 
-.decl typeinfo_has_vtable(?typeInfo:symbol ,?vt: VirtualTable)
+.decl typeinfo_has_vtable(?typeInfo: GlobalVariable, ?vt: VirtualTable)
 typeinfo(?typeInfo),
 typeinfo_has_vtable(?typeInfo,?vt) :-
    constant_contains_vptr(?vt, ?initializer),
@@ -103,8 +103,8 @@ _constant_contains_typeinfo(?typeinfo, ?outer) :-
    bitcast_constant_expression_from(?outer, ?inner),
    _constant_contains_typeinfo(?typeinfo, ?inner).
 
-vtable(?vt, ?name),
-vtable_typeinfo(?vt,?typeinfo) :-
+vtable(as(?vt, VirtualTable), ?name),
+vtable_typeinfo(as(?vt, VirtualTable), ?typeinfo) :-
    global_variable_has_name(?vt, ?name),
    global_variable_has_initializer(?vt, ?initializer), // get array constant of vtable
    constant_array_index(?initializer, 1, ?tic),    // type info is at index 1

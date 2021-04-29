@@ -303,8 +303,8 @@ gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
 // For the rest of the indices of the GEP instruction
 //------------------------------------------------------------------------------
 
-.decl gep_interm_points_to_array(?insn: Instruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
-gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc)
+.decl gep_interm_points_to(?insn: Instruction, ?index: number, ?baseAlloc: Allocation, ?alloc: Allocation)
+gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc)
  :-
    gep_points_to(?insn, ?index, ?baseAlloc, ?alloc),
    getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
@@ -315,11 +315,22 @@ gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc)
    type_compatible(?type, ?declaredType),
    alloc_subregion(?alloc).
 
+gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc)
+ :-
+   gep_points_to(?insn, ?index, ?baseAlloc, ?alloc),
+   getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
+   // check for type compatibility
+   allocation_type(?alloc, ?type),
+   struct_type(?type),
+   struct_type(?declaredType),
+   type_compatible(?type, ?declaredType),
+   alloc_subregion(?alloc).
+
 // Case of unknown index
 gep_points_to13(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc),
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
  :-
-   gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
+   gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc),
    // variable array index
    getelementptr_instruction_index(?insn, ?index, ?indexOp),
    !constant_to_int(?indexOp, _),
@@ -332,7 +343,7 @@ gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
 gep_points_to14(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc),
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
  :-
-   gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
+   gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc),
    // get constant array index (as integer)
    getelementptr_instruction_index(?insn, ?index, ?indexOp),
    constant_to_int(?indexOp, ?constantIndex),
@@ -345,7 +356,7 @@ gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)
 gep_points_to15(?insn, ?nextIndex, ?baseAlloc, ?allocField),
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?allocField)
  :-
-   gep_interm_points_to_array(?insn, ?index, ?baseAlloc, ?alloc),
+   gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc),
    getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
    // check for type compatibility
    allocation_type(?alloc, ?type),

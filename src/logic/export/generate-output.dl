@@ -274,7 +274,7 @@
 .output gep_constant_expr_points_to3
 .output gep_constant_expr_points_to4
 .output gep_constant_expr_points_to5
-.output gep_interm_points_to_array
+.output gep_interm_points_to
 .output gep_is_vector_based
 .output gep_points_to
 .output gep_points_to1

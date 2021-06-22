@@ -104,4 +104,3 @@ where the available options for <analysis> are:
 * context-insensitive
 * 1-call-site-sensitive+heap
 * 2-call-site-sensitive+heap
-

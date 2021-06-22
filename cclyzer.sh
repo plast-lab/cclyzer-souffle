@@ -1,6 +1,7 @@
 #!/bin/bash
 
-ANALYSIS_CONFIG="src/logic/analysis.config"
+CCLYZER_DIR=$(dirname $(readlink -f "$0"))
+ANALYSIS_CONFIG="$CCLYZER_DIR/src/logic/analysis.config"
 
 if [ -f "$ANALYSIS_CONFIG" ]; then
     rm $ANALYSIS_CONFIG
@@ -10,18 +11,24 @@ usage() {
     echo "Usage: $0 PARAMETERS [OPTIONS]"
     echo "PARAMETERS:"
     echo "  -i <input bitcode file>"
+    echo "  -o <output directory>"
     echo "  -a <analysis>
-            
+
      available analysis options:           context-insensitive
                                            1-call-site-sensitive+heap
                                            2-call-site-sensitive+heap"
     exit 1;
 }
 
-while getopts "i:a::" o; do
+OUTPUT_DIR=$(pwd)
+
+while getopts "i:o:a::" o; do
     case "${o}" in
         i)
             INPUT_FILE=${OPTARG}
+            ;;
+        o)
+            OUTPUT_DIR=${OPTARG}
             ;;
         a)
             ANALYSIS=${OPTARG}
@@ -42,11 +49,16 @@ if [ ! -f "$INPUT_FILE" ]; then
     exit 1
 fi
 
-rm -rf ./facts/
-mkdir facts
-bin/fact-generator -o facts/ "$INPUT_FILE"
-python3 cti.py facts/
-mkdir -p results
+if [ ! -d "$OUTPUT_DIR" ]; then
+    echo Output directory "$OUTPUT_DIR" not found!
+    exit 1
+fi
+
+rm -rf $OUTPUT_DIR/facts/
+mkdir $OUTPUT_DIR/facts
+$CCLYZER_DIR/bin/fact-generator -o $OUTPUT_DIR/facts/ "$INPUT_FILE"
+python3 $CCLYZER_DIR/cti.py $OUTPUT_DIR/facts/
+mkdir -p $OUTPUT_DIR/results
 
 if [ "$ANALYSIS" = "context-insensitive" ]; then
     echo "#define CONTEXT_INSENSITIVE" >> "$ANALYSIS_CONFIG"
@@ -58,6 +70,6 @@ else
     echo "#define CONTEXT_INSENSITIVE" >> "$ANALYSIS_CONFIG"
 fi
 
-souffle --profile=cclyzer.log -F facts/ -D results/ src/logic/master.project
+souffle --profile=cclyzer.log -F $OUTPUT_DIR/facts/ -D $OUTPUT_DIR/results/ $CCLYZER_DIR/src/logic/master.project
 rm "$ANALYSIS_CONFIG"
 touch "$ANALYSIS_CONFIG"

@@ -41,7 +41,7 @@ You will also have to install the following packages:
 
 #### Ubuntu 20.04
 
-    apt install python-dev build-essential libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev
+    apt install libclang-dev python-dev build-essential libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev
 
 #### Fedora 32
 

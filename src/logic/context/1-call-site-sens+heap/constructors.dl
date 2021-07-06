@@ -7,8 +7,7 @@
 
 .type Context = ContextItem
 .type AllocationContext = ContextItem
-.type ContextItem = symbol | Instruction
-
+.type ContextItem <: Instruction
 
 .decl context(?ctx:Context)
 .decl alloc_context(?allocCtx:AllocationContext)
@@ -18,24 +17,25 @@
 // Context Constructors
 //-----------------------------------------------------
 
-//.decl context_new(?item:ContextItem, ?ctx:Context)
 .decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
-
 
 .decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem)
 .decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem, ?ctx: Context)
 
+context(?ctx),
+context_item(?invoc),
 context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
-   context_request(?callerCtx, ?aCtx, ?invoc),
-   ?ctx=?invoc.
-
+  context_request(?callerCtx, ?aCtx, ?invoc),
+  ?ctx = ?invoc.
 
 .decl alloc_context_request(?invoc: ContextItem)
 .decl alloc_context_response(?invoc: ContextItem, ?ctx: AllocationContext)
 
+alloc_context(?aCtx),
+alloc_context_new(?invoc, ?aCtx),
 alloc_context_response(?invoc, ?aCtx) :-
    alloc_context_request(?invoc),
-   ?aCtx=?invoc.
+   ?aCtx = ?invoc.
 
 
 //-----------------------------------------------------
@@ -45,21 +45,14 @@ alloc_context_response(?invoc, ?aCtx) :-
 .decl context_item_by_invoc(?invoc:Instruction, ?ctxItem:ContextItem)
 .decl context_item_invoc(?ctxItem:ContextItem, ?invoc:Instruction)
 
-
 context_item_invoc(?ctxItem, ?invoc) :-
-   context_item_by_invoc(?invoc, ?ctxItem).
+  context_item_by_invoc(?invoc, ?ctxItem).
 
-context_item(?instr1)
- , context_item_by_invoc(?instr1, ?instr2)
- :-
-   call_instruction(?instr1),
-   ?instr1= ?instr2.
-
-context_item(?instr1)
- , context_item_by_invoc(?instr1, ?instr2)
- :-
-   invoke_instruction(?instr1),
-   ?instr1=?instr2.
+context_item(as(?instr, ContextItem)),
+context_item_by_invoc(?instr, as(?instr, ContextItem)) :-
+   (call_instruction(?instr);
+    invoke_instruction(?instr)),
+   ?instr = ?instr.
 
 
 // Dummy context items (needed for empty contexts)
@@ -74,12 +67,12 @@ matches_string_context(?str):-
 matches_string_context(?str):-
    ?str = "<<exit-context>>".
 
-.decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)
-context_item(?ctxItem)
- , dummy_context_item_by_str(?str,?ctxItem)
- :-
+.decl dummy_context_item_by_str(?str:symbol, ?ctxItem:ContextItem)
+
+context_item(as(?ctxItem, ContextItem)),
+dummy_context_item_by_str(?str, as(?ctxItem, ContextItem)) :-
    matches_string_context(?str),
-   ?ctxItem=?str.
+   ?ctxItem = ?str.
 
 //-----------------------------------------------------
 // Macro-constructors
@@ -129,8 +122,7 @@ alloc_context_getinvoc(?ctx, ?invoc) :-
    alloc_context_getitem(?ctx, ?item),
    context_item_invoc(?item, ?invoc).
 
-
-//Already generated output relations of 2-call-sensitivity
+// Already generated output relations of 2-call-sensitivity
 .decl context_getinvoc0(?dummy : number)
 .decl context_getitem0(?dummy : number)
 .decl context_getinvoc1(?dummy : number)

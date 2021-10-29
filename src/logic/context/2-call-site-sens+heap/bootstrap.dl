@@ -6,17 +6,16 @@
 //dummy_context_item_by_str("<<empty-context>>", ?ctxItem).
 
 .decl empty_context(?ctx:Context)
-empty_context(?ctx)
- , context(?ctx)
- :-
-   ?ctx=["<<empty-context>>", "<<empty-context>>"].
+empty_context(?ctx),
+context(?ctx) :-
+  ?ctx = ["<<empty-context>>", "<<empty-context>>"].
 
 .decl empty_alloc_context(?ctx:AllocationContext)
-empty_alloc_context(?aCtx)
- , alloc_context(?aCtx)
- , alloc_context_new(?aCtx, ?aCtx)
- :-
-   ?aCtx="<<empty-context>>".
+empty_alloc_context(?aCtx),
+alloc_context(?aCtx),
+alloc_context_new(?item, ?aCtx) :-
+  ?item = "<<empty-context>>",
+  ?aCtx = [?item].
 
 // Special context for when called from main
 //context_item(CtxItem)

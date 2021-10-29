@@ -1,15 +1,14 @@
 /// 1. Alloca Instructions
 
-.decl var_points_to6(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-.decl var_points_to7(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-.decl var_points_to8(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+//.decl var_points_to6(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+//.decl var_points_to7(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+//.decl var_points_to8(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+//
+//.output var_points_to6
+//.output var_points_to7
+//.output var_points_to8
 
-.output var_points_to6
-.output var_points_to7
-.output var_points_to8
-
-context_request(?ctx, ?aCtx, ?item),
-var_points_to6(?aCtx, ?stackAlloc, ?ctx, ?var),
+// KT: CHECK context_request(?ctx, ?aCtx, ?item),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
    stack_allocation(?stackAlloc),
@@ -26,7 +25,7 @@ alloc_context(?aCtx),
    reachable_context(?ctx, ?instrFunc),
    // Extra
    context_getitem(?ctx, ?item),
-   ?aCtx=?item.
+   ?aCtx = [?item].
 
 
 allocation_type(?stackAlloc, ?type) :-
@@ -36,8 +35,7 @@ allocation_type(?stackAlloc, ?type) :-
 
 /// 2. Parameters with pass-by-value semantics
 
-context_request(?ctx, ?aCtx, ?item),
-var_points_to7(?aCtx, ?stackAlloc, ?ctx, ?param),
+// KT: CHECK context_request(?ctx, ?aCtx, ?item),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
    stack_allocation(?stackAlloc),
@@ -54,7 +52,7 @@ alloc_context(?aCtx),
    reachable_context(?ctx, ?func),
 //   Extra
    context_getitem(?ctx, ?item),
-   ?aCtx=?item.
+   ?aCtx = [?item].
 
 
 
@@ -76,8 +74,7 @@ allocation_type(?stackAlloc, ?type) :-
 //---------------------------------------------------------------------
 
 
-context_request(?ctx, ?aCtx, ?item),
-var_points_to8(?aCtx, ?heapAlloc, ?ctx, ?var),
+// KT: CHECK context_request(?ctx, ?aCtx, ?item),
 alloc_context(?aCtx),
 alloc_context_new(?item,?aCtx),
 var_points_to(?aCtx, ?heapAlloc, ?ctx, ?var),
@@ -97,7 +94,7 @@ heap_allocation_by_instruction(?instr, ?heapAlloc) :-
    reachable_context(?ctx, ?instrFunc),
    // Extra
    context_getitem(?ctx, ?item),
-   ?aCtx= ?item.
+   ?aCtx = [?item].
 
 heap_alloc_function(?func) :-
    function_has_name(?func, "@malloc")
@@ -190,10 +187,7 @@ allocation_type(?alloc, ?type):-
 
 
 // An unknown location points to an unknown location
-.decl ptr_points_to1(?aCtx: symbol, ?unknown: symbol, ?aCtx2: symbol, ?unknown2: symbol)
-.output ptr_points_to1
 
-ptr_points_to1(?aCtx, ?unknown, ?aCtx, ?unknown),
 ptr_points_to(?aCtx, ?unknown, ?aCtx, ?unknown) :-
    empty_alloc_context(?aCtx),
    unknown_location(?unknown).

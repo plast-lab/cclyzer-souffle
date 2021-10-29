@@ -387,12 +387,12 @@ _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn) :-
    operand_points_to(?aCtx, ?baseAlloc, ?ctx, ?base).
 
 // TODO type compatibility
-.decl var_points_to10(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-.output var_points_to10
+//.decl var_points_to10(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
+//.output var_points_to10
 .output _gep_last_index_points_to
 .output _gep_address_ctx_points_to
 
-var_points_to10(?aCtx, ?alloc, ?ctx, ?toVar),
+//var_points_to10(?aCtx, ?alloc, ?ctx, ?toVar),
 var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
    _gep_last_index_points_to(?alloc, ?baseAlloc, ?insn),
    _gep_address_ctx_points_to(?ctx, ?aCtx, ?baseAlloc, ?insn),
@@ -420,7 +420,7 @@ var_points_to( ?aCtx , ?newAggr , ?ctx, ?toVar)
   ?newAggr = cat("aggr_alloc",?insn),
   // Extra
   context_getitem(?ctx, ?item),
-  ?aCtx=?item.
+  ?aCtx = [?item].
   //?aCtx = ["<<empty_context>>"].
   //empty_alloc_context(?aCtx). // REVIEW
 

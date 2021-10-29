@@ -6,9 +6,9 @@
 // latest invocation instruction.
 //------------------------------------------------------------------------------
 
+.type ContextItem = symbol | Instruction
 .type Context = [?item0: ContextItem, ?item1: ContextItem]
-.type AllocationContext = ContextItem
-.type ContextItem <: Instruction
+.type AllocationContext = [?ci: ContextItem]
 
 .decl context(?ctx:Context)
 .decl alloc_context(?allocCtx:AllocationContext)
@@ -20,16 +20,17 @@
 
 .decl alloc_context_new(?item: ContextItem, ?aCtx:AllocationContext)
 
-.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem)
-.decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: ContextItem, ?ctx: Context)
+.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: Function)
+.decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?ctx: Context)
 
 context(?ctx),
 context_item(?invoc),
 context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
-  context_request(?callerCtx, ?aCtx, ?invoc),
+  context_request(?callerCtx, ?aCtx, ?invoc, _),
   context_item(?item0),
-  ?callerCtx = [_, ?item0],
-  ?ctx = [?item0, ?invoc].
+  context_item(?newItem0),
+  ?callerCtx = [?item0, ?newItem0],
+  ?ctx = [?newItem0, ?invoc].
 
 .decl alloc_context_request(?invoc: ContextItem)
 .decl alloc_context_response(?invoc: ContextItem, ?ctx: AllocationContext)
@@ -38,7 +39,7 @@ alloc_context(?aCtx),
 alloc_context_new(?invoc, ?aCtx),
 alloc_context_response(?invoc, ?aCtx) :-
   alloc_context_request(?invoc),
-  ?aCtx=?invoc.
+  ?aCtx = [?invoc].
 
 
 //-----------------------------------------------------
@@ -51,11 +52,11 @@ alloc_context_response(?invoc, ?aCtx) :-
 context_item_invoc(?ctxItem, ?invoc) :-
   context_item_by_invoc(?invoc, ?ctxItem).
 
-context_item(as(?instr, ContextItem)),
-context_item_by_invoc(?instr, as(?instr, ContextItem)) :-
+context_item(?ctxItem),
+context_item_by_invoc(?instr, ?ctxItem) :-
   (call_instruction(?instr);
    invoke_instruction(?instr)),
-  ?instr = ?instr.
+  ?ctxItem = ?instr.
 
 
 // Dummy context items (needed for empty contexts)
@@ -69,7 +70,7 @@ matches_string_context(?str):-
 
 .decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)
 context_item(as(?ctxItem, ContextItem)),
-dummy_context_item_by_str(?str, as(?ctxItem, ContextItem)) :-
+dummy_context_item_by_str(?str, ?ctxItem) :-
   matches_string_context(?str),
   ?ctxItem = ?str.
 

@@ -57,14 +57,13 @@ reachable_context(?ctx, Callee)
 
 
 
-context_request(CallerCtx, ?emptyACtx, as(?callerInstr, ContextItem))
- , static_callgraph_edge_interm(?callerInstr, Callee)
+context_request(CallerCtx, emptyACtx, callerInstr, Callee)
+ , static_callgraph_edge_interm(callerInstr, Callee)
  , reachable_function(Callee)
  :-
-   reachable_instruction(?callerInstr),
-   (invoke_instruction_fn_target(?callerInstr, Callee);
-    call_instruction_fn_target(?callerInstr, Callee)),
-
-   empty_alloc_context(?emptyACtx),
+   reachable_instruction(callerInstr),
+   (invoke_instruction_fn_target(callerInstr, Callee);
+    call_instruction_fn_target(callerInstr, Callee)),
    instruction_in_function(callerInstr, Func),
-   reachable_context(CallerCtx, Func).
+   reachable_context(CallerCtx, Func),
+   empty_alloc_context(emptyACtx).

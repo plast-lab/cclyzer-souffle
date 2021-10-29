@@ -8,11 +8,14 @@
 .decl empty_context(?ctx:Context)
 empty_context(?ctx)
  , context(?ctx)
- , context_request(?ctxItem,?ctxItem,?ctxItem)
- , context_response(?ctxItem,?ctxItem,?ctxItem,?ctx)
+// , context_request(?ctx, ?actx, ?instr, ?toFunction)
+// , context_response(?ctx, ?actx, ?instr, ?ctx)
  :-
    dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-   ?ctx=?ctxItem.
+   ?ctx = [?ctxItem].
+//   ?actx = [?ctxItem],
+//   ?instr = "empty",
+//   ?toFunction = "empty".
 
 .decl empty_alloc_context(?ctx:AllocationContext)
 empty_alloc_context(?aCtx)
@@ -20,7 +23,7 @@ empty_alloc_context(?aCtx)
  , alloc_context_new(?ctxItem, ?aCtx)
  :-
    dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-   ?aCtx=?ctxItem.
+   ?aCtx = [?ctxItem].
 
 // Special context for when called from main
 //context_item(CtxItem)
@@ -29,11 +32,14 @@ empty_alloc_context(?aCtx)
 .decl main_context(?ctx:Context)
 main_context(?ctx)
  , context(?ctx)
- , context_request(?ctxItem,?ctxItem,?ctxItem)
- , context_response(?ctxItem,?ctxItem,?ctxItem,?ctx)
+// , context_request(?ctx, ?actx, ?instr, ?toFunction)
+// , context_response(?ctx, ?actx, ?instr, ?ctx)
  :-
    dummy_context_item_by_str("<<main-context>>", ?ctxItem),
-   ?ctx=?ctxItem.
+   ?ctx = [?ctxItem].
+//   ?actx = [?ctxItem],
+//   ?instr = "empty",
+//   ?toFunction = "empty".
 
 // Special context for when called at startup
 //context_item(CtxItem)
@@ -42,11 +48,14 @@ main_context(?ctx)
 .decl startup_context(?ctx:Context)
 startup_context(?ctx)
  , context(?ctx)
- , context_request(?ctxItem,?ctxItem,?ctxItem)
- , context_response(?ctxItem,?ctxItem,?ctxItem,?ctx)
+// , context_request(?ctx, ?actx, ?instr, ?toFunction)
+// , context_response(?ctx, ?actx, ?instr, ?ctx)
  :-
    dummy_context_item_by_str("<<startup-context>>", ?ctxItem),
-   ?ctx=?ctxItem.
+   ?ctx = [?ctxItem].
+//   ?actx = [?ctxItem],
+//   ?instr = "empty",
+//   ?toFunction = "empty".
 
 // Special context for when called at exit
 //context_item(CtxItem)
@@ -56,11 +65,14 @@ startup_context(?ctx)
 .decl exit_context(?ctx:Context)
 exit_context(?ctx)
  , context(?ctx)
- , context_request(?ctxItem,?ctxItem,?ctxItem)
- , context_response(?ctxItem,?ctxItem,?ctxItem,?ctx)
+// , context_request(?ctx, ?actx, ?instr, ?toFunction)
+// , context_response(?ctx, ?actx, ?instr, ?ctx)
  :-
    dummy_context_item_by_str("<<exit-context>>", ?ctxItem),
-   ?ctx=?ctxItem.
+   ?ctx = [?ctxItem].
+//   ?actx = [?ctxItem],
+//   ?instr = "empty",
+//   ?toFunction = "empty".
 
 
 //---------------------------------------------------------

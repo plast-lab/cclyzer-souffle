@@ -59,10 +59,10 @@ $(OUTDIR)/__init__.py:
 # Output Logic
 #-----------------------------------
 
-OUTPUT_LOGIC := export/generate-output.dl
-OUTPUT_EXTRA := export/more-output-predicates.txt
-
-all: $(OUTPUT_LOGIC)
-
-$(OUTPUT_LOGIC): $(filter-out %/$(OUTPUT_LOGIC), $(LOGIC_FILES)) $(OUTPUT_EXTRA)
-	$(SCRIPTDIR)/codegen-export-logic.py . -o $@ --extra-output-preds $(OUTPUT_EXTRA)
+#OUTPUT_LOGIC := export/generate-output.dl
+#OUTPUT_EXTRA := export/more-output-predicates.txt
+#
+#ll: $(OUTPUT_LOGIC)
+#
+#$(OUTPUT_LOGIC): $(filter-out %/$(OUTPUT_LOGIC), $(LOGIC_FILES)) $(OUTPUT_EXTRA)
+#	$(SCRIPTDIR)/codegen-export-logic.py . -o $@ --extra-output-preds $(OUTPUT_EXTRA)

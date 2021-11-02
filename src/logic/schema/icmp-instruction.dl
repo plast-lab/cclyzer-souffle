@@ -1,12 +1,12 @@
 // http://llvm.org/docs/LangRef.html#icmp-instruction
 // keywords: comparison; binary; instruction
 
-.type ICmpInstruction = Instruction
+.type ICmpInstruction <: Instruction
 .decl icmp_instruction(instr:ICmpInstruction)
 
 instruction(v) :- icmp_instruction(v).
 
-.type ICmpCondition
+.type ICmpCondition <: symbol
 
 .decl icmp_instruction_condition(instr:ICmpInstruction, cond:ICmpCondition)
 .decl icmp_instruction_first_operand(instr:ICmpInstruction, op:Operand)

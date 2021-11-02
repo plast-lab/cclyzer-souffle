@@ -42,7 +42,7 @@ registers_dtor_atexit(?callCtx, ?dtorOperand, ?recvOperand) :-
 .decl _dtor_accepts_recv(?aCtx: AllocationContext, ?recvObj: GlobalAllocation , ?dtor: FunctionDecl)
 
 called_at_exit(?dtor)
- , _dtor_accepts_recv(?aCtx, ?recvObj, ?dtor)
+ , _dtor_accepts_recv(?aCtx, as(?recvObj, GlobalAllocation), ?dtor)
  :-
    registers_dtor_atexit(?ctx, ?dtorOperand, ?recvOperand),
    operand_points_to(_, ?dtorObj, ?ctx, ?dtorOperand),

@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#mul-instruction
 // keywords: arithmetic; binary; instruction
 
-.type MulInstruction = Instruction
+.type MulInstruction <: Instruction
 .decl mul_instruction(instr:MulInstruction)
 
 instruction(v) :- mul_instruction(v).

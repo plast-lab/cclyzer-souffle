@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#trunc-to-instruction
 // keywords: conversion; unary; instruction
 
-.type FPTruncInstruction = Instruction
+.type FPTruncInstruction <: Instruction
 .decl fptrunc_instruction(instr:FPTruncInstruction)
 
 instruction(v) :- fptrunc_instruction(v).

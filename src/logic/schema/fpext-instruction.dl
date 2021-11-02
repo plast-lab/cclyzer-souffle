@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#fpext-to-instruction
 // keywords: conversion; unary; instruction
 
-.type FPExtInstruction = Instruction
+.type FPExtInstruction <: Instruction
 .decl fpext_instruction(instr:FPExtInstruction)
 
 instruction(v) :- fpext_instruction(v).

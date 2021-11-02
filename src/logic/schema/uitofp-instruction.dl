@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#uitofp-to-instruction
 // keywords: conversion; unary; instruction
 
-.type UIToFPInstruction = Instruction
+.type UIToFPInstruction <: Instruction
 .decl uitofp_instruction(instr:UIToFPInstruction)
 
 instruction(v) :- uitofp_instruction(v).

@@ -20,7 +20,7 @@
 
 .decl alloc_context_new(?item: ContextItem, ?aCtx:AllocationContext)
 
-.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: Function)
+.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: FunctionDecl)
 .decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?ctx: Context)
 
 context(?ctx),

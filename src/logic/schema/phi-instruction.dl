@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#phi-instruction
 // keywords: index; instruction
 
-.type PhiInstruction = Instruction
+.type PhiInstruction <: Instruction
 .decl phi_instruction(instr:PhiInstruction)
 
 instruction(v) :- phi_instruction(v).

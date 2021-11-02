@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#sext-to-instruction
 // keywords: conversion; unary; instruction
 
-.type SExtInstruction = Instruction
+.type SExtInstruction <: Instruction
 .decl sext_instruction(instr:SExtInstruction)
 
 instruction(v) :- sext_instruction(v).

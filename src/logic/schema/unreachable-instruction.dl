@@ -1,7 +1,7 @@
 // llvm.org/docs/LangRef.html#unreachable-instruction
 // keywords: terminator; instruction
 
-.type UnreachableInstruction = Instruction
+.type UnreachableInstruction <: Instruction
 .decl unreachable_instruction(instr:UnreachableInstruction)
 
 instruction(v) :- unreachable_instruction(v).

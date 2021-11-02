@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#sdiv-instruction
 // keywords: arithmetic; binary; instruction
 
-.type SDivInstruction = Instruction
+.type SDivInstruction <: Instruction
 .decl sdiv_instruction(instr:SDivInstruction)
 
 instruction(v) :- sdiv_instruction(v).

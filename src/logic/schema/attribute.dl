@@ -1,5 +1,5 @@
 // Atribute
-.type Attribute
+.type Attribute <: symbol
 .decl attribute(attr:Attribute)
 .decl target_dependent_attribute(attr:Attribute)
 

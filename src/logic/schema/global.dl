@@ -1,6 +1,6 @@
 // http://llvm.org/docs/LangRef.html#global-variables
 
-.type GlobalVariable
+.type GlobalVariable <: symbol
 .decl global_variable(gv:GlobalVariable)
 .decl global_variable_has_type(gv:GlobalVariable, type:Type)
 .decl global_variable_has_name(gv:GlobalVariable, name:symbol)
@@ -52,7 +52,7 @@ global_variable_is_constant(GVar) :-
 // [Linkage Type], and selectors
 //------------------------------------------------------------------------------
 
-.type LinkageType
+.type LinkageType <: symbol
 .decl linkage_type(link:LinkageType)
 
 .decl external_linkage_type(link:LinkageType)
@@ -92,7 +92,7 @@ linkage_type("available_externally"). available_externally_linkage_type("availab
 // [Visibility Style]
 //------------------------------------------------------------------------------
 
-.type Visibility
+.type Visibility <: symbol
 .decl visibility(vis:Visibility)
 
 .decl default_visibility(vis:Visibility)
@@ -108,7 +108,7 @@ visibility("protected"). protected_visibility("protected").
 // [Thread-local Mode]
 //------------------------------------------------------------------------------
 
-.type ThreadLocalMode
+.type ThreadLocalMode <: symbol
 .decl threadlocal_mode(mode:ThreadLocalMode)
 .decl local_dynamic_threadlocal_mode(mode:ThreadLocalMode)
 .decl initial_exec_threadlocal_mode(mode:ThreadLocalMode)
@@ -131,7 +131,7 @@ local_exec_threadlocal_mode("thread_local(localexec)").
 // alias or bitcast of global value).
 //------------------------------------------------------------------------------
 
-.type Alias
+.type Alias <: symbol
 .decl alias(x:Alias)
 .decl alias_aliasee(x:Alias, y:Constant)
 .decl alias_has_name(x:Alias, name:symbol)

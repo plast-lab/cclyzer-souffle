@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#extractelement-instruction
 // keywords: vector; instruction
 
-.type ExtractElementInstruction = Instruction
+.type ExtractElementInstruction <: Instruction
 .decl extractelement_instruction(instr:ExtractElementInstruction)
 
 instruction(v) :- extractelement_instruction(v).

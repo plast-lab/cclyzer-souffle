@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#shufflevector-instruction
 // keywords: vector; instruction
 
-.type ShuffleVectorInstruction = Instruction
+.type ShuffleVectorInstruction <: Instruction
 .decl shufflevector_instruction(instr:ShuffleVectorInstruction)
 
 instruction(v) :- shufflevector_instruction(v).

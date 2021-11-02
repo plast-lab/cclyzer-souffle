@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#sitofp-to-instruction
 // keywords: conversion; unary; instruction
 
-.type SIToFPInstruction = Instruction
+.type SIToFPInstruction <: Instruction
 .decl sitofp_instruction(instr:SIToFPInstruction)
 
 instruction(v) :- sitofp_instruction(v).

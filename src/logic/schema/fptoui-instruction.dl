@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#fptoui-to-instruction
 // keywords: conversion; unary; instruction
 
-.type FPToUIInstruction = Instruction
+.type FPToUIInstruction <: Instruction
 .decl fptoui_instruction(instr:FPToUIInstruction)
 
 instruction(v) :- fptoui_instruction(v).

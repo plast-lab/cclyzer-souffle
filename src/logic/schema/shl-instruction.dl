@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#shl-instruction
 // keywords: bitwise; binary; instruction
 
-.type ShlInstruction = Instruction
+.type ShlInstruction <: Instruction
 .decl shl_instruction(instr:ShlInstruction)
 
 instruction(v) :-

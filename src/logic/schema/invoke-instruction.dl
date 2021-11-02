@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#invoke-instruction
 // keywords: terminator; instruction
 
-.type InvokeInstruction = Instruction
+.type InvokeInstruction <: Instruction
 .decl invoke_instruction(instr:InvokeInstruction)
 
 instruction(v) :- invoke_instruction(v).

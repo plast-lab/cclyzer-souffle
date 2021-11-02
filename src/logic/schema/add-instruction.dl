@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#add-instruction
 // keywords: arithmetic; binary; instruction
 
-.type AddInstruction = Instruction
+.type AddInstruction <: Instruction
 .decl add_instruction(instr:AddInstruction)
 
 instruction(v) :-

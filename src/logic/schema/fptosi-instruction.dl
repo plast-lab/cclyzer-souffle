@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#fptosi-to-instruction
 // keywords: conversion; unary; instruction
 
-.type FPToSIInstruction = Instruction
+.type FPToSIInstruction <: Instruction
 .decl fptosi_instruction(instr:FPToSIInstruction)
 
 instruction(v) :- fptosi_instruction(v).

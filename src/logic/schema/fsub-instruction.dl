@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#fsub-instruction
 // keywords: arithmetic; binary; instruction
 
-.type FSubInstruction = Instruction
+.type FSubInstruction <: Instruction
 .decl fsub_instruction(instr:FSubInstruction)
 
 instruction(v) :- fsub_instruction(v).

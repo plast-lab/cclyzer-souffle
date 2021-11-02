@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#atomicrmw-instruction
 // keywords: memory; instruction
 
-.type AtomicRMWInstruction = Instruction
+.type AtomicRMWInstruction <: Instruction
 .decl atomicrmw_instruction(instr:AtomicRMWInstruction)
 
 instruction(v) :- atomicrmw_instruction(v).
@@ -29,11 +29,11 @@ instruction(v) :- atomicrmw_instruction(v).
 //------------------------------------------------------------------------------
 // [Atomic Operation]
 //
-// The operation to apply for the ‘atomicrmw‘ instruction
+// The operation to apply for the atomicrmw instruction
 // must be one of the following:
 //------------------------------------------------------------------------------
 
-.type AtomicOperation
+.type AtomicOperation <: symbol
 .decl atomic_operation(op:AtomicOperation)
 
 atomic_operation(op) :- atomicrmw_instruction_operation(_, op).
@@ -78,8 +78,8 @@ schema_invalid_instruction(Instr, __FILE__, __LINE__) :-
 //------------------------------------------------------------------------------
 // [Constraints]
 //
-// (i)  The type of ‘<value>’ must be an integer type.
-// (ii) The type of the ‘<pointer>‘ operand must be a pointer to that type.
+// (i)  The type of <value> must be an integer type.
+// (ii) The type of the <pointer> operand must be a pointer to that type.
 //------------------------------------------------------------------------------
 
 schema_invalid_instruction(Instr, __FILE__, __LINE__) :-

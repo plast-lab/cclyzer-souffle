@@ -22,8 +22,7 @@
 .decl cxx_alloc_exception(?func: FunctionDecl)
 
 cxx_alloc_exception(?func),
-   heap_alloc_function(?func) 
- :-
+heap_alloc_function(?func) :-
    function_has_name(?func, "@__cxa_allocate_exception"),
    function_has_type(?func, ?fType),
    function_type_param(?fType, 0, ?type),
@@ -32,7 +31,7 @@ cxx_alloc_exception(?func),
 
 // Exception Object
 
-.type ExceptionObject = Allocation
+.type ExceptionObject <: HeapAllocation
 .decl exception_object(?alloc: ExceptionObject)
 
 allocation(?alloc) :-
@@ -42,16 +41,14 @@ allocation(?alloc) :-
 
 .decl heap_allocation_by_alloc_exc(?insn: Instruction, ?heapAlloc: HeapAllocation)
 
-heap_allocation_by_alloc_exc(?insn, ?heapAlloc)
- , exception_object(?heapAlloc)
- :-
+heap_allocation_by_alloc_exc(?insn, ?heapAlloc),
+exception_object(as(?heapAlloc, ExceptionObject)) :-
    cxx_alloc_exception(?func),
    call_instruction_fn_target(?insn, ?func),
    heap_allocation_by_instruction(?insn, ?heapAlloc).
 
-heap_allocation_by_alloc_exc(?insn, ?heapAlloc)
- , exception_object(?heapAlloc)
- :-
+heap_allocation_by_alloc_exc(?insn, ?heapAlloc),
+exception_object(as(?heapAlloc, ExceptionObject)) :-
    cxx_alloc_exception(?func),
    invoke_instruction_fn_target(?insn, ?func),
    heap_allocation_by_instruction(?insn, ?heapAlloc).
@@ -87,8 +84,7 @@ untyped_allocation(?insn, ?excObj) :-
    inlined_constructors(),
    heap_allocation_by_alloc_exc(?insn, ?excObj).
 
-exception_object(?typedExcObj)
- :-
+exception_object(as(?typedExcObj, ExceptionObject)) :-
    inlined_constructors(),
    heap_allocation_by_alloc_exc(?insn, _),
    heap_allocation_by_type_instruction(_, ?insn, ?typedExcObj).
@@ -138,13 +134,13 @@ cxx_throw_instruction(?throwInsn) :-
    callgraph_inverted_edge(_, ?throwInsn, _, ?throwFunc).
 
 .decl cxx_throw_instruction_exception(?excObj: ExceptionObject, ?throwInsn: Instruction)
-cxx_throw_instruction_exception(?excObj, ?throwInsn) :-
+cxx_throw_instruction_exception(as(?excObj, ExceptionObject), ?throwInsn) :-
    cxx_throw_instruction(?throwInsn),
    actual_arg(?throwInsn, 0, ?exc),
    stripctx_operand_points_to(?excObj, ?exc).
 
 .decl cxx_throw_instruction_full_exception(?aCtx: AllocationContext, ?excObj: ExceptionObject, ?throwInsn: Instruction)
-cxx_throw_instruction_full_exception(?aCtx, ?excObj, ?throwInsn) :-
+cxx_throw_instruction_full_exception(?aCtx, as(?excObj, ExceptionObject), ?throwInsn) :-
    cxx_throw_instruction(?throwInsn),
    actual_arg(?throwInsn, 0, ?exc),
    operand_points_to(?aCtx, ?excObj, _, ?exc).

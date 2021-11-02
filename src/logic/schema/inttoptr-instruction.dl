@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#inttoptr-to-instruction
 // keywords: conversion; unary; instruction
 
-.type IntToPtrInstruction = Instruction
+.type IntToPtrInstruction <: Instruction
 .decl inttoptr_instruction(instr:IntToPtrInstruction)
 
 instruction(v) :- inttoptr_instruction(v).

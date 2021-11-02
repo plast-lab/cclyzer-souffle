@@ -5,7 +5,7 @@
 //UNFINISHED (needs debuginfo)
 
 // Class types are a subset of struct types
-.type ClassType = StructType
+.type ClassType <: StructType
 .decl class_type(?type: ClassType)
 
 // The name (as it appears in source code) of the class
@@ -15,12 +15,12 @@
 // Unless debug info has been loaded, we follow a heuristic approach
 // to identify class types, by searching for struct types with a
 // specific prefix (namely, `%class.`).
-class_type(?type) :-
+class_type(as(?type, ClassType)) :-
    !debuginfo_is_loaded(),
    struct_type(?type),
    match("%%class.%",?type).
 
-class_type_name(?type, ?name) :-
+class_type_name(as(?type, ClassType), ?name) :-
    !debuginfo_is_loaded(),
    struct_type(?type),
    !template_type(?type),
@@ -28,7 +28,7 @@ class_type_name(?type, ?name) :-
    ?n=strlen(?type),
    ?name = substr(?type, 7, (?n) - 7).
 
-class_type_name(?type, ?name) :-
+class_type_name(as(?type, ClassType), ?name) :-
    !debuginfo_is_loaded(),
    struct_type(?type),
    !template_type(?type),
@@ -260,26 +260,24 @@ template_typeinfo(?typeInfo) :-
 
 // To identify constructors we rely on the Itanium ABI mangling rules
 
-class_type_constructor(?ctor, ?type)
- :-
+class_type_constructor(?ctor, as(?type, ClassType)) :-
    struct_type(?type),
    function_has_name(?ctor, ?funcName),
    function_has_type(?ctor, ?fType),
    function_type_param(?fType, 0, ?ptrType),
    pointer_type_has_component(?ptrType, ?type),
    ( match("%C1%", ?funcName)
-   ; match("%C2%",?funcName)).
+   ; match("%C2%", ?funcName)).
 
 // Same for destructors
 
-class_type_destructor(?dtor, ?type)
- :-
+class_type_destructor(?dtor, as(?type, ClassType)) :-
    struct_type(?type),
    function_has_name(?dtor, ?funcName),
    function_has_type(?dtor, ?fType),
    function_type_param(?fType, 0, ?ptrType),
    pointer_type_has_component(?ptrType, ?type),
    ( match("%D1%", ?funcName)
-   ; match("%D2%",?funcName)).
+   ; match("%D2%", ?funcName)).
 
 

@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#and-instruction
 // keywords: bitwise; binary; instruction
 
-.type AndInstruction = Instruction
+.type AndInstruction <: Instruction
 .decl and_instruction(instr:AndInstruction)
 
 instruction(v) :-

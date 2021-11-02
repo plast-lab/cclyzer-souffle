@@ -31,9 +31,7 @@
 //------------------------------------------------------------------------------
 
 
-.type AllocSubregion = Allocation
-
-
+.type AllocSubregion <: Allocation
 
 .decl alloc_subregion_base(?region: AllocSubregion, ?base: Allocation)
 .decl alloc_subobject(?alloc: AllocSubregion, ?baseAlloc: Allocation)
@@ -290,7 +288,7 @@ allocation_to_string(?region, ?regionStr) :-
 // Region containment
 //------------------------------------
 
-.decl region_contains(?outer: AllocSubregion, ?inner: Allocation)
+.decl region_contains(?outer: Allocation, ?inner: AllocSubregion)
 
 region_contains(?outer, ?inner) :-
    alloc_subregion_base(?inner, ?outer).

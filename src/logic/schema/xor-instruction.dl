@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#xor-instruction
 // keywords: bitwise; binary; instruction
 
-.type XorInstruction = Instruction
+.type XorInstruction <: Instruction
 .decl xor_instruction(instr:XorInstruction)
 
 instruction(v) :-

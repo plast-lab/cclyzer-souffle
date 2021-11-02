@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#landingpad-instruction
 // keywords: exception; instruction
 
-.type LandingPadInstruction = Instruction
+.type LandingPadInstruction <: Instruction
 .decl landingpad_instruction(instr:LandingPadInstruction)
 .decl landingpad_instruction_is_cleanup(instr:LandingPadInstruction)
 

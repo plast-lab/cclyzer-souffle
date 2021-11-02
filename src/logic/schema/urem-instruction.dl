@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#urem-instruction
 // keywords: arithmetic; binary; instruction
 
-.type URemInstruction = Instruction
+.type URemInstruction <: Instruction
 .decl urem_instruction(instr:URemInstruction)
 
 instruction(v) :- urem_instruction(v).

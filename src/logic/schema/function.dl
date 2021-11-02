@@ -4,8 +4,8 @@
 // Function definitions and declarations
 //-----------------------------------------
 
-.type FunctionDecl
-.type Function = FunctionDecl
+.type FunctionDecl <: symbol
+.type Function <: FunctionDecl
 
 .decl function_decl(func:FunctionDecl)
 .decl function(func:Function)

@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#switch-instruction
 // keywords: terminator; instruction
 
-.type SwitchInstruction = Instruction
+.type SwitchInstruction <: Instruction
 .decl switch_instruction(instr:SwitchInstruction)
 
 instruction(v) :- switch_instruction(v).

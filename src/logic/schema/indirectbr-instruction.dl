@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#indirectbr-instruction
 // keywords: terminator; instruction
 
-.type IndirectBrInstruction = Instruction
+.type IndirectBrInstruction <: Instruction
 .decl indirectbr_instruction(instr:IndirectBrInstruction)
 
 instruction(v) :- indirectbr_instruction(v).

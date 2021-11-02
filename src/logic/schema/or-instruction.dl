@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#or-instruction
 // keywords: bitwise; binary; instruction
 
-.type OrInstruction = Instruction
+.type OrInstruction <: Instruction
 .decl or_instruction(instr:OrInstruction)
 
 instruction(v) :-

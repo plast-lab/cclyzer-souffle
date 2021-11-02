@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#insertvalue-instruction
 // keywords: aggregate; instruction
 
-.type InsertValueInstruction = Instruction
+.type InsertValueInstruction <: Instruction
 .decl insertvalue_instruction(instr:InsertValueInstruction)
 
 instruction(v) :- insertvalue_instruction(v).

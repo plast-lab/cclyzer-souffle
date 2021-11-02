@@ -5,38 +5,38 @@
 // Debug Information Entry - Type Hierarchy
 //--------------------------------------------------------
 
-.type DIEntry
+.type DIEntry <: symbol
 
 // Scopes
-.type DIScope = DIEntry
-.type DINamespace = DIScope
-.type DIFile = DIScope
-.type DILocalScope = DIScope
-.type DISubprogram = DILocalScope
-.type DILexicalBlock = DILocalScope
-.type DILexicalBlockFile = DILocalScope
+.type DIScope <: DIEntry
+.type DINamespace <: DIScope
+.type DIFile <: DIScope
+.type DILocalScope <: DIScope
+.type DISubprogram <: DILocalScope
+.type DILexicalBlock <: DILocalScope
+.type DILexicalBlockFile <: DILocalScope
 
 // Types
-.type DITypeEntry = DIScope
-.type DIBasicTypeEntry = DITypeEntry
-.type DICompositeTypeEntry = DITypeEntry
-.type DIDerivedTypeEntry = DITypeEntry
-.type DISubroutineTypeEntry = DITypeEntry
+.type DITypeEntry <: DIScope
+.type DIBasicTypeEntry <: DITypeEntry
+.type DICompositeTypeEntry <: DITypeEntry
+.type DIDerivedTypeEntry <: DITypeEntry
+.type DISubroutineTypeEntry <: DITypeEntry
 
 // Variables
-.type DIVariable = DIEntry
-.type DILocalVariable = DIVariable
-.type DIGlobalVariable = DIVariable
+.type DIVariable <: DIEntry
+.type DILocalVariable <: DIVariable
+.type DIGlobalVariable <: DIVariable
 
 // Template Parameters
-.type DITemplateParam = DIEntry
-.type DITemplateTypeParam = DITemplateParam
-.type DITemplateValueParam = DITemplateParam
+.type DITemplateParam <: DIEntry
+.type DITemplateTypeParam <: DITemplateParam
+.type DITemplateValueParam <: DITemplateParam
 
 // Miscellaneous
-.type DIEnumerator = DIEntry
-.type DISubrange = DIEntry
-.type DIImportedEntity = DIEntry
+.type DIEnumerator <: DIEntry
+.type DISubrange <: DIEntry
+.type DIImportedEntity <: DIEntry
 
 .decl di?entry(entry:DIEntry)
 .decl di?scope(entry:DIScope)

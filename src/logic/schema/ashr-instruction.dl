@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#ashr-instruction
 // keywords: bitwise; binary; instruction
 
-.type AShrInstruction = Instruction
+.type AShrInstruction <: Instruction
 .decl ashr_instruction(instr:AShrInstruction)
 
 instruction(v) :-

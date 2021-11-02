@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#fmul-instruction
 // keywords: arithmetic; binary; instruction
 
-.type FMulInstruction = Instruction
+.type FMulInstruction <: Instruction
 .decl fmul_instruction(instr:FMulInstruction)
 
 instruction(v) :- fmul_instruction(v).

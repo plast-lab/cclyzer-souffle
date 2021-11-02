@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#lshr-instruction
 // keywords: bitwise; binary; instruction
 
-.type LShrInstruction = Instruction
+.type LShrInstruction <: Instruction
 .decl lshr_instruction(instr:LShrInstruction)
 
 instruction(v) :-

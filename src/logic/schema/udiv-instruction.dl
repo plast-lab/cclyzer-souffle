@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#udiv-instruction
 // keywords: arithmetic; binary; instruction
 
-.type UDivInstruction = Instruction
+.type UDivInstruction <: Instruction
 .decl udiv_instruction(instr:UDivInstruction)
 
 instruction(v) :- udiv_instruction(v).

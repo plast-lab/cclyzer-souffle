@@ -2,7 +2,7 @@
 // Debug Info - Locations
 //-----------------------------------------------------------
 
-.type DILocation
+.type DILocation <: symbol
 .decl di?location(loc:DILocation)
 .decl di?location_line(loc:DILocation, line:number)
 .decl di?location_column(loc:DILocation, column:number)

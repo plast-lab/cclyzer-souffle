@@ -160,7 +160,7 @@ variable_in_fn_iterated(?var, ?funcName) :-
       !contains(":", ?str)},
    ?funcName = cat("@", substr(?rest,0,?len)).
 
-variable_in_function(?var,?func) :-
+variable_in_function(?var, as(?func, Function)) :-
    variable_in_fn_iterated(?var, ?funcName),
    function_has_name(?func, ?funcName).
 

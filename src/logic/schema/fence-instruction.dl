@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#fence-instruction
 // keywords: memory; instruction
 
-.type FenceInstruction = Instruction
+.type FenceInstruction <: Instruction
 .decl fence_instruction(instr:FenceInstruction)
 
 instruction(v) :- fence_instruction(v).

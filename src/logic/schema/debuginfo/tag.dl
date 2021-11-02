@@ -1,4 +1,4 @@
-.type DITag
+.type DITag <: symbol
 .decl di?tag(tag:DITag)
 
 .decl di?tag_pointer_type(tag:DITag)

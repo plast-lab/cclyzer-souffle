@@ -2,7 +2,7 @@
 // Basic Blocks (IDB) Entities
 //------------------------------------
 
-.type BasicBlock
+.type BasicBlock <: symbol
 .decl basicblock(bb:BasicBlock)
 
 // Every instruction must be inside a single basic block

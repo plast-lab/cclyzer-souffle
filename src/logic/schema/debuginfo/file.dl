@@ -2,7 +2,7 @@
 // Debug Info - Source Files
 //-----------------------------------------------------------
 
-.type path
+.type path <: symbol
 .decl di?file(entry:DIFile)
 .decl di?file_filename(entry:DIFile, name:path)
 .decl di?file_directory(entry:DIFile, directory:path)

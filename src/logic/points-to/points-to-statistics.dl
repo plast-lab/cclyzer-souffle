@@ -1,6 +1,6 @@
 // The containing function of a variable
 
-variable_in_function(as(?var, Variable), ?func) :-
+variable_in_function(as(?var, Variable), as(?func, Function)) :-
    _variable_in_function(?var, ?funcName),
    function_has_name(?func, ?funcName).
 

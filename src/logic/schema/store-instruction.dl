@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#store-instruction
 // keywords: memory; instruction
 
-.type StoreInstruction = Instruction
+.type StoreInstruction <: Instruction
 .decl store_instruction(instr:StoreInstruction)
 
 instruction(v) :- store_instruction(v).

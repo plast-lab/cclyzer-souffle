@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#select-instruction
 // keywords: instruction
 
-.type SelectInstruction = Instruction
+.type SelectInstruction <: Instruction
 .decl select_instruction(instr:SelectInstruction)
 
 instruction(v) :- select_instruction(v).

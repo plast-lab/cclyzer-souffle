@@ -6,7 +6,7 @@
 // is currently so, is so that we do not have to add yet another type
 // of operand (other than variable and constant).
 
-.type InlineASM = Constant
+.type InlineASM <: Constant
 .decl inline_asm(asm:InlineASM)
 
 constant(asm) :- inline_asm(asm).

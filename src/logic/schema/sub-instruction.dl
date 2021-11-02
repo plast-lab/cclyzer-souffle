@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#sub-instruction
 // keywords: arithmetic; binary; instruction
 
-.type SubInstruction = Instruction
+.type SubInstruction <: Instruction
 .decl sub_instruction(instr:SubInstruction)
 
 instruction(v) :- sub_instruction(v).

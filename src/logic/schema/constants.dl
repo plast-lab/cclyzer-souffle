@@ -2,20 +2,20 @@
 // [Constant and Constant Expression Hierarchy]
 //--------------------------------------------------------------------
 
-.type IntegerConstant = Constant
-.type FPConstant = Constant
-.type NullPtrConstant = Constant
-.type FunctionConstant = Constant
-.type GlobalVariableConstant = Constant
-.type ConstantArray = Constant
-.type ConstantStruct = Constant
-.type ConstantVector = Constant
+.type IntegerConstant <: Constant
+.type FPConstant <: Constant
+.type NullPtrConstant <: Constant
+.type FunctionConstant <: Constant
+.type GlobalVariableConstant <: Constant
+.type ConstantArray <: Constant
+.type ConstantStruct <: Constant
+.type ConstantVector <: Constant
 
-.type ConstantExpression = Constant
-.type BitcastConstantExpression = ConstantExpression
-.type IntToPtrConstantExpression = ConstantExpression
-.type PtrToIntConstantExpression = ConstantExpression
-.type GetElementPtrConstantExpression = ConstantExpression
+.type ConstantExpression <: Constant
+.type BitcastConstantExpression <: ConstantExpression
+.type IntToPtrConstantExpression <: ConstantExpression
+.type PtrToIntConstantExpression <: ConstantExpression
+.type GetElementPtrConstantExpression <: ConstantExpression
 
 .decl integer_constant(c:IntegerConstant)
 .decl fp_constant(c:FPConstant)

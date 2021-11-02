@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#va-arg-instruction
 // keywords: unary; instruction
 
-.type VaArgInstruction = Instruction
+.type VaArgInstruction <: Instruction
 .decl va_arg_instruction(instr:VaArgInstruction)
 
 instruction(v) :- va_arg_instruction(v).

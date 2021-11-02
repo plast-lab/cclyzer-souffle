@@ -2,11 +2,11 @@
 // Basic Allocation Type Hierarchy
 //-----------------------------------
 
-.type Allocation
-.type BasicAllocation     = Allocation
-.type StackAllocation     = BasicAllocation
-.type HeapAllocation      = BasicAllocation
-.type GlobalAllocation    = BasicAllocation
+.type Allocation          <: symbol
+.type BasicAllocation     <: Allocation
+.type StackAllocation     <: BasicAllocation
+.type HeapAllocation      <: BasicAllocation
+.type GlobalAllocation    <: BasicAllocation
 
 /*
 .type AllocationInstruction = CallInstruction | AllocaInstruction
@@ -44,7 +44,7 @@ basic_allocation(?alloc) :-
 
 
 
-.decl heap_alloc_function(?function:Function)
+.decl heap_alloc_function(?function:FunctionDecl)
 .decl heap_allocation_by_malloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_calloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)
 .decl heap_allocation_by_realloc(?insn:CallInstruction, ?heapAlloc:HeapAllocation)

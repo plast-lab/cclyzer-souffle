@@ -1,12 +1,12 @@
 // http://llvm.org/docs/LangRef.html#fcmp-instruction
 // keywords: comparison; binary; instruction
 
-.type FCmpInstruction = Instruction
+.type FCmpInstruction <: Instruction
 .decl fcmp_instruction(instr:FCmpInstruction)
 
 instruction(v) :- fcmp_instruction(v).
 
-.type FCmpCondition
+.type FCmpCondition <: symbol
 
 .decl fcmp_instruction_condition(instr:FCmpInstruction, cond:FCmpCondition)
 .decl fcmp_instruction_first_operand(instr:FCmpInstruction, op:Operand)

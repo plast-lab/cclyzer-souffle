@@ -296,11 +296,11 @@ landingpad_instruction_clause(as(v0, LandingPadInstruction), v1, [v2]) :-
 .input _constant_in_function(IO="file", delimiter="\t", filename="constant_in_fn.csv")
 .input _variable_in_function(IO="file", delimiter="\t", filename="variable_in_fn.csv")
 
-constant_in_function(as(const, Constant), function) :-
+constant_in_function(as(const, Constant), as(function, Function)) :-
    _constant_in_function(const, functionName),
    function_has_name(function, functionName).
 
-variable_in_function(as(var, Variable), function) :-
+variable_in_function(as(var, Variable), as(function, Function)) :-
    _variable_in_function(var, functionName),
    function_has_name(function, functionName).
 

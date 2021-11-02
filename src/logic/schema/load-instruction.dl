@@ -1,7 +1,7 @@
 // http://llvm.org/docs/LangRef.html#load-instruction
 // keywords: memory; instruction
 
-.type LoadInstruction = Instruction
+.type LoadInstruction <: Instruction
 .decl load_instruction(instr:LoadInstruction)
 
 instruction(v) :- load_instruction(v).

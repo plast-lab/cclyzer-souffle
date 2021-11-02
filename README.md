@@ -11,14 +11,14 @@ Set Up
 
 ### Install the Soufflé engine
 
-The Soufflé Datalog engine needs to be installed. We recommend using the HEAD
-commit (until at least a few much needed improvements of version 2 become stable)
-by cloning the Soufflé GitHub [repo](https://github.com/souffle-lang/souffle)
-and following the available
-[instructions](https://souffle-lang.github.io/build) to build from source.
+First, the Soufflé Datalog engine needs to be installed. We recommend using the latest
+stable release, which can be installed via the package manager of certain
+distributions according to the [instructions](https://souffle-lang.github.io/install).
 
-The latest development version of Soufflé can also be installed via the package
-manager of certain distributions listed [here](https://souffle-lang.github.io/install).
+Soufflé can also be built from source. One needs to clone the Soufflé GitHub
+[repo](https://github.com/souffle-lang/souffle), check out the latest release
+version tag (2.1 at the time of writing) and build by following the available
+[instructions](https://souffle-lang.github.io/build).
 
 ### Install LLVM
 

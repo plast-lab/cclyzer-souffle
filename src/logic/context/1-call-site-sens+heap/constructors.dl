@@ -17,8 +17,6 @@
 // Context Constructors
 //-----------------------------------------------------
 
-.decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
-
 .decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: FunctionDecl)
 .decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?ctx: Context)
 
@@ -28,15 +26,12 @@ context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
   context_request(?callerCtx, ?aCtx, ?invoc, _),
   ?ctx = [?invoc].
 
-.decl alloc_context_request(?invoc: ContextItem)
-.decl alloc_context_response(?invoc: ContextItem, ?ctx: AllocationContext)
+.decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
 
 alloc_context(?aCtx),
-alloc_context_new(?invoc, ?aCtx),
-alloc_context_response(?invoc, ?aCtx) :-
-  alloc_context_request(?invoc),
+alloc_context_new(?invoc, ?aCtx) :-
+  context_item(?invoc),
   ?aCtx = [?invoc].
-
 
 //-----------------------------------------------------
 // Context Item Constructors
@@ -121,9 +116,3 @@ context_getinvoc(?ctx, ?invoc):-
 alloc_context_getinvoc(?ctx, ?invoc) :-
    alloc_context_getitem(?ctx, ?item),
    context_item_invoc(?item, ?invoc).
-
-// Already generated output relations of 2-call-sensitivity
-.decl context_getinvoc0(?dummy : number)
-.decl context_getitem0(?dummy : number)
-.decl context_getinvoc1(?dummy : number)
-.decl context_getitem1(?dummy : number)

@@ -1,6 +1,7 @@
 .output acq_rel_ordering
 .output acquire_ordering
 .output actual_arg
+.output aggregate_points_to
 .output aggregate_type
 .output aliased_constants
 .output alloc_aliases
@@ -99,12 +100,6 @@
 .output constant_references_variable
 .output constructor_class_type
 .output context
-.output context_getinvoc
-.output context_getinvoc0
-.output context_getinvoc1
-.output context_getitem
-.output context_getitem0
-.output context_getitem1
 .output context_item
 .output context_item_by_invoc
 .output context_item_invoc
@@ -276,21 +271,6 @@
 .output gep_interm_points_to
 .output gep_is_vector_based
 .output gep_points_to
-.output gep_points_to1
-.output gep_points_to10
-.output gep_points_to11
-.output gep_points_to12
-.output gep_points_to13
-.output gep_points_to14
-.output gep_points_to15
-.output gep_points_to2
-.output gep_points_to3
-.output gep_points_to4
-.output gep_points_to5
-.output gep_points_to6
-.output gep_points_to7
-.output gep_points_to8
-.output gep_points_to9
 .output getelementptr_instruction_base_type
 .output getelementptr_instruction_index_type
 .output getelementptr_instruction_interm_type
@@ -309,6 +289,7 @@
 .output heap_allocation_by_malloc
 .output heap_allocation_by_new
 .output heap_allocation_by_realloc
+.output heap_allocation_by_rust_alloc
 .output heap_allocation_by_type_instruction
 .output heap_allocation_types
 .output hidden_visibility
@@ -373,6 +354,7 @@
 .output memcpy_call
 .output memcpy_pass_by_value
 .output metadata_type
+.output var_points_to
 .output minimal_suffix
 .output minimal_suffix_len
 .output monotonic_ordering
@@ -423,7 +405,6 @@
 .output ptrtoint_instruction_from_type
 .output ptx_device_calling_convention
 .output ptx_kernel_calling_convention
-.output reachable_context4
 .output reachable_function
 .output reachable_instruction
 .output reachable_load
@@ -435,6 +416,7 @@
 .output registers_dtor_atexit
 .output release_ordering
 .output relevant_suffix_position
+.output rust_main_function
 .output schema_invalid_alias
 .output schema_invalid_constant
 .output schema_invalid_function

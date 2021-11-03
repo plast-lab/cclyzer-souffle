@@ -17,8 +17,6 @@
 // Context Constructors
 //-----------------------------------------------------
 
-.decl alloc_context_new(?item:ContextItem, ?actx:AllocationContext)
-
 .decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: FunctionDecl)
 .decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?ctx: Context)
 
@@ -26,6 +24,8 @@ context(?ctx),
 context_response(?callerCtx, ?actx, ?invoc, ?ctx) :-
   context_request(?callerCtx, ?actx, ?invoc, _),
   ?ctx = ["<<empty-context>>"].
+
+.decl alloc_context_new(?item:ContextItem, ?actx:AllocationContext)
 
 alloc_context(?actx),
 alloc_context_new(?ctxItem, ?actx) :-
@@ -83,14 +83,3 @@ context_getinvoc(?ctx, ?invoc):-
 alloc_context_getinvoc(?ctx, ?invoc) :-
    alloc_context_getitem(?ctx, ?item),
    context_item_invoc(?item, ?invoc).
-
-
-//Already generated output relations of 2-call-sensitivity
-.decl context_getinvoc0(?dummy : number)
-.decl context_getitem0(?dummy : number)
-.decl context_getinvoc1(?dummy : number)
-.decl context_getitem1(?dummy : number)
-
-.decl reachable_context1(?ctx: Context, ?func: FunctionDecl)
-.decl reachable_context2(?ctx: Context, ?func: FunctionDecl)
-.decl reachable_context3(?ctx: Context, ?func: FunctionDecl)

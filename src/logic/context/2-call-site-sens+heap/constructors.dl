@@ -18,8 +18,6 @@
 // Context Constructors
 //-----------------------------------------------------
 
-.decl alloc_context_new(?item: ContextItem, ?aCtx:AllocationContext)
-
 .decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: FunctionDecl)
 .decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?ctx: Context)
 
@@ -32,15 +30,12 @@ context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
   ?callerCtx = [?item0, ?newItem0],
   ?ctx = [?newItem0, ?invoc].
 
-.decl alloc_context_request(?invoc: ContextItem)
-.decl alloc_context_response(?invoc: ContextItem, ?ctx: AllocationContext)
+.decl alloc_context_new(?item: ContextItem, ?aCtx:AllocationContext)
 
 alloc_context(?aCtx),
-alloc_context_new(?invoc, ?aCtx),
-alloc_context_response(?invoc, ?aCtx) :-
-  alloc_context_request(?invoc),
+alloc_context_new(?invoc, ?aCtx) :-
+  context_item(?invoc),
   ?aCtx = [?invoc].
-
 
 //-----------------------------------------------------
 // Context Item Constructors
@@ -98,28 +93,6 @@ dummy_context_item_by_str(?str, ?ctxItem) :-
 //-----------------------------------------------------
 // Unpacking context items
 //-----------------------------------------------------
-
-.decl context_getitem0(?ctx:Context, ?item:ContextItem)
-context_getitem0(?ctx, ?item):-
-  context_item(?item),
-  context_response(?a,?b,?c,[_,?item]),
-  context_response(?a,?b,?c,?ctx).
-
-.decl context_getitem1(?ctx:Context, ?item:ContextItem)
-context_getitem1(?ctx, ?item):-
-  context_item(?item),
-  context_response(?a,?b,?c,[?item,_]),
-  context_response(?a,?b,?c,?ctx).
-
-.decl context_getinvoc0(?ctx:Context, ?invoc:Instruction)
-context_getinvoc0(?ctx, ?invoc):-
-  context_getitem0(?ctx, ?item),
-  context_item_invoc(?item, ?invoc).
-
-.decl context_getinvoc1(?ctx:Context, ?invoc:Instruction)
-context_getinvoc1(?ctx, ?invoc):-
-  context_getitem1(?ctx, ?item),
-  context_item_invoc(?item, ?invoc).
 
 .decl alloc_context_getitem(?aCtx:AllocationContext, ?item:ContextItem)
 alloc_context_getitem(?aCtx, ?item):-

@@ -1,14 +1,5 @@
 /// 1. Alloca Instructions
 
-//.decl var_points_to6(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-//.decl var_points_to7(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-//.decl var_points_to8(ACtx: symbol, TypedAlloc: symbol, Ctx: Context, Var: symbol)
-//
-//.output var_points_to6
-//.output var_points_to7
-//.output var_points_to8
-
-// KT: CHECK context_request(?ctx, ?aCtx, ?item),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
    stack_allocation(?stackAlloc),
@@ -35,7 +26,6 @@ allocation_type(?stackAlloc, ?type) :-
 
 /// 2. Parameters with pass-by-value semantics
 
-// KT: CHECK context_request(?ctx, ?aCtx, ?item),
 alloc_context(?aCtx),
    alloc_context_new(?item,?aCtx),
    stack_allocation(?stackAlloc),
@@ -73,8 +63,7 @@ allocation_type(?stackAlloc, ?type) :-
 // heap is not always associated with a type (at least locally).
 //---------------------------------------------------------------------
 
-
-// KT: CHECK context_request(?ctx, ?aCtx, ?item),
+context_request(?ctx, ?aCtx, ?instr, ?func),
 alloc_context(?aCtx),
 alloc_context_new(?item,?aCtx),
 var_points_to(?aCtx, ?heapAlloc, ?ctx, ?var),

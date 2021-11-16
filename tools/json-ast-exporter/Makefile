@@ -8,6 +8,7 @@ all:
 include $(LEVEL)/src/common.mk
 
 LLVM_CONFIG ?= llvm-config
+LIBBOOST_PYTHON ?= -lboost_python
 
 
 #-----------------------------------
@@ -125,4 +126,4 @@ py_objects += $(library)
 
 $(py_objects): CXXFLAGS += $(shell python-config --includes)
 $(py_objects): LDFLAGS  += $(shell python-config --ldflags)
-$(py_objects): LDLIBS   += -lboost_python
+$(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)

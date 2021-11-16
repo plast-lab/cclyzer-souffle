@@ -15,6 +15,8 @@ CXXFLAGS += -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter    \
 # Linux supports -O3 but macOS for some reason does not
 
 LLVM_CONFIG ?= llvm-config
+LIBBOOST_PYTHON ?= -lboost_python
+
 
 #-----------------------------------
 # Configure paths
@@ -74,7 +76,7 @@ py_objects := $(addprefix $(outdir)/,PyFactGen.o PyFactGen.d) $(library)
 
 $(py_objects): CXXFLAGS += $(shell python-config --includes) 
 $(py_objects): LDFLAGS  += $(shell python-config --ldflags) 
-$(py_objects): LDLIBS   += -lboost_python
+$(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)
 
 #-----------------------------------
 # Phony targets

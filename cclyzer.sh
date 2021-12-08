@@ -66,6 +66,8 @@ elif [ "$ANALYSIS" = "1-call-site-sensitive+heap" ]; then
     echo "#define ONE_CALL_SITE_SENSITIVE_HEAP" >> "$ANALYSIS_CONFIG"
 elif [ "$ANALYSIS" = "2-call-site-sensitive+heap" ]; then
     echo "#define TWO_CALL_SITE_SENSITIVE_HEAP" >> "$ANALYSIS_CONFIG"
+elif [ "$ANALYSIS" = "2-call-site-sensitive+2-heap" ]; then
+    echo "#define TWO_CALL_SITE_SENSITIVE_TWO_HEAP" >> "$ANALYSIS_CONFIG"
 else
     echo "#define CONTEXT_INSENSITIVE" >> "$ANALYSIS_CONFIG"
 fi

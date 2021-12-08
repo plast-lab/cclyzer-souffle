@@ -1,0 +1,63 @@
+//---------------------------------------------------------
+// Empty Contexts
+//---------------------------------------------------------
+
+// Generic empty context
+.decl empty_context(?ctx:Context)
+empty_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
+
+.decl empty_alloc_context(?ctx:AllocationContext)
+empty_alloc_context(?aCtx),
+alloc_context(?aCtx) :-
+  dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
+  ?aCtx = [?ctxItem, ?ctxItem].
+
+// Special context for when called from main
+.decl main_context(?ctx:Context)
+main_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<main-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
+
+// Special context for when called at startup
+.decl startup_context(?ctx:Context)
+startup_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<startup-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
+
+// Special context for when called at exit
+.decl exit_context(?ctx:Context)
+exit_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<exit-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
+
+
+//---------------------------------------------------------
+// Bootstrap the analysis
+//---------------------------------------------------------
+
+.decl reachable_context(?ctx:Context, ?func:FunctionDecl)
+
+context(?ctx):-
+  reachable_context(?ctx, _).
+
+reachable_context(?ctx, ?func) :-
+  (main_function(?func);
+   rust_main_function(?func)),
+  main_context(?ctx).
+
+reachable_context(?ctx, ?func) :-
+  called_at_startup(?func),
+  startup_context(?ctx).
+
+reachable_context(?ctx, ?func) :-
+  called_at_exit(?func),
+  exit_context(?ctx).
+
+reachable_function(?func) :-
+   reachable_context(_, ?func).

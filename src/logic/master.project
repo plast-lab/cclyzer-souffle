@@ -12,6 +12,8 @@
   #include "context/1-call-site-sens+heap/1-call-site-sens+heap.project"
 #elif defined(TWO_CALL_SITE_SENSITIVE_HEAP)
   #include "context/2-call-site-sens+heap/2-call-site-sens+heap.project"
+#elif defined(TWO_CALL_SITE_SENSITIVE_TWO_HEAP)
+  #include "context/2-call-site-sens+2-heap/2-call-site-sens+2-heap.project"
 #else
   #include "context/insensitive/insensitive.project"
 #endif

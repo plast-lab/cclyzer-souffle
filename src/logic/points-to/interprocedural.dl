@@ -21,8 +21,8 @@ function_by_location(?alloc, ?callee) :-
 
 reachable_context(?calleeCtx, ?tofunction),
 callgraph_edge(?calleeCtx, ?tofunction, ?callerCtx, ?invocation) :-
-  context_request(?callerCtx, ?emptyACtx, ?invocation, ?tofunction),
-  context_response(?callerCtx, ?emptyACtx, ?invocation, ?calleeCtx).
+  context_request(?callerCtx, ?aCtx, ?invocation, ?tofunction),
+  context_response(?callerCtx, ?aCtx, ?invocation, ?calleeCtx).
 
 
 // Direct function calls
@@ -46,26 +46,22 @@ context_request(?callerCtx, ?aCtx, ?callerInstr, ?callee) :-
 context_request(?callerCtx, ?aCtx, ?callerInstr, ?callee) :-
    indirect_call_instruction(?callerInstr),
    call_instruction_fn_operand(?callerInstr, ?funcOp),
-   operand_points_to(_, ?funcLoc, ?callerCtx, ?funcOp),
+   operand_points_to(?aCtx, ?funcLoc, ?callerCtx, ?funcOp),
    function_by_location(?funcLoc, ?callee),
    function_has_type(?callee, ?actualType),
    operand_has_type(?funcOp, ?funcOpType),
    pointer_type_has_component(?funcOpType, ?declaredType),
-   type_compatible(?actualType, ?declaredType),
-   // Extra
-   context_response(_, ?aCtx, ?callerInstr, _).
+   type_compatible(?actualType, ?declaredType).
 
 context_request(?callerCtx, ?aCtx, ?callerInstr, ?callee) :-
    invoke_instruction(?callerInstr),
    invoke_instruction_fn_operand(?callerInstr, ?funcOp),
-   operand_points_to(_, ?funcLoc, ?callerCtx, ?funcOp),
+   operand_points_to(?aCtx, ?funcLoc, ?callerCtx, ?funcOp),
    function_by_location(?funcLoc, ?callee),
    function_has_type(?callee, ?actualType),
    operand_has_type(?funcOp, ?funcOpType),
    pointer_type_has_component(?funcOpType, ?declaredType),
-   type_compatible(?actualType, ?declaredType),
-   // Extra
-   context_response(_, ?aCtx, ?callerInstr, _).
+   type_compatible(?actualType, ?declaredType).
 
 
 //------------------------------------------------------------------------------

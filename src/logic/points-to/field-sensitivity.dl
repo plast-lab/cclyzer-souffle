@@ -356,22 +356,25 @@ var_points_to(?aCtx, ?alloc, ?ctx, ?toVar) :-
 // <result> = insertvalue <aggregate type> <val>, <ty> <elt>, <idx>{, <idx>}*    ; yields <aggregate type>
 // assigns_to                        base           value       index
 
-.decl aggregate_points_to(?aCtx: AllocationContext , ?alloc: Allocation, ?aaCtx: AllocationContext , ?aggrAlloc: Allocation )
+.decl aggregate_points_to(?aCtx: AllocationContext, ?alloc: Allocation, ?aaCtx: AllocationContext, ?aggrAlloc: Allocation)
+.decl aggregate_points_to_interm(?aCtx: AllocationContext, ?alloc: Allocation, ?aggrAlloc: Allocation, ?ctx: Context, var: Variable)
 
 
-aggregate_points_to(?vaCtx, ?valueAlloc, ?aCtx , ?newAggr ),
-var_points_to(?aCtx, ?newAggr, ?ctx, ?toVar)
- :-
+aggregate_points_to(?vaCtx, ?valueAlloc, ?aCtx, ?newAggr) :-
+  aggregate_points_to_interm(?vaCtx, ?valueAlloc, ?newAggr, ?ctx, ?toVar),
+  acontext_response(?ctx, ?newAggr, ?toVar, ?aCtx).
+
+heap_allocation(?newAggr),
+aggregate_points_to_interm(?vaCtx, ?valueAlloc, ?newAggr, ?ctx, ?toVar),
+acontext_request(?ctx, ?newAggr, ?toVar) :-
   insertvalue_instruction(?insn),
   insertvalue_instruction_base(?insn, ?base),
   insertvalue_instruction_value(?insn, ?value),
   constant_has_value(?base, "undef"),
   operand_points_to(?vaCtx, ?valueAlloc, ?ctx, ?value),
   instruction_assigns_to(?insn, ?toVar),
-  ?newAggr = cat("aggr_alloc",?insn),
+  ?newAggr = cat("aggr_alloc", ?insn).
   // Extra
-  context_getitem(?ctx, ?item),
-  ?aCtx = [?item].
   //?aCtx = ["<<empty_context>>"].
   //empty_alloc_context(?aCtx). // REVIEW
 

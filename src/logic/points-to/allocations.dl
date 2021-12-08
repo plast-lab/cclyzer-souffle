@@ -1,23 +1,21 @@
 /// 1. Alloca Instructions
 
 alloc_context(?aCtx),
-   alloc_context_new(?item,?aCtx),
-   stack_allocation(?stackAlloc),
-   stack_allocation_by_instruction(?instr, ?stackAlloc),
-   var_points_to(?aCtx, ?stackAlloc, ?ctx, ?var)
- :-
-   alloca_instruction(?instr),
-   instruction_assigns_to(?instr, ?var),
-   instruction_in_function(?instr, ?instrFunc),
-   function_has_name(?instrFunc, ?funcName),
-   variable_has_type(?var,?type),
-   variable_has_name(?var,?name),
-   ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc", ?funcName),"["),?type)," "),?name),"]"),
-   reachable_context(?ctx, ?instrFunc),
-   // Extra
-   context_getitem(?ctx, ?item),
-   ?aCtx = [?item].
+var_points_to(?aCtx, ?alloc, ?ctx, ?var) :-
+  acontext_request(?ctx, ?alloc, ?var),
+  acontext_response(?ctx, ?alloc, ?var, ?aCtx).
 
+stack_allocation(?stackAlloc),
+stack_allocation_by_instruction(?instr, ?stackAlloc),
+acontext_request(?ctx, ?stackAlloc, ?var) :-
+  alloca_instruction(?instr),
+  instruction_assigns_to(?instr, ?var),
+  instruction_in_function(?instr, ?instrFunc),
+  function_has_name(?instrFunc, ?funcName),
+  variable_has_type(?var,?type),
+  variable_has_name(?var,?name),
+  ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc", ?funcName),"["),?type)," "),?name),"]"),
+  reachable_context(?ctx, ?instrFunc).
 
 allocation_type(?stackAlloc, ?type) :-
    alloca_instruction(?instr),
@@ -26,35 +24,22 @@ allocation_type(?stackAlloc, ?type) :-
 
 /// 2. Parameters with pass-by-value semantics
 
-alloc_context(?aCtx),
-   alloc_context_new(?item,?aCtx),
-   stack_allocation(?stackAlloc),
-   stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
-   var_points_to(?aCtx, ?stackAlloc, ?ctx, ?param)
- :-
-   function_param_by_value(?func, ?index),
-   function_param(?func, ?index, ?param),
-   function_has_name(?func, ?funcName),
-   variable_has_type(?param,?type),
-   variable_has_name(?param,?name),
-   ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc",?funcName),"["),?type)," "),?name),"]"),
-
-   reachable_context(?ctx, ?func),
-//   Extra
-   context_getitem(?ctx, ?item),
-   ?aCtx = [?item].
-
-
+stack_allocation(?stackAlloc),
+stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
+acontext_request(?ctx, ?stackAlloc, ?param) :-
+  function_param_by_value(?func, ?index),
+  function_param(?func, ?index, ?param),
+  function_has_name(?func, ?funcName),
+  variable_has_type(?param,?type),
+  variable_has_name(?param,?name),
+  ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc",?funcName),"["),?type)," "),?name),"]"),
+  reachable_context(?ctx, ?func).
 
 allocation_type(?stackAlloc, ?type) :-
-   stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
-   function_has_type(?func,?funcType),
-   function_type_param(?funcType, ?index, ?paramType),
-   pointer_type_has_component(?paramType, ?type).
-
-
-
-
+  stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
+  function_has_type(?func,?funcType),
+  function_type_param(?funcType, ?index, ?paramType),
+  pointer_type_has_component(?paramType, ?type).
 
 //---------------------------------------------------------------------
 // [Heap Allocations]
@@ -63,27 +48,29 @@ allocation_type(?stackAlloc, ?type) :-
 // heap is not always associated with a type (at least locally).
 //---------------------------------------------------------------------
 
-context_request(?ctx, ?aCtx, ?instr, ?func),
-alloc_context(?aCtx),
-alloc_context_new(?item,?aCtx),
-var_points_to(?aCtx, ?heapAlloc, ?ctx, ?var),
 heap_allocation(?heapAlloc),
-heap_allocation_by_instruction(?instr, ?heapAlloc) :-
-   heap_alloc_function(?func),
-   ( call_instruction_fn_target(?instr, ?func)
-   ; invoke_instruction_fn_target(?instr, ?func)),
-   instruction_assigns_to(?instr, ?var),
-   instruction_in_function(?instr,  ?instrFunc),
-   function_has_name(?instrFunc, ?funcName),
+heap_allocation_by_instruction(?instr, ?heapAlloc),
+acontext_request(?ctx, ?heapAlloc, ?var) :-
+  heap_alloc_function(?func),
+  (call_instruction_fn_target(?instr, ?func);
+   invoke_instruction_fn_target(?instr, ?func)),
+  instruction_assigns_to(?instr, ?var),
+  instruction_in_function(?instr,  ?instrFunc),
+  function_has_name(?instrFunc, ?funcName),
+  variable_has_type(?var,?type),
+  variable_has_name(?var,?name),
+  ?heapAlloc = cat(cat(cat(cat(cat(cat("*heap_alloc", ?funcName),"["),?type)," "),?name),"]"),
+  reachable_context(?ctx, ?instrFunc).
 
-   variable_has_type(?var,?type),
-   variable_has_name(?var,?name),
+context_request(?ctx, ?aCtx, ?instr, ?func) :-
+  heap_alloc_function(?func),
+  (call_instruction_fn_target(?instr, ?func);
+   invoke_instruction_fn_target(?instr, ?func)),
+  instruction_in_function(?instr,  ?instrFunc),
+  reachable_context(?ctx, ?instrFunc),
+  acontext_request(?ctx, ?alloc, ?var),
+  acontext_response(?ctx, ?alloc, ?var, ?aCtx).
 
-   ?heapAlloc = cat(cat(cat(cat(cat(cat("*heap_alloc", ?funcName),"["),?type)," "),?name),"]"),
-   reachable_context(?ctx, ?instrFunc),
-   // Extra
-   context_getitem(?ctx, ?item),
-   ?aCtx = [?item].
 
 heap_alloc_function(?func) :-
    function_has_name(?func, "@malloc")
@@ -93,24 +80,28 @@ heap_alloc_function(?func) :-
 
 heap_allocation(?heapAlloc),
 heap_allocation_by_malloc(?insn, ?heapAlloc) :-
+  heap_alloc_function(?func),
   function_has_name(?func, "@malloc"),
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).
 
 heap_allocation(?heapAlloc),
 heap_allocation_by_calloc(?insn, ?heapAlloc) :-
+  heap_alloc_function(?func),
   function_has_name(?func, "@calloc"),
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).
 
 heap_allocation(?heapAlloc),
 heap_allocation_by_realloc(?insn, ?heapAlloc) :-
+  heap_alloc_function(?func),
   function_has_name(?func, "@realloc"),
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).
 
 heap_allocation(?heapAlloc),
 heap_allocation_by_rust_alloc(?insn, ?heapAlloc) :-
+  heap_alloc_function(?func),
   function_has_name(?func, "@__rust_alloc"),
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).

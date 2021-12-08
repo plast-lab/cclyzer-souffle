@@ -26,12 +26,14 @@ context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
   context_request(?callerCtx, ?aCtx, ?invoc, _),
   ?ctx = [?invoc].
 
-.decl alloc_context_new(?item:ContextItem, ?aCtx:AllocationContext)
+.decl acontext_request(?ctx: Context, ?alloc: Allocation, ?var: Variable)
+.decl acontext_response(?ctx: Context, ?alloc: Allocation, ?var: Variable, ?aCtx: AllocationContext)
 
 alloc_context(?aCtx),
-alloc_context_new(?invoc, ?aCtx) :-
-  context_item(?invoc),
-  ?aCtx = [?invoc].
+acontext_response(?ctx, ?alloc, ?var, ?aCtx) :-
+  acontext_request(?ctx, ?alloc, ?var),
+  ?ctx = [?ctxItem],
+  ?aCtx = [?ctxItem].
 
 //-----------------------------------------------------
 // Context Item Constructors
@@ -103,16 +105,7 @@ context_new(?newItem, ?calleeCtx) :-
 context_getitem(?ctx, ?item):-
    context_response(_, _, ?item, ?ctx).
 
-.decl alloc_context_getitem(?ctx:AllocationContext, ?item:ContextItem)
-alloc_context_getitem(?ctx, ?item):-
-   alloc_context_new(?item, ?ctx).
-
 .decl context_getinvoc(?ctx:Context, ?invoc:Instruction)
 context_getinvoc(?ctx, ?invoc):-
    context_getitem(?ctx, ?item),
-   context_item_invoc(?item, ?invoc).
-
-.decl alloc_context_getinvoc(?ctx:AllocationContext, ?invoc:Instruction)
-alloc_context_getinvoc(?ctx, ?invoc) :-
-   alloc_context_getitem(?ctx, ?item),
    context_item_invoc(?item, ?invoc).

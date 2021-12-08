@@ -1,21 +1,26 @@
 .decl empty_context(?ctx:Context)
-empty_context(?ctx) :-
+empty_context(?ctx),
+context(?ctx) :-
   ?ctx = ["<<empty-context>>"].
 
 .decl empty_alloc_context(?ctx:AllocationContext)
-empty_alloc_context(?actx):-
+empty_alloc_context(?actx),
+alloc_context(?actx) :-
   ?actx = ["<<empty-context>>"].
 
 .decl main_context(?ctx:Context)
-main_context(?ctx) :-
+main_context(?ctx),
+context(?ctx) :-
   ?ctx = ["<<empty-context>>"].
 
 .decl startup_context(?ctx:Context)
-startup_context(?ctx) :-
+startup_context(?ctx),
+context(?ctx) :-
   ?ctx = ["<<empty-context>>"].
 
 .decl exit_context(?ctx:Context)
-exit_context(?ctx) :-
+exit_context(?ctx),
+context(?ctx) :-
   ?ctx = ["<<empty-context>>"].
 
 
@@ -23,7 +28,7 @@ exit_context(?ctx) :-
 
 reachable_context(?ctx, ?main):-
   (main_function(?main);
-  rust_main_function(?main)),
+   rust_main_function(?main)),
   main_context(?ctx).
 
 reachable_context(?ctx, ?startupFunc):-

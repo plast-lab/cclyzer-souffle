@@ -6,9 +6,6 @@
 .output aliased_constants
 .output alloc_aliases
 .output alloc_context
-.output alloc_context_getinvoc
-.output alloc_context_getitem
-.output alloc_context_new
 .output alloc_matches
 .output alloc_points_to_sizes
 .output alloc_subobject

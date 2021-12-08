@@ -2,110 +2,61 @@
 // Empty Contexts
 //---------------------------------------------------------
 
-// Generic empty context
-//dummy_context_item_by_str("<<empty-context>>", ?ctxItem).
-
+// Generic empty context and allocation context
 .decl empty_context(?ctx:Context)
-empty_context(?ctx)
- , context(?ctx)
-// , context_request(?ctx, ?actx, ?instr, ?toFunction)
-// , context_response(?ctx, ?actx, ?instr, ?ctx)
- :-
-   dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-   ?ctx = [?ctxItem].
-//   ?actx = [?ctxItem],
-//   ?instr = "empty",
-//   ?toFunction = "empty".
+empty_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
+  ?ctx = [?ctxItem].
 
 .decl empty_alloc_context(?ctx:AllocationContext)
-empty_alloc_context(?aCtx)
- , alloc_context(?aCtx)
- , alloc_context_new(?ctxItem, ?aCtx)
- :-
-   dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-   ?aCtx = [?ctxItem].
+empty_alloc_context(?aCtx),
+alloc_context(?aCtx) :-
+  dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
+  ?aCtx = [?ctxItem].
 
 // Special context for when called from main
-//context_item(CtxItem)
-// , dummy_context_item:by_str["<<main-context>>"] = CtxItem <- .
-
 .decl main_context(?ctx:Context)
-main_context(?ctx)
- , context(?ctx)
-// , context_request(?ctx, ?actx, ?instr, ?toFunction)
-// , context_response(?ctx, ?actx, ?instr, ?ctx)
- :-
-   dummy_context_item_by_str("<<main-context>>", ?ctxItem),
-   ?ctx = [?ctxItem].
-//   ?actx = [?ctxItem],
-//   ?instr = "empty",
-//   ?toFunction = "empty".
+main_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<main-context>>", ?ctxItem),
+  ?ctx = [?ctxItem].
 
 // Special context for when called at startup
-//context_item(CtxItem)
-// , dummy_context_item:by_str["<<startup-context>>"] = CtxItem <- .
-
 .decl startup_context(?ctx:Context)
-startup_context(?ctx)
- , context(?ctx)
-// , context_request(?ctx, ?actx, ?instr, ?toFunction)
-// , context_response(?ctx, ?actx, ?instr, ?ctx)
- :-
-   dummy_context_item_by_str("<<startup-context>>", ?ctxItem),
-   ?ctx = [?ctxItem].
-//   ?actx = [?ctxItem],
-//   ?instr = "empty",
-//   ?toFunction = "empty".
+startup_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<startup-context>>", ?ctxItem),
+  ?ctx = [?ctxItem].
 
 // Special context for when called at exit
-//context_item(CtxItem)
-// , dummy_context_item:by_str["<<exit-context>>"] = CtxItem <- .
-
-
 .decl exit_context(?ctx:Context)
-exit_context(?ctx)
- , context(?ctx)
-// , context_request(?ctx, ?actx, ?instr, ?toFunction)
-// , context_response(?ctx, ?actx, ?instr, ?ctx)
- :-
-   dummy_context_item_by_str("<<exit-context>>", ?ctxItem),
-   ?ctx = [?ctxItem].
-//   ?actx = [?ctxItem],
-//   ?instr = "empty",
-//   ?toFunction = "empty".
-
+exit_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<exit-context>>", ?ctxItem),
+  ?ctx = [?ctxItem].
 
 //---------------------------------------------------------
 // Bootstrap the analysis
 //---------------------------------------------------------
 
 .decl reachable_context(?ctx:Context, ?func:FunctionDecl)
-.decl reachable_context1(?ctx:Context, ?func:FunctionDecl)
-.decl reachable_context2(?ctx:Context, ?func:FunctionDecl)
-.decl reachable_context3(?ctx:Context, ?func:FunctionDecl)
-
-.output reachable_context1
-.output reachable_context2
-.output reachable_context3
 
 context(?ctx):-
   reachable_context(?ctx, _).
 
-reachable_context1(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
-   (main_function(?func);
+  (main_function(?func);
    rust_main_function(?func)),
-   main_context(?ctx).
+  main_context(?ctx).
 
-reachable_context2(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
-   called_at_startup(?func),
-   startup_context(?ctx).
+  called_at_startup(?func),
+  startup_context(?ctx).
 
-reachable_context3(?ctx, ?func),
 reachable_context(?ctx, ?func) :-
-   called_at_exit(?func),
-   exit_context(?ctx).
+  called_at_exit(?func),
+  exit_context(?ctx).
 
 reachable_function(?func) :-
-   reachable_context(_, ?func).
+  reachable_context(_, ?func).

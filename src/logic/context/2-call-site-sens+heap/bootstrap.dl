@@ -8,46 +8,35 @@
 .decl empty_context(?ctx:Context)
 empty_context(?ctx),
 context(?ctx) :-
-  ?ctx = ["<<empty-context>>", "<<empty-context>>"].
+  dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
 
 .decl empty_alloc_context(?ctx:AllocationContext)
 empty_alloc_context(?aCtx),
-alloc_context(?aCtx),
-alloc_context_new(?item, ?aCtx) :-
-  ?item = "<<empty-context>>",
-  ?aCtx = [?item].
+alloc_context(?aCtx) :-
+  dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
+  ?aCtx = [?ctxItem].
 
 // Special context for when called from main
-//context_item(CtxItem)
-// , dummy_context_item:by_str["<<main-context>>"] = CtxItem <- .
-
 .decl main_context(?ctx:Context)
-main_context(?ctx)
- , context(?ctx)
- :-
-   ?ctx=["<<main-context>>", "<<main-context>>"].
+main_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<main-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
 
 // Special context for when called at startup
-//context_item(CtxItem)
-// , dummy_context_item:by_str["<<startup-context>>"] = CtxItem <- .
-
 .decl startup_context(?ctx:Context)
-startup_context(?ctx)
- , context(?ctx)
- :-
-   ?ctx=["<<startup-context>>", "<<startup-context>>"].
+startup_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<startup-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
 
 // Special context for when called at exit
-//context_item(CtxItem)
-// , dummy_context_item:by_str["<<exit-context>>"] = CtxItem <- .
-
-
 .decl exit_context(?ctx:Context)
-exit_context(?ctx)
- , context(?ctx)
- :-
-   ?ctx=["<<exit-context>>", "<<exit-context>>"].
-
+exit_context(?ctx),
+context(?ctx) :-
+  dummy_context_item_by_str("<<exit-context>>", ?ctxItem),
+  ?ctx = [?ctxItem, ?ctxItem].
 
 //---------------------------------------------------------
 // Bootstrap the analysis
@@ -55,14 +44,21 @@ exit_context(?ctx)
 
 .decl reachable_context(?ctx:Context, ?func:FunctionDecl)
 
+context(?ctx):-
+  reachable_context(?ctx, _).
+
 reachable_context(?ctx, ?func) :-
-   (main_function(?func);
+  (main_function(?func);
    rust_main_function(?func)),
-   main_context(?ctx)
- ; called_at_startup(?func),
-   startup_context(?ctx)
- ; called_at_exit(?func),
-   exit_context(?ctx).
+  main_context(?ctx).
+
+reachable_context(?ctx, ?func) :-
+  called_at_startup(?func),
+  startup_context(?ctx).
+
+reachable_context(?ctx, ?func) :-
+  called_at_exit(?func),
+  exit_context(?ctx).
 
 reachable_function(?func) :-
    reachable_context(_, ?func).

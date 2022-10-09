@@ -19,3 +19,4 @@
 /lib/factgen.so
 /lib/astexport.so
 /venv/
+.vscode/settings.json

@@ -88,7 +88,8 @@ FactGenerator::writeFunction(
     // Record function attributes TODO
     const Attributes &Attrs = func.getAttributes();
 
-    if (Attrs.hasAttributes(Attributes::ReturnIndex))
+
+    if (Attrs.hasParamAttrs(Attributes::ReturnIndex))
         writeFact(pred::function::ret_attr, funcref,
                   Attrs.getAsString(Attributes::ReturnIndex));
 
@@ -139,46 +140,37 @@ void FactGenerator::writeFnAttributes(
     const refmode_t &refmode,
     const Attributes allAttrs)
 {
+    //TODO VALIDATE THESE LOOPS ITERATE OVER EVERYTHING THEY NEED TO
 
-#if LLVM_VERSION_MAJOR < 5  // AttributeSet -> AttributeList
-    for (unsigned i = 0; i < allAttrs.getNumSlots(); ++i)
-    {
-        unsigned index = allAttrs.getSlotIndex(i);
+    //write out function attributes 
+    for(auto attrib : allAttrs.getFnAttrs()){
+        std::string attr = attrib.getAsString();
+        attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
+        writeFact(PredGroup::fn_attr, refmode, attr);
+    }
 
-        // Write out each attribute for this slot
-        for (Attributes::iterator it = allAttrs.begin(i), end = allAttrs.end(i);
-             it != end; ++it)
-        {
-            llvm::Attribute attrib = *it;
-#else
-    // Write out each attribute for this slot
-    for (unsigned index = allAttrs.index_begin(), e = allAttrs.index_end(); index != e; ++index)
-    {
-        llvm::AttributeSet attrs = allAttrs.getAttributes(index);
-        for (const llvm::Attribute attrib : attrs)
-        {
-#endif
+    //write out ret attrs
+    for(auto attrib : allAttrs.getRetAttrs()){
+        std::string attr = attrib.getAsString();
+        attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
+        writeFact(PredGroup::ret_attr, refmode, attr);
+    }
+
+
+    //TODO test if this works
+    // |allAttrSets| = 1 fnAttr set + 1 retAttr set + n ParamAttr sets
+    for(unsigned int i=0 ; i < allAttrs.getNumAttrSets() - 2  ;i++){
+        //write out param attrs
+        for(auto attrib : allAttrs.getParamAttrs(i)){
             std::string attr = attrib.getAsString();
             attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
-
-            // Record target-dependent attributes
-            if (attrib.isStringAttribute())
-                writeFact(pred::attribute::target_dependent, attr);
-
-            // Record attribute by kind
-            switch (index) {
-              case Attributes::AttrIndex::ReturnIndex:
-                  writeFact(PredGroup::ret_attr, refmode, attr);
-                  break;
-              case Attributes::AttrIndex::FunctionIndex:
-                  writeFact(PredGroup::fn_attr, refmode, attr);
-                  break;
-              default:
-                  writeFact(PredGroup::param_attr, refmode, index - 1, attr);
-                  break;
-            }
+            writeFact(PredGroup::param_attr, refmode, i-1, attr);       
         }
     }
+
+
+    
+
 }
 
 // Instantiate template method

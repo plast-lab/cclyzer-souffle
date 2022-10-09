@@ -73,7 +73,8 @@ class cclyzer::llvm_utils::TypeAccumulator
             visitStructType(elementType);
         }
         else if (elementType->isVectorTy()) {
-            visitType(elementType->getVectorElementType());
+            //TODO find correct replacement for the funct below
+            //visitType(elementType->getVectorElementType());
         }
         else if (elementType->isFunctionTy()) {
             visitFunctionType(elementType);

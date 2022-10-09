@@ -71,12 +71,12 @@ namespace cclyzer
             // context
 
             if (const llvm::Function *fctx = llvm::dyn_cast<llvm::Function>(&ctx)) {
-                prefix = fctx->getName();
+                prefix = fctx->getName().str();
                 instrIndex = 0;
                 iFunctionCtx = contexts.size();
             }
             else if (const llvm::BasicBlock *bbctx = llvm::dyn_cast<llvm::BasicBlock>(&ctx)) {
-                prefix = bbctx->getName();
+                prefix = bbctx->getName().str();
             }
             else if (llvm::isa<llvm::Instruction>(ctx)) {
                 prefix = std::to_string(instrIndex++);

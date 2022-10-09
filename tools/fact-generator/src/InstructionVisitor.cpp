@@ -340,7 +340,6 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
     gen.writeFact(II.getCalledFunction()
                   ? pred::invoke::instr_direct
                   : pred::invoke::instr_indirect, iref);
-
     const llvm::Value *invokeOp = II.getCalledValue();
 
     // invoke instruction function (also records type)

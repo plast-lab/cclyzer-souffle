@@ -33,7 +33,7 @@ DebugInfoProcessor::Impl::recordUnionAttribute(
         const llvm::Metadata& meta = *attribute;
 
         if (const MDString *mds = dyn_cast<MDString>(&meta)) {
-            std::string attribStr = mds->getString();
+            std::string attribStr = mds->getString().str();
             writeFact(pred::raw, nodeId, attribStr);
         }
         else {

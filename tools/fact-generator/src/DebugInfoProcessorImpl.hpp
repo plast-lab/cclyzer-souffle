@@ -25,18 +25,19 @@ class cclyzer::DebugInfoProcessor::Impl
         debugInfoFinder.processModule(module);
     }
 
-    void
-    processDeclare(const llvm::Module &module,
-                   const llvm::DbgDeclareInst *inst) {
-        debugInfoFinder.processDeclare(module, inst);
-        record_local_var_assoc(*inst);
-    }
+    // TODO: Apparently these are unused (?) figure out if they can be deleted 
+    // void
+    // processDeclare(const llvm::Module &module,
+    //                const llvm::DbgDeclareInst *inst) {
+    //     debugInfoFinder.processDeclare(module, inst);
+    //     record_local_var_assoc(*inst);
+    // }
 
-    void
-    processValue(const llvm::Module &module,
-                 const llvm::DbgValueInst *inst) {
-        debugInfoFinder.processValue(module, inst);
-    }
+    // void
+    // processValue(const llvm::Module &module,
+    //              const llvm::DbgValueInst *inst) {
+    //     debugInfoFinder.processValue(module, inst);
+    // }
 
     void reset() { debugInfoFinder.reset(); }
 

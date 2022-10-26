@@ -69,7 +69,9 @@ TypeVisitor::visitType(const llvm::Type *type)
       case llvm::Type::PointerTyID:
           visitPointerType(cast<PointerType>(type));
           break;
-      case llvm::Type::VectorTyID:
+      //VectorTyID seems to be replaced by the following 2, fallthrough intended
+      case llvm::Type::ScalableVectorTyID:
+      case llvm::Type::FixedVectorTyID:
           visitVectorType(cast<VectorType>(type));
           break;
       case llvm::Type::X86_MMXTyID: // TODO: handle this type
@@ -189,8 +191,9 @@ void
 TypeVisitor::visitVectorType(const VectorType *vectorType)
 {
     refmode_t tref = gen.refmode<llvm::Type>(*vectorType);
-    size_t nElements = vectorType->getVectorNumElements();
-    Type *componentType = vectorType->getVectorElementType();
+    size_t nElements = vectorType->getArrayNumElements();//getVectorNumElements();
+
+    Type *componentType = vectorType->getArrayElementType();//getVectorElementType();
 
     // Record vector type entity
     gen.writeFact(pred::vector_type::id, tref);

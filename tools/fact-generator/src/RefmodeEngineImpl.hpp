@@ -2,6 +2,7 @@
 #include <llvm/IR/ModuleSlotTracker.h>
 #include "ContextManager.hpp"
 #include "RefmodeEngine.hpp"
+#include <map>
 
 // Forward declaration
 namespace llvm {

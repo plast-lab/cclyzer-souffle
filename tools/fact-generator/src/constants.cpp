@@ -51,7 +51,10 @@ FactGenerator::writeConstant(const llvm::Constant &c)
         writeFact(pred::integer_constant::id, id);
 
         // Compute integer string representation
-        std::string int_value = c.getUniqueInteger().toString(10, true);
+        //std::string int_value = c.getUniqueInteger().toString(10, true);
+        llvm::SmallString<256> temp= SmallString<256>();
+        c.getUniqueInteger().toString(temp,10,true);
+        std::string int_value = temp.str().str();
 
         // Write constant to integer fact
         writeFact(pred::constant::to_integer, id, int_value);
@@ -125,23 +128,40 @@ FactGenerator::writeConstantExpr(const llvm::ConstantExpr &expr,
               break;
         }
     }
-    else if (expr.isGEPWithNoNotionalOverIndexing()) {
+    //isGEPWithNoNotionalOverIndexing() no longer exists,have to check opcode and whether GEP indexes are constant manually
+    // else if (expr.isGEPWithNoNotionalOverIndexing()) {
+    else if (expr.getOpcode() == llvm::Instruction::GetElementPtr){
         unsigned nOperands = expr.getNumOperands();
-
-        for (unsigned i = 0; i < nOperands; i++)
-        {
-            const llvm::Constant *c = cast<llvm::Constant>(expr.getOperand(i));
-
-            refmode_t index_ref = writeConstant(*c);
-
-            if (i > 0)
-                writeFact(pred::gep_constant_expr::index, refmode, i - 1, index_ref);
-            else
-                writeFact(pred::gep_constant_expr::base, refmode, index_ref);
+    
+        //Check if operands are constant integer values
+        //TODO: might need to add another condition in regard to the active bits of the CI, as per the original implementation
+        // http://formalverification.cs.utah.edu/llvm_doxy/2.9/Constants_8cpp_source.html#l00744
+        
+        bool allConst = true;
+        for(unsigned i = 0; i < nOperands; i++){            
+            //dyn_case returns null if Constant type cannot be cast to an integer
+            llvm::ConstantInt *CI = llvm::dyn_cast<llvm::ConstantInt>(expr.getOperand(i));
+            if(!CI){
+                allConst = false;
+            }
         }
 
-        writeFact(pred::gep_constant_expr::nindices, refmode, nOperands - 1);
-        writeFact(pred::gep_constant_expr::id, refmode);
+        if(allConst){
+            for (unsigned i = 0; i < nOperands; i++)
+            {
+                const llvm::Constant *c = cast<llvm::Constant>(expr.getOperand(i));
+
+                refmode_t index_ref = writeConstant(*c);
+
+                if (i > 0)
+                    writeFact(pred::gep_constant_expr::index, refmode, i - 1, index_ref);
+                else
+                    writeFact(pred::gep_constant_expr::base, refmode, index_ref);
+            }
+
+            writeFact(pred::gep_constant_expr::nindices, refmode, nOperands - 1);
+            writeFact(pred::gep_constant_expr::id, refmode);
+        }
     }
     else {
         // TODO

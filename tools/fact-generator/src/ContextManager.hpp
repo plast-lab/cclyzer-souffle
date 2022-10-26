@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <vector>
+#include <map>
 
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Module.h>

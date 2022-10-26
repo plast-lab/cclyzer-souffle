@@ -26,7 +26,7 @@ DebugInfoProcessor::Impl::write_di_subrange::write(
     auto *CI = disubrange.getCount().dyn_cast<llvm::ConstantInt *>(); 
     count = CI->getSExtValue();
 #endif
-    const int64_t lowerBound = disubrange.getLowerBound();
+    const int64_t lowerBound = disubrange.getLowerBound().dyn_cast<llvm::ConstantInt*>()->getSExtValue();
 
     proc.writeFact(pred::di_subrange::count, nodeId, count);
 

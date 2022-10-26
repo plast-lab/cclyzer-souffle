@@ -87,7 +87,7 @@ DebugInfoProcessor::Impl::write_di_composite_type::write(
 #endif
 
     // Record ABI Identifier for this composite type
-    const string abiId = ditype.getIdentifier();
+    const string abiId = ditype.getIdentifier().str();
     proc.writeFact(pred::di_composite_type::abi_id, nodeId, abiId);
 
     // Record fields of composite type
@@ -192,7 +192,7 @@ DebugInfoProcessor::Impl::write_di_subroutine_type::write(
             const llvm::Metadata& meta = *type;
 
             if (const MDString *mds = dyn_cast<MDString>(&meta)) {
-                string typeStr = mds->getString();
+                string typeStr = mds->getString().str();
                 proc.writeFact(pred::di_subroutine_type::raw_type_elem, nodeId, i, typeStr);
             }
             else {
@@ -214,7 +214,7 @@ void
 DebugInfoProcessor::Impl::write_di_type_common(
     const llvm::DIType& ditype, const refmode_t& nodeId)
 {
-    const string name = ditype.getName();
+    const string name = ditype.getName().str();
     const unsigned line = ditype.getLine();
 
     writeFact(pred::di_type::id, nodeId);

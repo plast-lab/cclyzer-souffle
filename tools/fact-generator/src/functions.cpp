@@ -158,8 +158,7 @@ void FactGenerator::writeFnAttributes(
 
 
     //TODO test if this works
-    // |allAttrSets| = 1 fnAttr set + 1 retAttr set + n ParamAttr sets
-    for(unsigned int i=0 ; i < allAttrs.getNumAttrSets() - 2  ;i++){
+    for(unsigned int i=0 ; i < allAttrs.getNumAttrSets();i++){
         //write out param attrs
         for(auto attrib : allAttrs.getParamAttrs(i)){
             std::string attr = attrib.getAsString();

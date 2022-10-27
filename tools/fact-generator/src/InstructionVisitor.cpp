@@ -344,9 +344,9 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
     const llvm::Function *calledfunct = II.getCalledFunction();
 
     if(calledfunct != nullptr){
-        const llvm::Value *invokeOp = llvm::dyn_cast<llvm::Value>(calledfunct);
+       const llvm::Value *invokeOp = llvm::dyn_cast<llvm::Value>(calledfunct);
         // invoke instruction function (also records type)
-        writeInstrOperand(pred::invoke::function, iref, invokeOp);
+       writeInstrOperand(pred::invoke::function, iref, invokeOp);
     }
     
 
@@ -671,10 +671,15 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
                       : pred::call::instr_indirect, iref);
     }
 
-    const llvm::Value *callOp = llvm::dyn_cast<llvm::Value>(CI.getCalledFunction());
 
-    // call instruction function (also records type)
-    writeInstrOperand(pred::call::function, iref, callOp);
+    //TODO: this caused assertion error because CI.getCalledFunction() returned null
+    //not sure if adding this if condition maintains indended behaviour
+    if(CI.getCalledFunction()){
+        const llvm::Value *callOp = llvm::dyn_cast<llvm::Value>(CI.getCalledFunction());
+        // call instruction function (also records type)
+        writeInstrOperand(pred::call::function, iref, callOp);
+    }
+    
 
     for (unsigned op = 0; op < CI.arg_size(); ++op)
         writeInstrOperand(pred::call::arg, iref, CI.getArgOperand(op), op);

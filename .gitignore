@@ -21,3 +21,4 @@
 /venv/
 .vscode/settings.json
 src/logic/analysis.config
+cclyzer.log

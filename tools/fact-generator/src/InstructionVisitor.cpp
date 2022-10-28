@@ -553,8 +553,7 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
             // Compute integer string representation
             llvm::SmallVector<char> temp;
             c->getUniqueInteger().toString(temp,10,true);   
-            string int_value = temp.data();//= c->getUniqueInteger().toString(10, true);
-
+            string int_value = string().append(temp.data(),temp.size());//= c->getUniqueInteger().toString(10, true);
             // Write constant to integer fact
             gen.writeFact(pred::constant::to_integer, opref, int_value);
         }

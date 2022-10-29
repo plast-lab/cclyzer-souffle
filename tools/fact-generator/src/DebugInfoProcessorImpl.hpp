@@ -2,6 +2,7 @@
 #define DEBUG_INFO_PROCESSOR_IMPL_HPP__
 
 #include <map>
+#include <llvm/IR/IntrinsicInst.h>
 #include <llvm/IR/DebugInfo.h>
 #include "DebugInfoProcessor.hpp"
 #include "Demangler.hpp"
@@ -27,22 +28,18 @@ class cclyzer::DebugInfoProcessor::Impl
 
 
     //==========================================================================================
-    //TODO yet again check if this is correct
-
+    //Process instruction to replace processValue and processDecl
+    //based on https://github.com/llvm-mirror/llvm/blob/master/lib/IR/DebugInfo.cpp line 106
     void
-    processDeclare(const llvm::Module &module,
-                   const llvm::DbgDeclareInst *inst) {
-                //Instruction has already been processed by processModule ?
-                //debugInfoFinder.processDeclare(module, inst);
-                record_local_var_assoc(*inst);
+    processInstruction(const llvm::Module &module , const llvm::Instruction &I){
+        if (auto *DDI = llvm::dyn_cast<llvm::DbgDeclareInst>(&I)){
+               debugInfoFinder.processInstruction(module,I);
+               record_local_var_assoc(*DDI);
+        }else if (auto *DVI = llvm::dyn_cast<llvm::DbgValueInst>(&I)){
+               debugInfoFinder.processInstruction(module,I);
+        }   
     }
-
-    void
-    processValue(const llvm::Module &module,
-                 const llvm::DbgValueInst *inst) {
-                    //Instruction has already been processed by processModule ?
-                    //debugInfoFinder.processValue(module, inst);
-    }
+    
     //==========================================================================================
 
 

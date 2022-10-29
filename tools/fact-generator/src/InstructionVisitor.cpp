@@ -709,9 +709,24 @@ InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
     // First visit it as a generic call instruction
     InstructionVisitor::visitCallInst(static_cast<const llvm::CallInst&>(DDI));
 
-    // Process debug info
-    gen.debugInfoProcessor.processDeclare(module, &DDI);
 
+
+    //=======================================
+    //processDeclare and processValue replaced by processInstruction 
+    //that is suitable for both DbgDeclareInst and DbgValueInst
+    
+    
+    // Process debug info
+    //gen.debugInfoProcessor.processDeclare(module, &DDI);
+    
+    //Cast to Instruction
+    auto *inst = llvm::dyn_cast<llvm::Instruction>(&DDI);
+    gen.debugInfoProcessor.processInstruction(module ,inst);
+    //=======================================
+    
+    
+    
+    
     // TODO Move the entire debug location logic to debuginfo_variables.cpp
     const llvm::Value *address = DDI.getAddress();
 
@@ -744,8 +759,20 @@ InstructionVisitor::visitDbgValueInst(const llvm::DbgValueInst &DDI)
     // First visit it as a generic call instruction
     InstructionVisitor::visitCallInst(static_cast<const llvm::CallInst&>(DDI));
     
-    // Process debug info
-    gen.debugInfoProcessor.processValue(module, &DDI);
+   
+
+    //=======================================
+    //processDeclare and processValue replaced by processInstruction 
+    //that is suitable for both DbgDeclareInst and DbgValueInst
+    
+    //Process debug info
+    //gen.debugInfoProcessor.processValue(module, &DDI);
+    
+    //Cast to Instruction
+    auto *inst = llvm::dyn_cast<llvm::Instruction>(&DDI);
+    //Process debug info
+    gen.debugInfoProcessor.processInstruction(module ,inst);
+    //=======================================
 }
 
 

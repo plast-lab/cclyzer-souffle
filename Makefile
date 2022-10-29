@@ -92,6 +92,7 @@ $$($1.outdir): | $(coreutils_outdir)
 
 test-$1: tests.setup
 	@echo Analyzing $1 ...
+	@mkdir -p ./$(BUILDDIR)/$(coreutils_dir)/$1
 	$(CCLYZER) -o $$($1.outdir) $(CCLYZER_OPTS) -i $$($1.file)
 
 

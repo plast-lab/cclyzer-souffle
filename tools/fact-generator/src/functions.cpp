@@ -147,6 +147,9 @@ void FactGenerator::writeFnAttributes(
         std::string attr = attrib.getAsString();
         attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
         writeFact(PredGroup::fn_attr, refmode, attr);
+        if(attrib.isStringAttribute()){
+            writeFact(pred::attribute::target_dependent , attr);
+        }
     }
 
     //write out ret attrs
@@ -154,6 +157,9 @@ void FactGenerator::writeFnAttributes(
         std::string attr = attrib.getAsString();
         attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
         writeFact(PredGroup::ret_attr, refmode, attr);
+        if(attrib.isStringAttribute()){
+            writeFact(pred::attribute::target_dependent , attr);
+        }
     }
 
 
@@ -163,13 +169,12 @@ void FactGenerator::writeFnAttributes(
         for(auto attrib : allAttrs.getParamAttrs(i)){
             std::string attr = attrib.getAsString();
             attr.erase (std::remove(attr.begin(), attr.end(), '"'), attr.end());
-            writeFact(PredGroup::param_attr, refmode, i-1, attr);       
+            writeFact(PredGroup::param_attr, refmode, i-1, attr);
+            if(attrib.isStringAttribute()){
+                writeFact(pred::attribute::target_dependent , attr);
+            }       
         }
     }
-
-
-    
-
 }
 
 // Instantiate template method

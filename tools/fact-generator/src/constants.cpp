@@ -128,30 +128,23 @@ FactGenerator::writeConstantExpr(const llvm::ConstantExpr &expr,
               break;
         }
     }
-    //isGEPWithNoNotionalOverIndexing() no longer exists,have to check opcode and whether GEP indexes are constant manually
+    //isGEPWithNoNotionalOverIndexing() no longer exists,
+    //the equivalent of this condition would be:
+    //opcode is of GEP instruction and all indexes are known at compile time, aka they are constant ints
     // else if (expr.isGEPWithNoNotionalOverIndexing()) {
     else if (expr.getOpcode() == llvm::Instruction::GetElementPtr){
         unsigned nOperands = expr.getNumOperands();
-    
-        //Check if operands are constant integer values
-        //TODO: might need to add another condition in regard to the active bits of the CI, as per the original implementation
-        // http://formalverification.cs.utah.edu/llvm_doxy/2.9/Constants_8cpp_source.html#l00744
         
-        bool allConst = true;
-        for(unsigned i = 0; i < nOperands; i++){            
-            //dyn_case returns null if Constant type cannot be cast to an integer
-            llvm::ConstantInt *CI = llvm::dyn_cast<llvm::ConstantInt>(expr.getOperand(i));
-            if(!CI){
-                allConst = false;
-            }
-        }
-
-        if(allConst){
+        //get expr as a GEP instruction
+        auto GEP_form = llvm::dyn_cast<llvm::GetElementPtrInst>(expr.getAsInstruction());
+        //check if all indexes are constant values
+        if(GEP_form->hasAllConstantIndices()){
             for (unsigned i = 0; i < nOperands; i++)
             {
                 const llvm::Constant *c = cast<llvm::Constant>(expr.getOperand(i));
 
                 refmode_t index_ref = writeConstant(*c);
+                
 
                 if (i > 0)
                     writeFact(pred::gep_constant_expr::index, refmode, i - 1, index_ref);

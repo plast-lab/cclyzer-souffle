@@ -89,9 +89,9 @@ FactGenerator::writeFunction(
     const Attributes &Attrs = func.getAttributes();
 
 
-    if (Attrs.hasParamAttrs(Attributes::ReturnIndex))
-        writeFact(pred::function::ret_attr, funcref,
-                  Attrs.getAsString(Attributes::ReturnIndex));
+     if(Attrs.hasAttributesAtIndex(Attributes::ReturnIndex)){ 
+        writeFact(pred::function::ret_attr, funcref,Attrs.getAsString(Attributes::ReturnIndex));
+    }
 
     writeFnAttributes<pred::function>(funcref, Attrs);
 

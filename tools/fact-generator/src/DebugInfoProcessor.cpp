@@ -22,18 +22,6 @@ DebugInfoProcessor::processModule(const llvm::Module& mod)
     return impl->processModule(mod);
 }
 
-// void
-// DebugInfoProcessor::processDeclare(const llvm::Module& mod, const llvm::DbgDeclareInst *instr)
-// {
-//     return impl->processDeclare(mod, instr);
-// }
-
-// void
-// DebugInfoProcessor::processValue(const llvm::Module& mod, const llvm::DbgValueInst *instr)
-// {
-//     return impl->processValue(mod, instr);
-// }
-
 void
 DebugInfoProcessor::processInstruction(const llvm::Module& mod, const llvm::Instruction *instr)
 {

@@ -2,7 +2,7 @@ LEVEL := .
 CCLYZER_OPTS ?=
 PYTHON = python
 PIP    = pip
-CCLYZER = cclyzer
+CCLYZER = ./cclyzer.sh
 
 all:
 
@@ -92,7 +92,8 @@ $$($1.outdir): | $(coreutils_outdir)
 
 test-$1: tests.setup
 	@echo Analyzing $1 ...
-	$(CCLYZER) analyze -o $$($1.outdir) $(CCLYZER_OPTS) $$($1.file)
+	@mkdir -p ./$(BUILDDIR)/$(coreutils_dir)/$1
+	$(CCLYZER) -o $$($1.outdir) $(CCLYZER_OPTS) -i $$($1.file)
 
 
 # Cleaning target

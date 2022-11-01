@@ -340,14 +340,16 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
     gen.writeFact(II.getCalledFunction()
                   ? pred::invoke::instr_direct
                   : pred::invoke::instr_indirect, iref);
-
-    const llvm::Value *invokeOp = II.getCalledValue();
-
+    
+    const llvm::Value *invokeOp = II.getCalledOperand();
+    
     // invoke instruction function (also records type)
     writeInstrOperand(pred::invoke::function, iref, invokeOp);
+    
+    
 
     // actual args
-    for (unsigned op = 0; op < II.getNumArgOperands(); ++op)
+    for (unsigned op = 0; op < II.arg_size(); ++op)
         writeInstrOperand(pred::invoke::arg, iref, II.getArgOperand(op), op);
 
     writeInstrOperand(pred::invoke::normal_label, iref, II.getNormalDest());
@@ -355,8 +357,7 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
 
     // Function Attributes
     const Attributes &Attrs = II.getAttributes();
-
-    if (Attrs.hasAttributes(Attributes::ReturnIndex))
+    if (Attrs.hasAttributesAtIndex(Attributes::ReturnIndex))
     {
         string attrs = Attrs.getAsString(Attributes::ReturnIndex);
         gen.writeFact(pred::invoke::ret_attr, iref, attrs);
@@ -548,8 +549,9 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
 
         if (const llvm::Constant *c = dyn_cast<llvm::Constant>(GepOperand)) {
             // Compute integer string representation
-            string int_value = c->getUniqueInteger().toString(10, true);
-
+            llvm::SmallVector<char> temp;
+            c->getUniqueInteger().toString(temp,10,true);   
+            string int_value = string().append(temp.data(),temp.size());//= c->getUniqueInteger().toString(10, true);
             // Write constant to integer fact
             gen.writeFact(pred::constant::to_integer, opref, int_value);
         }
@@ -665,14 +667,16 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
                       ? pred::call::instr_direct
                       : pred::call::instr_indirect, iref);
     }
-
-    const llvm::Value *callOp = CI.getCalledValue();
-
+       
+ 
+    // getCalledValue() renamed to getCalledOperand() in llvm-14 
+    const llvm::Value *callOp = CI.getCalledOperand();
     // call instruction function (also records type)
     writeInstrOperand(pred::call::function, iref, callOp);
-
-    for (unsigned op = 0; op < CI.getNumArgOperands(); ++op)
+    
+    for (unsigned op = 0; op < CI.arg_size(); ++op){
         writeInstrOperand(pred::call::arg, iref, CI.getArgOperand(op), op);
+    }
 
     if(CI.isTailCall())
         gen.writeFact(pred::call::tail, iref);
@@ -685,7 +689,7 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
     // Attributes
     const Attributes &Attrs = CI.getAttributes();
 
-    if (Attrs.hasAttributes(Attributes::ReturnIndex)) {
+    if (Attrs.hasAttributesAtIndex(Attributes::ReturnIndex)){
         string attrs = Attrs.getAsString(Attributes::ReturnIndex);
         gen.writeFact(pred::call::ret_attr, iref, attrs);
     }
@@ -700,9 +704,24 @@ InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
     // First visit it as a generic call instruction
     InstructionVisitor::visitCallInst(static_cast<const llvm::CallInst&>(DDI));
 
-    // Process debug info
-    gen.debugInfoProcessor.processDeclare(module, &DDI);
 
+
+    //=======================================
+    //processDeclare and processValue replaced by processInstruction 
+    //that is suitable for both DbgDeclareInst and DbgValueInst
+    
+    
+    // Process debug info
+    //gen.debugInfoProcessor.processDeclare(module, &DDI);
+    
+    //Cast to Instruction
+    auto *inst = llvm::dyn_cast<llvm::Instruction>(&DDI);
+    gen.debugInfoProcessor.processInstruction(module ,inst);
+    //=======================================
+    
+    
+    
+    
     // TODO Move the entire debug location logic to debuginfo_variables.cpp
     const llvm::Value *address = DDI.getAddress();
 
@@ -715,7 +734,7 @@ InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
 
     // Record source variable name
     if (const llvm::DILocalVariable *var = DDI.getVariable()) {
-        string name = var->getName();
+        string name = var->getName().str();
         gen.writeFact(pred::variable::source_name, refmode, name);
     }
 
@@ -734,9 +753,21 @@ InstructionVisitor::visitDbgValueInst(const llvm::DbgValueInst &DDI)
 {
     // First visit it as a generic call instruction
     InstructionVisitor::visitCallInst(static_cast<const llvm::CallInst&>(DDI));
+    
+   
 
-    // Process debug info
-    gen.debugInfoProcessor.processValue(module, &DDI);
+    //=======================================
+    //processDeclare and processValue replaced by processInstruction 
+    //that is suitable for both DbgDeclareInst and DbgValueInst
+    
+    //Process debug info
+    //gen.debugInfoProcessor.processValue(module, &DDI);
+    
+    //Cast to Instruction
+    auto *inst = llvm::dyn_cast<llvm::Instruction>(&DDI);
+    //Process debug info
+    gen.debugInfoProcessor.processInstruction(module ,inst);
+    //=======================================
 }
 
 

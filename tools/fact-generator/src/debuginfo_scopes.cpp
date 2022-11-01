@@ -19,8 +19,8 @@ void
 DebugInfoProcessor::Impl::write_di_file::write(
     const llvm::DIFile& difile, const refmode_t& nodeId, DIProc& proc)
 {
-    string filename = difile.getFilename();
-    string directory = difile.getDirectory();
+    string filename = difile.getFilename().str();
+    string directory = difile.getDirectory().str();
 
     proc.writeFact(pred::di_file::id, nodeId);
     proc.writeFact(pred::di_file::filename, nodeId, filename);
@@ -36,7 +36,7 @@ void
 DebugInfoProcessor::Impl::write_di_namespace::write(
     const llvm::DINamespace& dinamespace, const refmode_t& nodeId, DIProc& proc)
 {
-    const string name = dinamespace.getName();
+    const string name = dinamespace.getName().str();
 
     proc.writeFact(pred::di_namespace::id, nodeId);
     proc.writeFact(pred::di_namespace::name, nodeId, name);
@@ -140,7 +140,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
     // Record generic scope properties
     //-----------------------------------------------------------------
 
-    const std::string name = disubprogram.getName();
+    const std::string name = disubprogram.getName().str();
     if (!name.empty())
         proc.writeFact(pred::di_subprogram::name, nodeId, name);
 
@@ -159,7 +159,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
     //-----------------------------------------------------------------
 
     // Record linkage name
-    const std::string linkageName = disubprogram.getLinkageName();
+    const std::string linkageName = disubprogram.getLinkageName().str();
     if (!linkageName.empty())
         proc.writeFact(pred::di_subprogram::linkage_name, nodeId, linkageName);
 

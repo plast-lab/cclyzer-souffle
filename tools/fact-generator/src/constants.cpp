@@ -51,7 +51,10 @@ FactGenerator::writeConstant(const llvm::Constant &c)
         writeFact(pred::integer_constant::id, id);
 
         // Compute integer string representation
-        std::string int_value = c.getUniqueInteger().toString(10, true);
+        //std::string int_value = c.getUniqueInteger().toString(10, true);
+        llvm::SmallString<256> temp= SmallString<256>();
+        c.getUniqueInteger().toString(temp,10,true);
+        std::string int_value = temp.str().str();
 
         // Write constant to integer fact
         writeFact(pred::constant::to_integer, id, int_value);
@@ -125,23 +128,33 @@ FactGenerator::writeConstantExpr(const llvm::ConstantExpr &expr,
               break;
         }
     }
-    else if (expr.isGEPWithNoNotionalOverIndexing()) {
+    //isGEPWithNoNotionalOverIndexing() no longer exists,
+    //the equivalent of this condition would be:
+    //opcode is of GEP instruction and all indexes are known at compile time, aka they are constant ints
+    // else if (expr.isGEPWithNoNotionalOverIndexing()) {
+    else if (expr.getOpcode() == llvm::Instruction::GetElementPtr){
         unsigned nOperands = expr.getNumOperands();
+        
+        //get expr as a GEP instruction
+        auto GEP_form = llvm::dyn_cast<llvm::GetElementPtrInst>(expr.getAsInstruction());
+        //check if all indexes are constant values
+        if(GEP_form->hasAllConstantIndices()){
+            for (unsigned i = 0; i < nOperands; i++)
+            {
+                const llvm::Constant *c = cast<llvm::Constant>(expr.getOperand(i));
 
-        for (unsigned i = 0; i < nOperands; i++)
-        {
-            const llvm::Constant *c = cast<llvm::Constant>(expr.getOperand(i));
+                refmode_t index_ref = writeConstant(*c);
+                
 
-            refmode_t index_ref = writeConstant(*c);
+                if (i > 0)
+                    writeFact(pred::gep_constant_expr::index, refmode, i - 1, index_ref);
+                else
+                    writeFact(pred::gep_constant_expr::base, refmode, index_ref);
+            }
 
-            if (i > 0)
-                writeFact(pred::gep_constant_expr::index, refmode, i - 1, index_ref);
-            else
-                writeFact(pred::gep_constant_expr::base, refmode, index_ref);
+            writeFact(pred::gep_constant_expr::nindices, refmode, nOperands - 1);
+            writeFact(pred::gep_constant_expr::id, refmode);
         }
-
-        writeFact(pred::gep_constant_expr::nindices, refmode, nOperands - 1);
-        writeFact(pred::gep_constant_expr::id, refmode);
     }
     else {
         // TODO

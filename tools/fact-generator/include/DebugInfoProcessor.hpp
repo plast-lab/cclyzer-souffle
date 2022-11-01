@@ -19,8 +19,9 @@ class cclyzer::DebugInfoProcessor
     /* Process elements with debug information */
 
     void processModule(const llvm::Module & );
-    void processDeclare(const llvm::Module &, const llvm::DbgDeclareInst * );
-    void processValue(const llvm::Module &, const llvm::DbgValueInst * );
+  //  void processDeclare(const llvm::Module &, const llvm::DbgDeclareInst * );
+  //  void processValue(const llvm::Module &, const llvm::DbgValueInst * );
+    void processInstruction(const llvm::Module &,const llvm::Instruction *);
     void reset();
 
     /* Generate and write any stored debug information */

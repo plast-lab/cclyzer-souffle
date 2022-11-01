@@ -26,7 +26,7 @@ DebugInfoProcessor::Impl::write_di_tpl_param::write(
 
     proc.writeFact(pred::di_template_param::id, nodeId);
 
-    const std::string name = diparam.getName();
+    const std::string name = diparam.getName().str();
 
 #if LLVM_VERSION_MAJOR >= 9
     const llvm::DIType *type = diparam.getType();
@@ -92,7 +92,7 @@ DebugInfoProcessor::Impl::write_di_tpl_value_param::write(
     }
     else if (const auto *mds = dyn_cast<llvm::MDString>(value))
     {
-        std::string value = mds->getString();
+        std::string value = mds->getString().str();
         llvm::errs() << "Unhandled template value parameter "
                      << '(' << value << ')'
                      << " for node: " << nodeId

@@ -27,7 +27,7 @@ DebugInfoProcessor::Impl::write_di_variable::write(
 
     proc.writeFact(pred::di_variable::id, nodeId);
 
-    const std::string name = divar.getName();
+    const std::string name = divar.getName().str();
 
     // Record variable name
     if (!name.empty())
@@ -69,7 +69,7 @@ DebugInfoProcessor::Impl::write_di_global_variable::write(
     proc.writeFact(pred::di_global_var::id, nodeId);
 
     // Record linkage name
-    const std::string linkageName = divar.getLinkageName();
+    const std::string linkageName = divar.getLinkageName().str();
 
     if (!linkageName.empty())
         proc.writeFact(pred::di_global_var::linkage_name, nodeId, linkageName);

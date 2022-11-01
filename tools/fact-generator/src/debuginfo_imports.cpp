@@ -23,7 +23,7 @@ DebugInfoProcessor::Impl::write_di_imported_entity::write(
 {
     proc.writeFact(pred::di_imported_entity::id, nodeId);
 
-    const std::string name = diimport.getName();
+    const std::string name = diimport.getName().str();
     proc.writeFact(pred::di_imported_entity::name, nodeId, name);
 
     const unsigned line = diimport.getLine();
@@ -44,7 +44,7 @@ DebugInfoProcessor::Impl::write_di_imported_entity::write(
     const llvm::Metadata& meta = *entity;
 
     if (const MDString *mds = dyn_cast<MDString>(&meta)) {
-        std::string attribStr = mds->getString();
+        std::string attribStr = mds->getString().str();
         proc.writeFact(pred::di_imported_entity::entity::raw, nodeId, attribStr);
     }
     else if (const DIScope *scope = dyn_cast<DIScope>(entity)){

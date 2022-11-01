@@ -16,8 +16,11 @@ DebugInfoProcessor::Impl::write_di_enumerator::write(
 {
     proc.writeFact(pred::di_enumerator::id, nodeId);
 
-    const std::string name = dienum.getName();
-    const int64_t value = dienum.getValue();
+    const std::string name = dienum.getName().str();
+    
+    //TODO Might need to check bit-width of APint returned by dienum.getValue to ensure that its <= 64 bits
+    const int64_t value = dienum.getValue().getSExtValue();
+
 
     proc.writeFact(pred::di_enumerator::name, nodeId, name);
     proc.writeFact(pred::di_enumerator::value, nodeId, value);

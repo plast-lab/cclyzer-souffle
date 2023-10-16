@@ -67,7 +67,7 @@ class cclyzer::llvm_utils::TypeAccumulator
             visitType(elementType->getArrayElementType());
         }
         else if (elementType->isPointerTy()) {
-            visitType(elementType->getPointerElementType());
+            visitType(elementType->getNonOpaquePointerElementType());
         }
         else if (elementType->isStructTy()) {
             visitStructType(elementType);

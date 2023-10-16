@@ -71,7 +71,7 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
     // Serialize global variable properties
     refmode_t visibility = refmode(gv.getVisibility());
     refmode_t linkage    = refmode(gv.getLinkage());
-    refmode_t varType    = recordType(gv.getType()->getElementType());
+    refmode_t varType    = recordType(gv.getType()->getNonOpaquePointerElementType());
     refmode_t thrLocMode = refmode(gv.getThreadLocalMode());
 
     // Record unmangled variable name

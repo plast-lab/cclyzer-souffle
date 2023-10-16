@@ -5,7 +5,7 @@
 #include <llvm/IR/DebugInfo.h>
 #include "InstructionVisitor.hpp"
 #include "predicate_groups.hpp"
-
+#include "llvm/Support/Alignment.h"
 
 namespace pred = cclyzer::predicates;
 
@@ -398,8 +398,8 @@ InstructionVisitor::visitAllocaInst(const llvm::AllocaInst &AI)
     if(AI.isArrayAllocation())
         writeInstrOperand(pred::alloca::size, iref, AI.getArraySize());
 
-    if(AI.getAlignment())
-        gen.writeFact(pred::alloca::alignment, iref, AI.getAlignment());
+    if(AI.getAlign().value())
+        gen.writeFact(pred::alloca::alignment, iref, AI.getAlign().value());
 }
 
 
@@ -413,8 +413,8 @@ InstructionVisitor::visitLoadInst(const llvm::LoadInst &LI)
     if (LI.isAtomic())
         writeAtomicInfo<pred::load>(iref, LI);
 
-    if (LI.getAlignment())
-        gen.writeFact(pred::load::alignment, iref, LI.getAlignment());
+    if (LI.getAlign().value())
+        gen.writeFact(pred::load::alignment, iref, LI.getAlign().value());
 
     if (LI.isVolatile())
         gen.writeFact(pred::load::isvolatile, iref);
@@ -463,8 +463,8 @@ InstructionVisitor::visitStoreInst(const llvm::StoreInst &SI)
     if (SI.isAtomic())
         writeAtomicInfo<pred::store>(iref, SI);
 
-    if (SI.getAlignment())
-        gen.writeFact(pred::store::alignment, iref, SI.getAlignment());
+    if (SI.getAlign().value())
+        gen.writeFact(pred::store::alignment, iref, SI.getAlign().value());
 
     if (SI.isVolatile())
         gen.writeFact(pred::store::isvolatile, iref);

@@ -83,7 +83,7 @@ TypeVisitor::visitType(const llvm::Type *type)
 void
 TypeVisitor::visitPointerType(const PointerType *ptrType)
 {
-    const llvm::Type *elemType = ptrType->getPointerElementType();
+    const llvm::Type *elemType = ptrType->getNonOpaquePointerElementType();
 
     refmode_t typeId = gen.refmode<llvm::Type>(*ptrType);
     refmode_t elemTypeId = gen.refmode<llvm::Type>(*elemType);

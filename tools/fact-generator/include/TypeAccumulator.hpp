@@ -67,7 +67,9 @@ class cclyzer::llvm_utils::TypeAccumulator
             visitType(elementType->getArrayElementType());
         }
         else if (elementType->isPointerTy()) {
-            visitType(elementType->getNonOpaquePointerElementType());
+            //pointers no longer have element types as of LLVM-17, can't recurse into components
+            //visitType(elementType->getNonOpaquePointerElementType());
+            return;
         }
         else if (elementType->isStructTy()) {
             visitStructType(elementType);

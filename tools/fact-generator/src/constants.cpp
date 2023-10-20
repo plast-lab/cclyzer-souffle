@@ -5,7 +5,6 @@
 #include "FactGenerator.hpp"
 #include <llvm/ADT/SmallVector.h>
 
-
 using cclyzer::FactGenerator;
 using llvm::cast;
 using llvm::isa;
@@ -53,11 +52,10 @@ FactGenerator::writeConstant(const llvm::Constant &c)
         writeFact(pred::integer_constant::id, id);
 
         // Compute integer string representation
-        //std::string int_value = c.getUniqueInteger().toString(10, true);
-        llvm::SmallVector temp = llvm::SmallVector<char>(12);
-        c.getUniqueInteger().toString(temp,10,true);
-        std::string int_value_as_string = std::string(temp.data());
-        
+        llvm::SmallVector<char> temp;
+        c.getUniqueInteger().toString(temp,10,true);   
+        std::string int_value_as_string = std::string().append(temp.data(),temp.size());
+    
         // Write constant to integer fact
         writeFact(pred::constant::to_integer, id, int_value_as_string);
     }

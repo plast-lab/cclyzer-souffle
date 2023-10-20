@@ -83,16 +83,14 @@ TypeVisitor::visitType(const llvm::Type *type)
 void
 TypeVisitor::visitPointerType(const PointerType *ptrType)
 {
-    const llvm::Type *elemType = ptrType->getNonOpaquePointerElementType();
+    //pointers no longer have element types as of LLVM-17,
+    //only thing to record is pointer type entities and their address space
 
     refmode_t typeId = gen.refmode<llvm::Type>(*ptrType);
-    refmode_t elemTypeId = gen.refmode<llvm::Type>(*elemType);
 
     // Record pointer type entity
     gen.writeFact(pred::ptr_type::id, typeId);
 
-    // Record pointer element type
-    gen.writeFact(pred::ptr_type::component_type, typeId, elemTypeId);
 
     // Record pointer address space
     if (unsigned addressSpace = ptrType->getPointerAddressSpace())

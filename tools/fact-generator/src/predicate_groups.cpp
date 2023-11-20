@@ -245,6 +245,7 @@ pred_t cmpxchg::isvolatile("cmpxchg_instruction_is_volatile");
 
 pred_t gep::instr("getelementptr_instruction");
 pred_t gep::base("getelementptr_instruction_base");
+pred_t gep::base_type("getelementptr_instruction_base_type");
 pred_t gep::index("getelementptr_instruction_index");
 pred_t gep::nindices("getelementptr_instruction_nindices");
 pred_t gep::inbounds("getelementptr_instruction_is_inbounds");

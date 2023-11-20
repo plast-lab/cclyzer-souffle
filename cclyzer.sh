@@ -72,6 +72,6 @@ else
     echo "#define CONTEXT_INSENSITIVE" >> "$ANALYSIS_CONFIG"
 fi
 
-souffle --profile=cclyzer.log -F $OUTPUT_DIR/facts/ -D $OUTPUT_DIR/results/ $CCLYZER_DIR/src/logic/master.project
+souffle -j auto -F $OUTPUT_DIR/facts/ -D $OUTPUT_DIR/results/ $CCLYZER_DIR/src/logic/master.project
 rm "$ANALYSIS_CONFIG"
 touch "$ANALYSIS_CONFIG"

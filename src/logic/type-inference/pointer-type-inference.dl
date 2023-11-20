@@ -1,0 +1,70 @@
+// LLVM-17 replaces typed pointers with opaque ones, pointee element type information is no longer encoded
+// inside the pointers type.
+// All pointers are now of "ptr" type.To infer more specific pointer types we must extract the information
+// from the relevant instructions
+
+.decl pointer_has_type(pointer:symbol , ptr_type: PointerType) 
+
+
+//alloca instructions
+pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
+  //indentify alloca instruction
+  alloca_instruction(instr),
+  alloca_instruction_type(instr,var_type),
+  instruction_assigns_to(instr,pointer),
+  //build type for pointer
+  ptr_type = cat(var_type,"*").
+
+
+//load instructions
+pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
+  //indentify load instruction
+  load_instruction(instr),
+  load_instruction_address(instr,pointer),
+  instruction_assigns_to(instr,var),
+  //build type for pointer
+  variable_has_type(var,var_type),
+  ptr_type = cat(var_type,"*").
+
+
+//store instructions
+pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
+  //identify store instructions
+  store_instruction(instr),
+  store_instruction_address(instr,pointer),
+  store_instruction_value_type(instr,var_type),
+  //build type for pointer
+  ptr_type = cat(var_type,"*").
+
+
+//getelementptr instructions: var -> base
+pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
+  //indentify GEP instructions
+  getelementptr_instruction(instr),
+  getelementptr_instruction_base(instr,pointer),
+  getelementptr_instruction_base_type(instr,var_type),
+  //build pointer type
+  ptr_type = cat(var_type,"*").
+
+
+.decl pointer_has_most_specific_type(v:symbol , t:Type)
+
+pointer_has_most_specific_type(ptr, t) :-
+  pointer_has_type(ptr, t),
+  !match("ptr.*",t).
+
+
+.output variable_has_type
+.output pointer_has_type
+.output pointer_type_has_component
+.output pointer_has_most_specific_type
+.output pointer_type
+
+
+//update pointer type relation
+pointer_type(ptr_type), type(ptr_type) :-
+  pointer_has_type(_,ptr_type).
+
+//pointers also are variables -> update variable has type
+variable_has_type(as(pointer, Variable),type):-
+  pointer_has_most_specific_type(pointer , type).

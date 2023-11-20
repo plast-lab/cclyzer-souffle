@@ -268,7 +268,6 @@
 .output gep_interm_points_to
 .output gep_is_vector_based
 .output gep_points_to
-.output getelementptr_instruction_base_type
 .output getelementptr_instruction_index_type
 .output getelementptr_instruction_interm_type
 .output getelementptr_instruction_value_type

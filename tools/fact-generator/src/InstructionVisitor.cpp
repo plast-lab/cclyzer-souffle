@@ -559,7 +559,7 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
     if(pos != string::npos){
       type_str = type_str.substr(0, pos -1);
     }
-    gen.writeFact(pred::gep::base_type, iref , type_str);
+    gen.writeFact(pred::gep::base_type, iref , type_str.append("*"));
 
     for (unsigned index = 1; index < GEP.getNumOperands(); ++index)
     {

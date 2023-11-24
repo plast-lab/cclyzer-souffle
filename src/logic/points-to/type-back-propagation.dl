@@ -61,6 +61,23 @@ type_indication(?type, ?aCtx, ?alloc) :-
    type_has_size(?baseType,baseSize),
    size = (size / baseSize) * baseSize.
 
+.decl type_indication6(?type: Type, ?aCtx: AllocationContext, ?excObj: symbol)
+
+.output type_indication6
+// LLVM-17 opaque pointers make bitcast instructions redundant
+// we use type information infered from load,store,alloca and getelementptr instructions
+// as type indicators 
+type_indication6(?type, ?aCtx, ?alloc),
+type_indication(?type, ?aCtx, ?alloc) :-
+   instruction_assigns_to(?instr,?pointer_var),
+   pointer_has_type(?pointer_var,?ptrType), //   pointer_has_most_specific_type(?pointer_var,?ptrType),
+   instruction_in_function(?instr,?instrFunc),
+   reachable_context(?ctx, ?instrFunc),
+   operand_points_to(?aCtx, ?alloc, ?ctx, ?pointer_var),
+   untyped_allocation(?allocInstr, ?alloc),
+   !sized_alloc_instr(?allocInstr,_),
+   pointer_type_has_component(?ptrType,?type).
+
 heap_allocation(?typedAlloc):-
    heap_allocation_by_type_instruction(_, _, ?typedAlloc).
 

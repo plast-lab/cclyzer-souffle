@@ -38,13 +38,13 @@ pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_t
 
 
 //getelementptr instructions: var -> base
-pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
+pointer_has_type(pointer , as(ptr_type,PointerType)) :-
   //indentify GEP instructions
   getelementptr_instruction(instr),
   getelementptr_instruction_base(instr,pointer),
-  getelementptr_instruction_base_type(instr,var_type),
+  getelementptr_instruction_base_type(instr,ptr_type).
   //build pointer type
-  ptr_type = cat(var_type,"*").
+  // ptr_type = cat(var_type,"*").
 
 
 .decl pointer_has_most_specific_type(v:symbol , t:Type)

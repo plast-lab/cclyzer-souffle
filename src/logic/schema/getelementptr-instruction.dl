@@ -40,12 +40,9 @@ instruction(v) :- getelementptr_instruction(v).
 
 
 
-//todo -> is this necessary? infinite recursion with type inference? 
-
-// getelementptr_instruction_base_type(Instr, PtrType) :-
-//    getelementptr_instruction_base(Instr, BasePtr),
-//    operand_has_type(BasePtr, PtrType),
-//    PtrType != "ptr".
+getelementptr_instruction_base_type(Instr, PtrType) :-
+   getelementptr_instruction_base(Instr, BasePtr),
+   operand_has_type(BasePtr, PtrType).
 
 getelementptr_instruction_index_type(Instr, IdxType) :-
    getelementptr_instruction_index(Instr, _, Idx),

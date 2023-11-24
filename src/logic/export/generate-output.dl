@@ -271,6 +271,7 @@
 .output getelementptr_instruction_index_type
 .output getelementptr_instruction_interm_type
 .output getelementptr_instruction_value_type
+.output getelementptr_instruction_base_type
 .output global_allocation
 .output global_allocation_by_function
 .output global_allocation_by_variable

@@ -35,7 +35,7 @@ class cclyzer::DebugInfoProcessor::Impl
         if (auto *DDI = llvm::dyn_cast<llvm::DbgDeclareInst>(&I)){
                debugInfoFinder.processInstruction(module,I);
                record_local_var_assoc(*DDI);
-        }else if (auto *DVI = llvm::dyn_cast<llvm::DbgValueInst>(&I)){
+        }else{
                debugInfoFinder.processInstruction(module,I);
         }   
     }

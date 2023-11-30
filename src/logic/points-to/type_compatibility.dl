@@ -17,6 +17,12 @@ type_compatible(?type, ?type) :-
    ! ?type= "fp128",	//why are they appearing here, but not in cclyzer?
    ! ?type= "half".
 
+
+//LLVM generic pointer type "ptr" should be compatible with any other pointer type
+type_compatible("ptr", ?ptr_type) :-
+   pointer_type(?ptr_type).
+
+
 // Struct types
 
 .decl _first_field_of_struct(?field:Type, ?type:StructType)

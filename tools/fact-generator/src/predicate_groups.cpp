@@ -19,6 +19,7 @@ pred_t global_var::flag("global_variable_has_flag");
 pred_t global_var::linkage("global_variable_has_linkage_type");
 pred_t global_var::visibility("global_variable_has_visibility");
 pred_t global_var::threadlocal_mode("global_variable_in_threadlocal_mode");
+pred_t global_var::value_type("global_variable_value_type");
 
 pred_t alias::id("alias");
 pred_t alias::name("alias_has_name");

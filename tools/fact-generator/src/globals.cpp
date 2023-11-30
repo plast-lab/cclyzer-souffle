@@ -71,7 +71,16 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
     // Serialize global variable properties
     refmode_t visibility = refmode(gv.getVisibility());
     refmode_t linkage    = refmode(gv.getLinkage());
-    refmode_t varType    = recordType(gv.getValueType());
+    auto value_type = gv.getValueType();
+    recordType(value_type);
+    //string representation of value_type
+    std::string value_type_string;
+    llvm::raw_string_ostream rso(value_type_string);
+    value_type->print(rso);
+
+    //var type is pointer to value type
+    refmode_t varType  = value_type_string + "*";
+    // refmode_t valueType = refmode(gv.getValueType());
     refmode_t thrLocMode = refmode(gv.getThreadLocalMode());
 
     // Record unmangled variable name
@@ -101,8 +110,8 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
     const char *flag = gv.isConstant() ? "constant": "global";
 
     writeFact(pred::global_var::flag, id, flag);
-    //here
     writeFact(pred::global_var::type, id, varType);
+    writeFact(pred::global_var::value_type, id, value_type_string);
 
     // Record initializer
     if (gv.hasInitializer()) {

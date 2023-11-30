@@ -37,15 +37,20 @@ pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_t
   ptr_type = cat(var_type,"*").
 
 
-//getelementptr instructions: var -> base
 pointer_has_type(pointer , as(ptr_type,PointerType)) :-
   //indentify GEP instructions
   getelementptr_instruction(instr),
   getelementptr_instruction_base(instr,pointer),
   getelementptr_instruction_base_type(instr,ptr_type).
-  //build pointer type
-  // ptr_type = cat(var_type,"*").
 
+
+
+//global variables
+//global variables are always treated as pointers
+pointer_type_has_component(as(ptr_type,PointerType) , value_type),pointer_has_type(pointer , as(ptr_type,PointerType)) :-
+  global_variable(pointer),
+  global_variable_value_type(pointer,value_type),
+  global_variable_has_type(pointer,ptr_type).
 
 .decl pointer_has_most_specific_type(v:symbol , t:Type)
 

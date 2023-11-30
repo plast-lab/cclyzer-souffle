@@ -8,6 +8,9 @@
 #include "FactGenerator.hpp"
 #include "InstructionVisitor.hpp"
 
+#include "llvm/IR/TypeFinder.h"
+
+
 #define foreach BOOST_FOREACH
 
 
@@ -31,6 +34,21 @@ FactGenerator::processModule(const llvm::Module &Mod, const std::string& path)
     ModuleContext MC(*this, Mod, path);
 
     llvm::SmallVector<std::pair<unsigned, llvm::MDNode*>, 4> MDForInst;
+    
+    // Cclyzer's accumulates top-level types in a set by parsing the IR's functions,instructions , etc
+    // Then cclyzer iterates over the top-level types, and for composite or pointer types , it recursively records their component types.
+    // Because of the transition to opaque pointers , pointer types no longer hold information about the type of objects they point to
+    // and the recursion breaks without ever visiting the component types
+    // e.g LLVM14: visit %MyStruct* Type -> also visit %MyStruct type
+    //     LLVM17:  %MyStruct* is now the generic "ptr" type and we cannot visit %MyStruct type
+    // To fix this we use LLVM's TypeFinder to record all StructTypes in an LLVM module and to stop relying on the old component visior pattern
+    // 
+    llvm::TypeFinder Types;
+    Types.run(Mod, false);
+    for (auto *STy : Types){
+        recordType(STy);
+    }
+
 
     // iterate over named metadata
     for (llvm::Module::const_named_metadata_iterator

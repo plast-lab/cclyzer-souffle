@@ -120,3 +120,4 @@ type_compatible(?from, ?to) :-
    pointer_type_has_component(?from, ?i8),
    int8_type(?i8),
    pointer_type(?to).
+   

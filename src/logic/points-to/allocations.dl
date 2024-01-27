@@ -1,3 +1,6 @@
+.decl _alloc_var(?alloc:Allocation,?var:Variable)
+
+
 /// 1. Alloca Instructions
 
 alloc_context(?aCtx),
@@ -5,8 +8,11 @@ var_points_to(?aCtx, ?alloc, ?ctx, ?var) :-
   acontext_request(?ctx, ?alloc, ?var),
   acontext_response(?ctx, ?alloc, ?var, ?aCtx).
 
+
+_alloc_var(?stackAlloc,?var),
 stack_allocation(?stackAlloc),
 stack_allocation_by_instruction(?instr, ?stackAlloc),
+allocation_type(?stackAlloc, ?type),
 acontext_request(?ctx, ?stackAlloc, ?var) :-
   alloca_instruction(?instr),
   instruction_assigns_to(?instr, ?var),
@@ -17,15 +23,13 @@ acontext_request(?ctx, ?stackAlloc, ?var) :-
   ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc", ?funcName),"["),?type)," "),?name),"]"),
   reachable_context(?ctx, ?instrFunc).
 
-allocation_type(?stackAlloc, ?type) :-
-   alloca_instruction(?instr),
-   alloca_instruction_type(?instr,?type),
-   stack_allocation_by_instruction(?instr, ?stackAlloc).
 
 /// 2. Parameters with pass-by-value semantics
 
+_alloc_var(?stackAlloc,?param),
 stack_allocation(?stackAlloc),
 stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
+allocation_type(?stackAlloc, ?type),
 acontext_request(?ctx, ?stackAlloc, ?param) :-
   function_param_by_value(?func, ?index),
   function_param(?func, ?index, ?param),
@@ -35,11 +39,6 @@ acontext_request(?ctx, ?stackAlloc, ?param) :-
   ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc",?funcName),"["),?type)," "),?name),"]"),
   reachable_context(?ctx, ?func).
 
-allocation_type(?stackAlloc, ?type) :-
-  stack_allocation_by_parameter(?func, ?index, ?stackAlloc),
-  function_has_type(?func,?funcType),
-  function_type_param(?funcType, ?index, ?paramType),
-  pointer_type_has_component(?paramType, ?type).
 
 //---------------------------------------------------------------------
 // [Heap Allocations]
@@ -48,6 +47,7 @@ allocation_type(?stackAlloc, ?type) :-
 // heap is not always associated with a type (at least locally).
 //---------------------------------------------------------------------
 
+_alloc_var(?heapAlloc,?var),
 heap_allocation(?heapAlloc),
 heap_allocation_by_instruction(?instr, ?heapAlloc),
 acontext_request(?ctx, ?heapAlloc, ?var) :-
@@ -133,6 +133,7 @@ heap_allocation_types(?type, ?aCtx, ?heapAlloc) :-
 
 /// 1. Global variable allocations
 
+_alloc_var(?alloc,as(?gVar,Variable)),
 global_allocation(?alloc),
 global_allocation_by_variable(?gVar, ?alloc):-
    global_variable(?gVar),

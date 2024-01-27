@@ -256,6 +256,25 @@ gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
    alloc_subregion_at_field(?alloc, ?field, ?allocField).
 
 
+//same as above but using the generic "ptr" pointer type
+gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
+ :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   // Base type of GEP is pointer to i8
+   getelementptr_instruction_base_type(?insn, "ptr"),
+   // first index is a constant
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?offset),
+   // match byte offset to field
+   allocation_type(?alloc, ?type),
+   struct_type(?type),
+   struct_type_field_offset(?type, ?field, ?offset),
+   // get subobject of this field
+   alloc_subregion_at_field(?alloc, ?field, ?allocField).
+
+
+
+
 //------------------------------------------------------------------------------
 // For the rest of the indices of the GEP instruction
 //------------------------------------------------------------------------------

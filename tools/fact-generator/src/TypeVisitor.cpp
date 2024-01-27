@@ -138,10 +138,15 @@ TypeVisitor::visitStructType(const StructType *structType)
             refmode_t fieldType = gen.refmode<llvm::Type>(
                 *(structType->getStructElementType(i)));
 
+            refmode_t fieldType2 = gen.refmode<llvm::Type>(
+                *(structType->getTypeAtIndex(i)));
+
+            
+
             uint64_t fieldOffset = structLayout->getElementOffset(i);
             uint64_t fieldBitOffset = structLayout->getElementOffsetInBits(i);
 
-            gen.writeFact(pred::struct_type::field_type, tref, i, fieldType);
+            gen.writeFact(pred::struct_type::field_type, tref, i, fieldType2);
             gen.writeFact(pred::struct_type::field_offset, tref, i, fieldOffset);
             gen.writeFact(pred::struct_type::field_bit_offset, tref, i, fieldBitOffset);
         }

@@ -2,11 +2,20 @@
 
 // Mark all heap allocations that do not carry any type information
 
-.decl untyped_allocation(?insn: Instruction, ?alloc: Allocation)
+.decl untyped_heap_allocation(?insn: Instruction, ?alloc: Allocation)
 
-untyped_allocation(?insn, ?alloc) :-
+untyped_heap_allocation(?insn, ?alloc) :-
    heap_allocation_by_instruction(?insn, ?alloc).
 
+.decl untyped_allocation(?alloc:Allocation)
+
+untyped_allocation(?alloc) :-
+   untyped_heap_allocation(_, ?alloc).
+
+
+untyped_allocation(?alloc) :-
+   allocation_type(?alloc,?type),
+   match("ptr",?type).
 
 // Type indication for *untyped* allocation
 
@@ -27,7 +36,7 @@ type_indication(?type, ?aCtx, ?alloc) :-
    instruction_in_function(?instr,?instrFunc),
    reachable_context(?ctx, ?instrFunc),
    operand_points_to(?aCtx, ?alloc, ?ctx, ?fromOperand),
-   untyped_allocation(?allocInstr, ?alloc),
+   untyped_heap_allocation(?allocInstr, ?alloc),
    !sized_alloc_instr(?allocInstr,_),
    pointer_type_has_component(?ptrType,?type).
 
@@ -39,7 +48,7 @@ type_indication(?type, ?aCtx, ?alloc) :-
    instruction_in_function(?instr,?instrFunc),
    reachable_context(?ctx, ?instrFunc),
    operand_points_to(?aCtx, ?alloc, ?ctx, ?fromOperand),
-   untyped_allocation(?allocInstr, ?alloc),
+   untyped_heap_allocation(?allocInstr, ?alloc),
    pointer_type_has_component(?ptrType,?type),
    sized_alloc_instr(?allocInstr,?size),
    type_has_size(?type,?size).
@@ -54,7 +63,7 @@ type_indication(?type, ?aCtx, ?alloc) :-
    instruction_in_function(?instr,?instrFunc),
    reachable_context(?ctx, ?instrFunc),
    operand_points_to(?aCtx, ?alloc, ?ctx, ?fromOperand),
-   untyped_allocation(?allocInstr, ?alloc),
+   untyped_heap_allocation(?allocInstr, ?alloc),
    pointer_type_has_component(?ptrType,?type),
    pointer_type_base_component(?ptrType, ?baseType),
    sized_alloc_instr(?allocInstr, size),
@@ -67,46 +76,105 @@ type_indication(?type, ?aCtx, ?alloc) :-
 // LLVM-17 opaque pointers make bitcast instructions redundant
 // we use type information infered from load,store,alloca and getelementptr instructions
 // as type indicators 
-type_indication6(?type, ?aCtx, ?alloc),
+
+//if a var that points to an allocation has been infered to have type T*,
+//that is an indication that alloc is of type T 
+type_indication5(?type, ?aCtx, ?alloc),
 type_indication(?type, ?aCtx, ?alloc) :-
-   instruction_assigns_to(?instr,?pointer_var),
-   pointer_has_type(?pointer_var,?ptrType), //   pointer_has_most_specific_type(?pointer_var,?ptrType),
-   instruction_in_function(?instr,?instrFunc),
-   reachable_context(?ctx, ?instrFunc),
-   operand_points_to(?aCtx, ?alloc, ?ctx, ?pointer_var),
-   untyped_allocation(?allocInstr, ?alloc),
-   !sized_alloc_instr(?allocInstr,_),
+   untyped_allocation(?alloc),
+   var_points_to(?aCtx, ?alloc, _, ?pointer_var),
+   pointer_has_type(?pointer_var,?ptrType),
    pointer_type_has_component(?ptrType,?type).
+
+//type indication for allocations that point to other allocations (that have a type indication themselves)
+type_indication6(?PointerAllocType, ?aCtx, ?PointerAlloc),
+type_indication(?PointerAllocType, ?aCtx, ?PointerAlloc) :-
+   untyped_allocation(?PointerAlloc),
+   ptr_points_to(?PointeeCtx,?PointeeAlloc, ?aCtx, ?PointerAlloc),
+   type_indication(?PointeeAllocType, ?PointeeCtx, ?PointeeAlloc),
+   pointer_type_has_component(?PointerAllocType,?PointeeAllocType).
 
 heap_allocation(?typedAlloc):-
    heap_allocation_by_type_instruction(_, _, ?typedAlloc).
+
+allocation(?typedAlloc):-
+   allocation_by_type_inference(_, ?typedAlloc).
 
 .decl _assign_rebase_alloc(?typedAlloc: HeapAllocation, ?aCtx: AllocationContext, ?alloc: Allocation, ?var: Variable)
 heap_allocation_by_type_instruction(?type, ?allocInstr, ?typedAlloc), 
    _assign_rebase_alloc(?typedAlloc, ?aCtx, ?alloc, ?var)
  :-
-   untyped_allocation(?allocInstr, ?alloc),
+   untyped_heap_allocation(?allocInstr, ?alloc),
    type_indication(?type, ?aCtx, ?alloc),
    instruction_assigns_to(?allocInstr, ?var),
    variable_in_function(?var, ?func),
    variable_has_name(?var, ?name),
    function_has_name(?func, ?funcName),
-   ?typedAlloc= cat(cat(cat(cat(cat(cat("*typed_heap_alloc", ?funcName), "[" ), ?type ), " " ), ?name ), "]").
+   ?typedAlloc= cat(cat(cat(cat(cat(cat("*infered_type_alloc", ?funcName), "[" ), cat(?type,"*") ), " " ), ?name ), "]").
 
 .output _assign_rebase_alloc
+
+.decl allocation_by_type_inference(?type:Type , ?typedAlloc:HeapAllocation)
+.decl _keep_alloc_var_assoc(?typedAlloc: HeapAllocation,?aCtx: AllocationContext, ?alloc: Allocation, ?var: Variable)
+.output _keep_alloc_var_assoc
+
+_keep_alloc_var_assoc(?typedAlloc,?aCtx,?alloc,?var),
+allocation_by_type_inference(?type, ?typedAlloc) :-
+   type_indication(?type, ?aCtx, ?alloc),
+   var_points_to(?aCtx, ?alloc, _, ?var),
+   _alloc_var(?alloc,?var),
+   variable_in_function(?var, ?func),
+   variable_has_name(?var, ?name),
+   function_has_name(?func, ?funcName),
+   ?typedAlloc= cat(cat(cat(cat(cat(cat("*infered_type_alloc", ?funcName), "[" ), cat(?type,"*") ), " " ), ?name ), "]").
+
+.output allocation_by_type_inference
+
+
+var_points_to(?aCtx, ?typedAlloc, ?ctx, ?var) :-
+   _keep_alloc_var_assoc(?typedAlloc,?aCtx,?alloc,?var),
+   var_points_to(?aCtx, ?alloc, ?ctx, ?var).
 
 var_points_to(?aCtx, ?typedAlloc, ?ctx, ?var) :-
    _assign_rebase_alloc(?typedAlloc, ?aCtx, ?alloc, ?var),
    var_points_to(?aCtx, ?alloc, ?ctx, ?var).
 
+.decl allocation_type_debug(?alloc:Allocation , ?type:Type)
+.output allocation_type_debug
+
 allocation_type(?alloc, ?type) :-
    heap_allocation_by_type_instruction(?type, _, ?alloc).
 
+allocation_type(?alloc, ?type) :-
+   allocation_by_type_inference(?type, ?alloc).
+
 allocation_to_string(?alloc, ?str) :-
    heap_allocation_by_type_instruction(_, _, ?alloc),
+   ?str = ?alloc.
+
+
+allocation_to_string(?alloc, ?str) :-
+   allocation_by_type_inference(_, ?alloc),
    ?str = ?alloc.
 
 allocation_pos(?alloc, ?line, ?column) :-
    heap_allocation_by_type_instruction(_, ?insn, ?alloc),
    instruction_pos(?insn, ?line, ?column).
 
+
+// ======= Debug relations =======
+
+.decl var_without_points_to(var:Variable)
+.output var_without_points_to
+
+ var_without_points_to(var):-
+   variable(var),
+   !var_points_to(_, _, _, var).
+
+
+.decl var_points_to_num_of_allocs(var:Variable,num:number)
+.output var_points_to_num_of_allocs
+
+var_points_to_num_of_allocs(var,num):-
+   variable(var),
+   num = count : { var_points_to(_, _, _, var) }.

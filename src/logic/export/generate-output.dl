@@ -483,6 +483,7 @@
 .output unknown_location
 .output unordered_ordering
 .output unpadded_struct_type
+.output untyped_heap_allocation
 .output untyped_allocation
 .output user_options_entrypoints
 .output user_options_optimized_code

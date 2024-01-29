@@ -27,7 +27,8 @@ pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_t
   variable_has_type(var,var_type),
   ptr_type = cat(var_type,"*").
 
-//var type from ptr typepointer_has_type(var , as(var_type,PointerType)) :-
+//var type from ptr type
+pointer_has_type(var , as(var_type,PointerType)) :-
   //indentify load instruction
   load_instruction(instr),
   load_instruction_address(instr,pointer),

@@ -17,6 +17,7 @@ pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_t
 
 
 //load instructions
+//ptr type from var type
 pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
   //indentify load instruction
   load_instruction(instr),
@@ -26,8 +27,21 @@ pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_t
   variable_has_type(var,var_type),
   ptr_type = cat(var_type,"*").
 
+//var type from ptr typepointer_has_type(var , as(var_type,PointerType)) :-
+  //indentify load instruction
+  load_instruction(instr),
+  load_instruction_address(instr,pointer),
+  instruction_assigns_to(instr,var),
+  //build type for var
+  pointer_has_most_specific_type(pointer,ptr_type),  
+  pointer_type_has_component(ptr_type,var_type).
+
+
+
+
 
 //store instructions
+//pointer type from variable type
 pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_type) :-
   //identify store instructions
   store_instruction(instr),
@@ -36,6 +50,16 @@ pointer_type_has_component(ptr_type , var_type),pointer_has_type(pointer , ptr_t
   //build type for pointer
   ptr_type = cat(var_type,"*").
 
+//variable type from pointer type
+  pointer_has_most_specific_type(variable,var_type):-
+  //identify store instructions
+  store_instruction(instr),
+  store_instruction_address(instr,pointer),
+  store_instruction_value(instr,variable),
+  pointer_has_most_specific_type(pointer,pointer_type),
+  //get type for variable
+  pointer_type_has_component(pointer_type,var_type).
+  
 
 pointer_has_type(pointer , as(ptr_type,PointerType)) :-
   //indentify GEP instructions

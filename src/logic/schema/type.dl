@@ -251,7 +251,15 @@ schema_invalid_type(Type, __FILE__, __LINE__) :-
 // Get to the base component
 pointer_type_base_component(Type, BaseComp) :-
    pointer_type_has_component(Type, BaseComp),
-   !pointer_type(BaseComp).
+   not_pointer_type(BaseComp).
+   // !pointer_type(BaseComp).
+
+.decl not_pointer_type(type:Type)
+// TODO: check if this definition is correct
+not_pointer_type(t):-
+   type(t),
+   !contains("*",t),
+   t != "ptr".   
 
 pointer_type_base_component(Type, BaseComp) :-
    pointer_type_has_component(Type, Comp),

@@ -83,16 +83,14 @@ TypeVisitor::visitType(const llvm::Type *type)
 void
 TypeVisitor::visitPointerType(const PointerType *ptrType)
 {
-    const llvm::Type *elemType = ptrType->getPointerElementType();
+    //pointers no longer have element types as of LLVM-17,
+    //only thing to record is pointer type entities and their address space
 
     refmode_t typeId = gen.refmode<llvm::Type>(*ptrType);
-    refmode_t elemTypeId = gen.refmode<llvm::Type>(*elemType);
 
     // Record pointer type entity
     gen.writeFact(pred::ptr_type::id, typeId);
 
-    // Record pointer element type
-    gen.writeFact(pred::ptr_type::component_type, typeId, elemTypeId);
 
     // Record pointer address space
     if (unsigned addressSpace = ptrType->getPointerAddressSpace())
@@ -140,10 +138,15 @@ TypeVisitor::visitStructType(const StructType *structType)
             refmode_t fieldType = gen.refmode<llvm::Type>(
                 *(structType->getStructElementType(i)));
 
+            refmode_t fieldType2 = gen.refmode<llvm::Type>(
+                *(structType->getTypeAtIndex(i)));
+
+            
+
             uint64_t fieldOffset = structLayout->getElementOffset(i);
             uint64_t fieldBitOffset = structLayout->getElementOffsetInBits(i);
 
-            gen.writeFact(pred::struct_type::field_type, tref, i, fieldType);
+            gen.writeFact(pred::struct_type::field_type, tref, i, fieldType2);
             gen.writeFact(pred::struct_type::field_offset, tref, i, fieldOffset);
             gen.writeFact(pred::struct_type::field_bit_offset, tref, i, fieldBitOffset);
         }

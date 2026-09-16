@@ -6,6 +6,7 @@
 #include "TypeVisitor.hpp"
 #include "TypeAccumulator.hpp"
 
+
 using cclyzer::FactGenerator;
 namespace pred = cclyzer::predicates;
 

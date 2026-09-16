@@ -52,6 +52,7 @@ namespace cclyzer
             static pred_t linkage;
             static pred_t visibility;
             static pred_t threadlocal_mode;
+            static pred_t value_type;
         };
 
         struct alias : public predicate_group {
@@ -356,6 +357,7 @@ namespace cclyzer
         struct gep : public predicate_group {
             static pred_t instr;
             static pred_t base;
+            static pred_t base_type;
             static pred_t index;
             static pred_t nindices;
             static pred_t inbounds;

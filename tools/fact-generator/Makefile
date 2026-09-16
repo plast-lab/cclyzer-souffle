@@ -14,7 +14,7 @@ CXXFLAGS += -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter    \
             -O1  
 # Linux supports -O3 but macOS for some reason does not
 
-LLVM_CONFIG ?= llvm-config
+LLVM_CONFIG ?= llvm-config-17
 LIBBOOST_PYTHON ?= -lboost_python
 
 
@@ -56,7 +56,7 @@ LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options
 #-----------------------------------
 
 CPPFLAGS += $(addprefix -I ,$(include_dirs))
-CXXFLAGS += -fPIC -g -std=c++14
+CXXFLAGS += -fPIC -g -std=c++17
 
 $(outdir)/%.o: %.cpp | $(outdir)
 	$(COMPILE.cpp) -o $@ $<

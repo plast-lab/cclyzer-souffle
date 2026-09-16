@@ -5,7 +5,7 @@
 #include <llvm/IR/DebugInfo.h>
 #include "InstructionVisitor.hpp"
 #include "predicate_groups.hpp"
-
+#include "llvm/Support/Alignment.h"
 
 namespace pred = cclyzer::predicates;
 
@@ -398,8 +398,8 @@ InstructionVisitor::visitAllocaInst(const llvm::AllocaInst &AI)
     if(AI.isArrayAllocation())
         writeInstrOperand(pred::alloca::size, iref, AI.getArraySize());
 
-    if(AI.getAlignment())
-        gen.writeFact(pred::alloca::alignment, iref, AI.getAlignment());
+    if(AI.getAlign().value())
+        gen.writeFact(pred::alloca::alignment, iref, AI.getAlign().value());
 }
 
 
@@ -413,11 +413,22 @@ InstructionVisitor::visitLoadInst(const llvm::LoadInst &LI)
     if (LI.isAtomic())
         writeAtomicInfo<pred::load>(iref, LI);
 
-    if (LI.getAlignment())
-        gen.writeFact(pred::load::alignment, iref, LI.getAlignment());
+    if (LI.getAlign().value())
+        gen.writeFact(pred::load::alignment, iref, LI.getAlign().value());
 
     if (LI.isVolatile())
         gen.writeFact(pred::load::isvolatile, iref);
+
+
+    // auto pointerOperand = LI.getPointerOperand();
+    // auto pointerType = pointerOperand->getType();
+
+    // auto elementType = LI.getAccessType();
+    
+    // refmode_t typeId = gen.refmode<llvm::Type>(*pointerType);
+    // refmode_t elemTypeId = gen.refmode<llvm::Type>(*elementType);
+
+    // gen.writeFact(pred::ptr_type::component_type, typeId, elemTypeId);
 }
 
 
@@ -463,8 +474,8 @@ InstructionVisitor::visitStoreInst(const llvm::StoreInst &SI)
     if (SI.isAtomic())
         writeAtomicInfo<pred::store>(iref, SI);
 
-    if (SI.getAlignment())
-        gen.writeFact(pred::store::alignment, iref, SI.getAlignment());
+    if (SI.getAlign().value())
+        gen.writeFact(pred::store::alignment, iref, SI.getAlign().value());
 
     if (SI.isVolatile())
         gen.writeFact(pred::store::isvolatile, iref);
@@ -539,6 +550,21 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
 {
     refmode_t iref = recordInstruction(pred::gep::instr, GEP);
     writeInstrOperand(pred::gep::base, iref, GEP.getPointerOperand());
+    auto sourceElementType = GEP.getSourceElementType();
+
+    std::string type_str;
+    llvm::raw_string_ostream rso(type_str);
+    sourceElementType->print(rso);
+    auto pos = type_str.find("= type");
+    if(pos != string::npos){
+      type_str = type_str.substr(0, pos -1);
+    }
+
+    string pointer_type_string = type_str;
+    pointer_type_string.append("*");
+
+    gen.writeFact(pred::ptr_type::component_type, pointer_type_string , type_str);
+    gen.writeFact(pred::gep::base_type, iref , pointer_type_string);
 
     for (unsigned index = 1; index < GEP.getNumOperands(); ++index)
     {
@@ -551,7 +577,7 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
             // Compute integer string representation
             llvm::SmallVector<char> temp;
             c->getUniqueInteger().toString(temp,10,true);   
-            string int_value = string().append(temp.data(),temp.size());//= c->getUniqueInteger().toString(10, true);
+            string int_value = string().append(temp.data(),temp.size());
             // Write constant to integer fact
             gen.writeFact(pred::constant::to_integer, opref, int_value);
         }

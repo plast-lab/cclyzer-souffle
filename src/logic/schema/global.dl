@@ -12,6 +12,8 @@
 .decl global_variable_in_section(gv:GlobalVariable, sect:symbol)
 .decl global_variable_in_threadlocal_mode(gv:GlobalVariable, mode:ThreadLocalMode)
 .decl global_variable_aligned_to(gv:GlobalVariable, alignment:number)
+.decl global_variable_value_type(gv:GlobalVariable, type:Type)
+
 
 flag(Flag) :- global_variable_has_flag(_, Flag).
 

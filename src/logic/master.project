@@ -5,6 +5,7 @@
 #include "callgraph/callgraph.project"
 #include "export/export.project"
 #include "points-to/points-to.project"
+#include "type-inference/type-inference.project"
 
 #if defined(CONTEXT_INSENSITIVE)
   #include "context/insensitive/insensitive.project"

@@ -19,6 +19,7 @@ pred_t global_var::flag("global_variable_has_flag");
 pred_t global_var::linkage("global_variable_has_linkage_type");
 pred_t global_var::visibility("global_variable_has_visibility");
 pred_t global_var::threadlocal_mode("global_variable_in_threadlocal_mode");
+pred_t global_var::value_type("global_variable_value_type");
 
 pred_t alias::id("alias");
 pred_t alias::name("alias_has_name");
@@ -245,6 +246,7 @@ pred_t cmpxchg::isvolatile("cmpxchg_instruction_is_volatile");
 
 pred_t gep::instr("getelementptr_instruction");
 pred_t gep::base("getelementptr_instruction_base");
+pred_t gep::base_type("getelementptr_instruction_base_type");
 pred_t gep::index("getelementptr_instruction_index");
 pred_t gep::nindices("getelementptr_instruction_nindices");
 pred_t gep::inbounds("getelementptr_instruction_is_inbounds");

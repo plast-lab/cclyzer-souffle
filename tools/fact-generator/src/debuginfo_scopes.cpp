@@ -1,7 +1,7 @@
 #include <llvm/Config/llvm-config.h>
 #include "DebugInfoProcessorImpl.hpp"
 #include "debuginfo_predicate_groups.hpp"
-
+#include <llvm/BinaryFormat/Dwarf.h>
 
 using cclyzer::DebugInfoProcessor;
 using cclyzer::refmode_t;
@@ -203,7 +203,7 @@ DebugInfoProcessor::Impl::write_di_subprogram::write(
         const char *virtualityStr = llvm::dwarf::VirtualityString(virtuality);
         proc.writeFact(pred::di_subprogram::virtuality, nodeId, virtualityStr);
 #else
-        llvm::StringRef virtualityStr = llvm::dwarf::VirtualityString(virtuality);
+        llvm::StringRef virtualityStr = llvm::dwarf::VirtualityString(virtuality);       
         proc.writeFact(pred::di_subprogram::virtuality, nodeId, virtualityStr.str());
 #endif
 

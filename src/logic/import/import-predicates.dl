@@ -272,6 +272,7 @@ landingpad_instruction_clause(as(v0, LandingPadInstruction), v1, [v2]) :-
 .input global_variable_has_visibility(IO="file", delimiter="\t", filename="global_variable_has_visibility.csv")
 .input global_variable_in_section(IO="file", delimiter="\t", filename="global_variable_in_section.csv")
 .input global_variable_in_threadlocal_mode(IO="file", delimiter="\t", filename="global_variable_in_threadlocal_mode.csv")
+.input global_variable_value_type(IO="file", delimiter="\t", filename="global_variable_value_type.csv")
 .input global_variable_aligned_to(IO="file", delimiter="\t", filename="global_variable_aligned_to.csv")
 .input alias_aliasee(IO="file", delimiter="\t", filename="alias_aliasee.csv")
 .input alias_has_name(IO="file", delimiter="\t", filename="alias_has_name.csv")

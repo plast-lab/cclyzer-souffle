@@ -3,6 +3,7 @@
 #include <llvm/IR/Constants.h>
 #include "predicate_groups.hpp"
 #include "FactGenerator.hpp"
+#include <llvm/ADT/SmallVector.h>
 
 using cclyzer::FactGenerator;
 using llvm::cast;
@@ -51,13 +52,12 @@ FactGenerator::writeConstant(const llvm::Constant &c)
         writeFact(pred::integer_constant::id, id);
 
         // Compute integer string representation
-        //std::string int_value = c.getUniqueInteger().toString(10, true);
-        llvm::SmallString<256> temp= SmallString<256>();
-        c.getUniqueInteger().toString(temp,10,true);
-        std::string int_value = temp.str().str();
-
+        llvm::SmallVector<char> temp;
+        c.getUniqueInteger().toString(temp,10,true);   
+        std::string int_value_as_string = std::string().append(temp.data(),temp.size());
+    
         // Write constant to integer fact
-        writeFact(pred::constant::to_integer, id, int_value);
+        writeFact(pred::constant::to_integer, id, int_value_as_string);
     }
     else if (isa<ConstantFP>(c)) {
         writeFact(pred::fp_constant::id, id);

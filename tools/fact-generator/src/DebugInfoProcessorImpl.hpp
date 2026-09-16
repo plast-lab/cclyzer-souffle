@@ -10,7 +10,6 @@
 #include "ForwardingFactWriter.hpp"
 #include "RefmodeEngine.hpp"
 
-
 class cclyzer::DebugInfoProcessor::Impl
     : private Demangler,
       private ForwardingFactWriter
@@ -27,10 +26,7 @@ class cclyzer::DebugInfoProcessor::Impl
     }
 
 
-    //==========================================================================================
-    //Process instruction to replace processValue and processDecl
-    //based on https://github.com/llvm-mirror/llvm/blob/master/lib/IR/DebugInfo.cpp line 106
-    void
+     void
     processInstruction(const llvm::Module &module , const llvm::Instruction &I){
         if (auto *DDI = llvm::dyn_cast<llvm::DbgDeclareInst>(&I)){
                debugInfoFinder.processInstruction(module,I);
@@ -40,8 +36,6 @@ class cclyzer::DebugInfoProcessor::Impl
         }   
     }
     
-    //==========================================================================================
-
 
     void reset() { debugInfoFinder.reset(); }
 

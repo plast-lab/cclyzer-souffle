@@ -79,7 +79,8 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
     value_type->print(rso);
 
     //var type is pointer to value type
-    refmode_t varType  = value_type_string.append("*");
+    refmode_t varType  = value_type_string + "*";
+    // refmode_t valueType = refmode(gv.getValueType());
     refmode_t thrLocMode = refmode(gv.getThreadLocalMode());
 
     // Record unmangled variable name
@@ -110,6 +111,7 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
 
     writeFact(pred::global_var::flag, id, flag);
     writeFact(pred::global_var::type, id, varType);
+    writeFact(pred::global_var::value_type, id, value_type_string);
 
     // Record initializer
     if (gv.hasInitializer()) {

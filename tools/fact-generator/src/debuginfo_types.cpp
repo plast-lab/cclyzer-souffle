@@ -1,5 +1,6 @@
 #include "DebugInfoProcessorImpl.hpp"
 #include "debuginfo_predicate_groups.hpp"
+#include <llvm/BinaryFormat/Dwarf.h>
 
 
 using cclyzer::DebugInfoProcessor;

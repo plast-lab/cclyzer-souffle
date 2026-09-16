@@ -268,10 +268,10 @@
 .output gep_interm_points_to
 .output gep_is_vector_based
 .output gep_points_to
-.output getelementptr_instruction_base_type
 .output getelementptr_instruction_index_type
 .output getelementptr_instruction_interm_type
 .output getelementptr_instruction_value_type
+.output getelementptr_instruction_base_type
 .output global_allocation
 .output global_allocation_by_function
 .output global_allocation_by_variable
@@ -483,6 +483,7 @@
 .output unknown_location
 .output unordered_ordering
 .output unpadded_struct_type
+.output untyped_heap_allocation
 .output untyped_allocation
 .output user_options_entrypoints
 .output user_options_optimized_code

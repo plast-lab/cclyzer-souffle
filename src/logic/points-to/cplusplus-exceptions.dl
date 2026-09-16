@@ -80,7 +80,7 @@ allocation_type(?excObj, ?type) :-
 // technique. However, we can supply more type hints that specifically
 // target exception throwing (see below).
 
-untyped_allocation(?insn, ?excObj) :-
+untyped_heap_allocation(?insn, ?excObj) :-
    inlined_constructors(),
    heap_allocation_by_alloc_exc(?insn, ?excObj).
 
@@ -210,7 +210,7 @@ cxx_throw_instruction_no_dtor(?throwInsn) :-
 type_indication4(?type, ?aCtx, ?excObj),
 type_indication(?type, ?aCtx, ?excObj)
  :-
-   untyped_allocation(_, ?excObj),
+   untyped_heap_allocation(_, ?excObj),
    cxx_throw_instruction_full_exception(?aCtx, ?excObj, ?throwInsn),
    cxx_throw_instruction_destructor(?dtor, ?throwInsn),
    destructor_class_type(?dtor, ?type).
@@ -218,7 +218,7 @@ type_indication(?type, ?aCtx, ?excObj)
 type_indication5(?classType, ?aCtx, ?excObj),
 type_indication(?classType, ?aCtx, ?excObj)
  :-
-   untyped_allocation(_, ?excObj),
+   untyped_heap_allocation(_, ?excObj),
    cxx_throw_instruction_full_exception(?aCtx, ?excObj, ?throwInsn),
    cxx_throw_instruction_typeinfo(?typeInfo, ?throwInsn),
    class_type_typeinfo(?classType, ?typeInfo).

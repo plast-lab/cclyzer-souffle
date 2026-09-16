@@ -38,6 +38,8 @@ instruction(v) :- getelementptr_instruction(v).
 .decl getelementptr_instruction_base_type(instr:GetElementPtrInstruction, type:Type)
 .decl getelementptr_instruction_index_type(instr:GetElementPtrInstruction, type:Type)
 
+
+
 getelementptr_instruction_base_type(Instr, PtrType) :-
    getelementptr_instruction_base(Instr, BasePtr),
    operand_has_type(BasePtr, PtrType).

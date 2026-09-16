@@ -22,5 +22,9 @@
 .vscode/settings.json
 src/logic/analysis.config
 cclyzer.log
+linecount.txt
+linecount2.txt
+linecount3.txt
 facts
 results
+lls/rust-f3d9c27dd824426c.ll

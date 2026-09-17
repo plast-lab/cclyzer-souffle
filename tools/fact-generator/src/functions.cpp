@@ -44,8 +44,8 @@ FactGenerator::writeFunction(
     if (!visibility.empty())
         writeFact(pred::function::visibility, funcref, visibility);
 
-    if (func.getAlignment())
-        writeFact(pred::function::alignment, funcref, func.getAlignment());
+    if (func.getAlign())
+        writeFact(pred::function::alignment, funcref, func.getAlign()->value());
 
     if (func.hasGC())
         writeFact(pred::function::gc, funcref, func.getGC());

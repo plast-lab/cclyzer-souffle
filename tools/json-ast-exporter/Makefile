@@ -30,9 +30,11 @@ include_dirs := $(json_library)
 # Compilation flags
 #-----------------------------------
 
-CXXFLAGS += -fPIC -g -std=c++11
+# GCC 15 parses uninstantiated template bodies and hard-errors on the vendored
+# jsoncons; we never instantiate those, so silence the check here.
+CXXFLAGS += -fPIC -g -std=c++11 -Wno-template-body
 CPPFLAGS += $(addprefix -I ,$(include_dirs))
-LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options
+LDLIBS   += -lboost_filesystem -lboost_program_options
 
 
 # LLVM specific flags

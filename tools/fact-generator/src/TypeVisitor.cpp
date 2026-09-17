@@ -74,8 +74,6 @@ TypeVisitor::visitType(const llvm::Type *type)
       case llvm::Type::FixedVectorTyID:
           visitVectorType(cast<VectorType>(type));
           break;
-      case llvm::Type::X86_MMXTyID: // TODO: handle this type
-          break;
     }
 }
 

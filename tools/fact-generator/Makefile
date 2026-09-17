@@ -14,7 +14,7 @@ CXXFLAGS += -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter    \
             -O1  
 # Linux supports -O3 but macOS for some reason does not
 
-LLVM_CONFIG ?= llvm-config-17
+LLVM_CONFIG ?= llvm-config
 LIBBOOST_PYTHON ?= -lboost_python
 
 
@@ -48,7 +48,7 @@ CPPFLAGS += $(shell $(LLVM_CONFIG) --cppflags)
 LDFLAGS  += $(shell $(LLVM_CONFIG) --ldflags)
 LDLIBS   += $(shell $(LLVM_CONFIG) --libs core irreader)
 LDLIBS   += $(filter-out -lz,$(shell $(LLVM_CONFIG) --system-libs))
-LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options 
+LDLIBS   += -lboost_filesystem -lboost_program_options
 
 
 #-----------------------------------

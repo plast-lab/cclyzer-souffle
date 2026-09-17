@@ -53,6 +53,10 @@ cclyzer::factgen(FileIt firstFile, FileIt endFile,
         if (!module)
             throw ParseException(inputFile);
 
+        // Since LLVM 19, debug info lives in records rather than @llvm.dbg.* intrinsics so debug facts are lost.
+        // Convert the records into the intrinsic representation to capture them
+        module->convertFromNewDbgValues();
+
         // Canonicalize path
         std::string realPath = fs::canonical(inputFile).string();
 

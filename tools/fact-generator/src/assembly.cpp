@@ -10,7 +10,7 @@ using llvm::cast;
 using llvm::isa;
 namespace pred = cclyzer::predicates;
 
-static std::string canonicalize(const std::string& in)
+static std::string canonicalize(llvm::StringRef in)
 {
     std::string base(in);
     boost::replace_all(base, "\t", "\\t");

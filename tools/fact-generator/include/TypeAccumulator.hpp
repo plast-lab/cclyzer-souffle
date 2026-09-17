@@ -116,7 +116,7 @@ class cclyzer::llvm_utils::TypeAccumulator
             type->isFloatTy()     || type->isDoubleTy()  ||
             type->isX86_FP80Ty()  || type->isFP128Ty()   ||
             type->isPPC_FP128Ty() || type->isLabelTy()   ||
-            type->isMetadataTy()  || type->isX86_MMXTy();
+            type->isMetadataTy();
     }
 
   private:

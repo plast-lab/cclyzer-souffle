@@ -704,7 +704,10 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
         writeInstrOperand(pred::call::arg, iref, CI.getArgOperand(op), op);
     }
 
-    if(CI.isTailCall())
+    // Explicitly exclude the debug intrinsics:
+    // convertFromNewDbgValues() converts the DbgRecord into CallInsts with the `tail` flag set,
+    // which pollutes the actual tail call facts with debug pseudo-calls.
+    if (CI.isTailCall() && !llvm::isa<llvm::DbgInfoIntrinsic>(CI))
         gen.writeFact(pred::call::tail, iref);
 
     if (CI.getCallingConv() != llvm::CallingConv::C) {
@@ -721,16 +724,21 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
     }
 
     gen.writeFnAttributes<pred::call>(iref, Attrs);
+
+    // Since LLVM 21, dbg CallInsts are not being routed to visitDbgDeclareInst/visitDbgValueInst
+    // and just fall through to visitCallInst, so we need to invoke the debug extraction visits directly.
+    // That also means removing the VisitCallInst call at the top of the handlers which would now be recursive.
+    if (auto *DDI = dyn_cast<llvm::DbgDeclareInst>(&CI)) {
+        visitDbgDeclareInst(*DDI);
+    } else if (auto *DVI = dyn_cast<llvm::DbgValueInst>(&CI)) {
+        visitDbgValueInst(*DVI);
+    }
 }
 
 
 void
 InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
 {
-    // First visit it as a generic call instruction
-    InstructionVisitor::visitCallInst(static_cast<const llvm::CallInst&>(DDI));
-
-
 
     //=======================================
     //processDeclare and processValue replaced by processInstruction 
@@ -777,10 +785,6 @@ InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
 void
 InstructionVisitor::visitDbgValueInst(const llvm::DbgValueInst &DDI)
 {
-    // First visit it as a generic call instruction
-    InstructionVisitor::visitCallInst(static_cast<const llvm::CallInst&>(DDI));
-    
-   
 
     //=======================================
     //processDeclare and processValue replaced by processInstruction 

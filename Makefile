@@ -1,6 +1,6 @@
 LEVEL := .
 CCLYZER_OPTS ?=
-PYTHON = python
+PYTHON = python3
 PIP    = pip
 CCLYZER = ./cclyzer.sh
 

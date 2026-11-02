@@ -8,8 +8,6 @@ all:
 include $(LEVEL)/src/common.mk
 
 LLVM_CONFIG ?= llvm-config
-LIBBOOST_PYTHON ?= -lboost_python
-
 
 #-----------------------------------
 # Configure paths
@@ -126,6 +124,6 @@ py_objects := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.o,$(py_sources))
 py_objects += $(patsubst $(srcdir)/%.cpp,$(outdir)/%.d,$(py_sources))
 py_objects += $(library)
 
-$(py_objects): CXXFLAGS += $(shell python-config --includes)
-$(py_objects): LDFLAGS  += $(shell python-config --ldflags)
+$(py_objects): CXXFLAGS += $(shell python3-config --includes)
+$(py_objects): LDFLAGS  += $(shell python3-config --ldflags)
 $(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)

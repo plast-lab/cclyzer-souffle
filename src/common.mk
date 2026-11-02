@@ -40,3 +40,6 @@ $(LIBDIR):
 
 $(BINDIR):
 	$(MKDIR) $@
+
+PYTHON_VERSION_NODOT := $(shell python3 -c 'import sys; print("%d%d" % sys.version_info[:2])')
+LIBBOOST_PYTHON ?= -lboost_python$(PYTHON_VERSION_NODOT)

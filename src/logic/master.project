@@ -1,4 +1,5 @@
-#include "analysis.config"
+// The analysis is selected with a Soufflé macro, e.g. --macro=CONTEXT_INSENSITIVE=1
+// (src/logic/Makefile and cclyzer.sh do this). Without one, context-insensitive.
 #include "schema/schema.project"
 #include "import/import.project"
 #include "symbol-lookup/symbol-lookup.project"

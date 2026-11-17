@@ -112,6 +112,48 @@ libraries you link on purpose can be listed in files named by
 `CCLYZER_KNOWN_EXTERNALS` (colon-separated); `CCLYZER_NO_CHECKS=1` turns the
 checks off.
 
+### Local variables: SSA values, not memory
+
+Unoptimized code (`-O0`) keeps every local variable and parameter in a stack
+slot (`alloca`) and reads and writes it through memory:
+
+```llvm
+define ptr @id(ptr %p) {          ; static int *id(int *p) { return p; }
+  %p.addr = alloca ptr            ; the stack slot for p
+  store ptr %p, ptr %p.addr
+  %0 = load ptr, ptr %p.addr
+  ret ptr %0
+}
+```
+
+Taken literally, every local is a memory object: each assignment is a store
+into it and each use a load, and all values ever stored into it mix
+(flow-insensitively). So before generating facts, the fact generator
+promotes every local whose address is never taken to SSA values, as LLVM's
+`mem2reg` pass does; `@id` above becomes `ret ptr %p`. Locals whose address
+is taken stay memory objects, as they must:
+
+```c
+void set(int **pp) { *pp = &b; }
+int main(void) { int *p = &a; set(&p); return *p; }   // p may point to b
+```
+
+This works on any input, including `-O0` code (whose functions are marked
+`optnone`), and keeps debug information. On GNU make (whole program, `-O0`)
+it promotes 89% of the stack slots and makes the analyses 2-6x faster with
+smaller points-to sets. `fact-generator --no-mem2reg` keeps every stack slot
+as an object, as earlier versions did.
+
+### Contexts of stack objects
+
+In `2-call-site-sensitive+heap`, heap and global objects get one call site
+of context ("+heap"), and stack objects (locals whose address is taken,
+by-value parameters) get the whole two-call-site method context: a stack
+object belongs to one activation of its function. With a one-element
+context for stack objects too, two activations that differ only in the
+older call site would share their locals, and the second call site could
+never separate a value that passes through one.
+
 ## Tests
 
 `tests/` has bitcode for coreutils 8.24 and PostgreSQL 9.5.2 client

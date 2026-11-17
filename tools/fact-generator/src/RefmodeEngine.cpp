@@ -76,8 +76,21 @@ namespace cclyzer {
     {
         std::ostringstream refmode;
 
+        // The constant's printed form makes the id unique, but for large
+        // aggregates (lookup tables, arrays of structs) it is hundreds of KB,
+        // and every fact about each element repeats the parent's id. Long
+        // forms keep a readable prefix plus their length and a 64-bit hash.
+        std::string text = refmodeOf(&constant);
+        static const size_t MAX_TEXT = 128, KEEP = 48;
+        if (text.size() > MAX_TEXT) {
+            std::ostringstream shortened;
+            shortened << text.substr(0, KEEP) << "...<" << text.size() << ":"
+                      << std::hex << std::hash<std::string>{}(text) << ">";
+            text = shortened.str();
+        }
+
         withContext<llvm::Instruction>(refmode)
-            << ctx->constantCount() << ':' << refmodeOf(&constant);
+            << ctx->constantCount() << ':' << text;
 
         return refmode.str();
     }

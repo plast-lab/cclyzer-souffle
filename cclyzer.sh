@@ -67,6 +67,13 @@ mkdir -p -- "$FACTS" "$RESULTS"
 "$CCLYZER_DIR/bin/fact-generator" -o "$FACTS/" "$INPUT_FILE"
 python3 "$CCLYZER_DIR/cti.py" "$FACTS/"
 
+# Warn (never fail) when the input does not look like a whole program.
+# CCLYZER_NO_CHECKS=1 turns this off.
+check() {
+    [ "${CCLYZER_NO_CHECKS:-0}" = 1 ] || python3 "$CCLYZER_DIR/scripts/check-whole-program.py" "$@" || true
+}
+check facts "$FACTS"
+
 COMPILED="$CCLYZER_DIR/build/logic/cclyzer-$ANALYSIS"
 if [ -x "$COMPILED" ]; then
     "$COMPILED" -j "$JOBS" -F "$FACTS/" -D "$RESULTS/"
@@ -75,3 +82,5 @@ else
     souffle -j "$JOBS" --macro="${MACRO[$ANALYSIS]}=1" -F "$FACTS/" -D "$RESULTS/" \
             "$CCLYZER_DIR/src/logic/master.project"
 fi
+
+check results "$FACTS" "$RESULTS"

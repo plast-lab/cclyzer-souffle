@@ -725,19 +725,18 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
 
     gen.writeFnAttributes<pred::call>(iref, Attrs);
 
-    // Since LLVM 21, dbg CallInsts are not being routed to visitDbgDeclareInst/visitDbgValueInst
-    // and just fall through to visitCallInst, so we need to invoke the debug extraction visits directly.
-    // That also means removing the VisitCallInst call at the top of the handlers which would now be recursive.
+    // Debug-variable intrinsics also get their debug facts. See the note on
+    // processDbgDeclare in InstructionVisitor.hpp for why this lives here.
     if (auto *DDI = dyn_cast<llvm::DbgDeclareInst>(&CI)) {
-        visitDbgDeclareInst(*DDI);
+        processDbgDeclare(*DDI);
     } else if (auto *DVI = dyn_cast<llvm::DbgValueInst>(&CI)) {
-        visitDbgValueInst(*DVI);
+        processDbgValue(*DVI);
     }
 }
 
 
 void
-InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
+InstructionVisitor::processDbgDeclare(const llvm::DbgDeclareInst &DDI)
 {
 
     //=======================================
@@ -783,7 +782,7 @@ InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
 
 
 void
-InstructionVisitor::visitDbgValueInst(const llvm::DbgValueInst &DDI)
+InstructionVisitor::processDbgValue(const llvm::DbgValueInst &DDI)
 {
 
     //=======================================

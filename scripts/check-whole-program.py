@@ -70,8 +70,10 @@ def check_results(facts, results):
     unresolved = [i for i in indirect if i not in resolved]
     if len(unresolved) >= 5 and len(unresolved) >= 0.2 * len(indirect):
         warn(f"{len(unresolved)} of {len(indirect)} reachable indirect calls have no target. "
-             f"Function pointers set up in code that is not in the input cannot be resolved; "
-             f"check that the input is the whole program.")
+             f"This happens when function pointers are set up in code that is not in the "
+             f"input (check that it is the whole program), and also where cclyzer cannot yet "
+             f"follow a function pointer, e.g. stored in a union or loaded from a global "
+             f"array of structs.")
 
 
 if __name__ == "__main__":

@@ -30,16 +30,27 @@ alloc_aliases(?alloc1, ?alloc2) :-
 alloc_aliases(?alloc1, ?alloc2) :-
    alloc_aliases(?alloc2, ?alloc1).
 
+// alloc_aliases without its reflexive pairs. In the two closure rules
+// below a pair (a, a) can only rederive the fact it started from, so using
+// the non-trivial pairs gives the same ptr_points_to with half the work.
+.decl _alloc_aliases_other(?alloc1: Allocation, ?alloc2: Allocation)
+_alloc_aliases_other(?alloc1, ?alloc2) :-
+   alloc_aliases(?alloc1, ?alloc2),
+   ?alloc1 != ?alloc2.
+
 // Aliases have the same points-to sets
 ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc1) :-
    ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc2),
-   alloc_aliases(?baseAlloc1, ?baseAlloc2).
+   _alloc_aliases_other(?baseAlloc1, ?baseAlloc2).
+// Evaluation order only: start from new alias pairs (version 1).
+.plan 1:(2,1)
 
 // When a pointer points to an allocation, it must also point to all
 // of its aliases
 ptr_points_to(?aCtx, ?alloc1, ?baseACtx, ?baseAlloc) :-
    ptr_points_to(?aCtx, ?alloc2, ?baseACtx, ?baseAlloc),
-   alloc_aliases(?alloc1, ?alloc2).
+   _alloc_aliases_other(?alloc1, ?alloc2).
+.plan 1:(2,1)
 
 
 // A base allocation with zero index is an alias to base. The first

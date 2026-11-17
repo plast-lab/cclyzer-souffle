@@ -1,7 +1,10 @@
 #ifndef CSV_WRITER_H__
 #define CSV_WRITER_H__
 
+#include <cstdint>
+#include <sstream>
 #include <string>
+#include <unordered_set>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
@@ -65,10 +68,12 @@ namespace cclyzer {
         }
 
 
-        /* Basic routines for appending new records to CSV files */
+        /* Basic routines for appending new records to CSV files.
+         * Each distinct record is written once: callers may emit the same
+         * fact several times (e.g. once per use), and the files stay sets. */
 
         void write(const std::string& hdr) {
-            out << hdr << "\n";
+            emit(hdr);
         }
 
 
@@ -77,27 +82,53 @@ namespace cclyzer {
         {
             static_assert( all_serializable<V, Vs...>::value,
                            "All types must be serializable" );
-            out << hdr;
-            appendFields(fld, flds...);
-            out << "\n";
+            std::ostringstream row;
+            row << hdr;
+            appendFields(row, fld, flds...);
+            emit(row.str());
         }
 
       protected:
 
         /* Variadic method to append fields to record */
 
-        void appendFields() {}
+        void appendFields(std::ostream&) {}
 
         template<typename V, typename ...Vargs>
-        void appendFields(const V& value) {
-            out << delim << value;
+        void appendFields(std::ostream& os, const V& value) {
+            os << delim << value;
         }
 
         template<typename V, typename ...Vs>
-        void appendFields(const V& value, const Vs&... values) {
-            appendFields(value);
-            appendFields(values...);
+        void appendFields(std::ostream& os, const V& value, const Vs&... values) {
+            appendFields(os, value);
+            appendFields(os, values...);
         }
+
+      private:
+
+        /* 128-bit fingerprint of a record (two independent 64-bit hashes),
+         * so remembering what was written costs 16 bytes per record. */
+        struct fingerprint {
+            std::uint64_t a, b;
+            bool operator==(const fingerprint& o) const { return a == o.a && b == o.b; }
+        };
+        struct fingerprint_hash {
+            std::size_t operator()(const fingerprint& f) const { return f.a ^ (f.b * 0x9e3779b97f4a7c15ULL); }
+        };
+
+        static fingerprint fingerprint_of(const std::string& row) {
+            std::uint64_t fnv = 0xcbf29ce484222325ULL;          // FNV-1a
+            for (unsigned char c : row) { fnv ^= c; fnv *= 0x100000001b3ULL; }
+            return { std::hash<std::string>{}(row), fnv };
+        }
+
+        void emit(const std::string& row) {
+            if (seen.insert(fingerprint_of(row)).second)
+                out << row << "\n";
+        }
+
+        std::unordered_set<fingerprint, fingerprint_hash> seen;
 
       private:
 

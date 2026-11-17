@@ -573,14 +573,14 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
         refmode_t opref =
             writeInstrOperand(pred::gep::index, iref, GepOperand, index - 1);
 
-        if (const llvm::Constant *c = dyn_cast<llvm::Constant>(GepOperand)) {
-            // Compute integer string representation
-            llvm::SmallVector<char> temp;
-            c->getUniqueInteger().toString(temp,10,true);   
-            string int_value = string().append(temp.data(),temp.size());
-            // Write constant to integer fact
-            gen.writeFact(pred::constant::to_integer, opref, int_value);
-        }
+        // Integer value of a constant index (or of a splat vector index),
+        // when it fits Soufflé's 64-bit number domain
+        const llvm::ConstantInt *ci = dyn_cast<llvm::ConstantInt>(GepOperand);
+        if (!ci)
+            if (const llvm::Constant *c = dyn_cast<llvm::Constant>(GepOperand))
+                ci = llvm::dyn_cast_or_null<llvm::ConstantInt>(c->getSplatValue());
+        if (ci && ci->getValue().getSignificantBits() <= 64)
+            gen.writeFact(pred::constant::to_integer, opref, ci->getSExtValue());
     }
 
     gen.writeFact(pred::gep::nindices, iref, GEP.getNumIndices());

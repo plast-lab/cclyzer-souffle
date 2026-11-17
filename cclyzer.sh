@@ -65,7 +65,6 @@ rm -rf -- "$FACTS"
 mkdir -p -- "$FACTS" "$RESULTS"
 
 "$CCLYZER_DIR/bin/fact-generator" -o "$FACTS/" "$INPUT_FILE"
-python3 "$CCLYZER_DIR/cti.py" "$FACTS/"
 
 # Warn (never fail) when the input does not look like a whole program.
 # CCLYZER_NO_CHECKS=1 turns this off.

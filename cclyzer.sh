@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CCLYZER_DIR=$(dirname $(readlink -f "$0"))
 ANALYSIS_CONFIG="$CCLYZER_DIR/src/logic/analysis.config"

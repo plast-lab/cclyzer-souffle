@@ -8,8 +8,6 @@ all:
 include $(LEVEL)/src/common.mk
 
 LLVM_CONFIG ?= llvm-config
-LIBBOOST_PYTHON ?= -lboost_python
-
 
 #-----------------------------------
 # Configure paths
@@ -30,9 +28,11 @@ include_dirs := $(json_library)
 # Compilation flags
 #-----------------------------------
 
-CXXFLAGS += -fPIC -g -std=c++11
+# GCC 15 parses uninstantiated template bodies and hard-errors on the vendored
+# jsoncons; we never instantiate those, so silence the check here.
+CXXFLAGS += -fPIC -g -std=c++11 -Wno-template-body
 CPPFLAGS += $(addprefix -I ,$(include_dirs))
-LDLIBS   += -lboost_system -lboost_filesystem -lboost_program_options
+LDLIBS   += -lboost_filesystem -lboost_program_options
 
 
 # LLVM specific flags
@@ -124,6 +124,6 @@ py_objects := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.o,$(py_sources))
 py_objects += $(patsubst $(srcdir)/%.cpp,$(outdir)/%.d,$(py_sources))
 py_objects += $(library)
 
-$(py_objects): CXXFLAGS += $(shell python-config --includes)
-$(py_objects): LDFLAGS  += $(shell python-config --ldflags)
+$(py_objects): CXXFLAGS += $(shell python3-config --includes)
+$(py_objects): LDFLAGS  += $(shell python3-config --ldflags)
 $(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)

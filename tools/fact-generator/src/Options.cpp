@@ -17,7 +17,7 @@ using cclyzer::Options;
 
 Options::Options(int argc, char* argv[])
 {
-    const std::string appName = fs::basename(argv[0]);
+    const std::string appName = fs::path(argv[0]).stem().string();
     fs::path outdir;
 
     // Define and parse the program options

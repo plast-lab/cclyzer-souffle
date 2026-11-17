@@ -23,10 +23,15 @@ DebugInfoProcessor::Impl::write_di_subrange::write(
 #if LLVM_VERSION_MAJOR < 7
     count = disubrange.getCount();
 #else
-    auto *CI = disubrange.getCount().dyn_cast<llvm::ConstantInt *>(); 
-    count = CI->getSExtValue();
+    // getCount does not return a constant for VLAs,
+    // so set it to -1 (as it was before LLVM 7).
+    auto *CI = disubrange.getCount().dyn_cast<llvm::ConstantInt *>();
+    count = CI ? CI->getSExtValue() : -1;
 #endif
-    const int64_t lowerBound = disubrange.getLowerBound().dyn_cast<llvm::ConstantInt*>()->getSExtValue();
+    // Since LLVM 11 the lower bound is absent when it's the language default
+    // (0 for C/C++/Rust), so default it to 0.
+    auto *LB = disubrange.getLowerBound().dyn_cast<llvm::ConstantInt *>();
+    const int64_t lowerBound = LB ? LB->getSExtValue() : 0;
 
     proc.writeFact(pred::di_subrange::count, nodeId, count);
 

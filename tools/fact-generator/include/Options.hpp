@@ -34,6 +34,11 @@ class cclyzer::Options
         return inputFiles.end();
     }
 
+    /* Promote non-address-taken locals to SSA values (default) */
+    bool promote_locals() const {
+        return promoteLocals;
+    }
+
   protected:
     /* Set input files */
     template<typename FileIt> void
@@ -54,6 +59,9 @@ class cclyzer::Options
 
     /* LLVM Bitcode IR Input Files */
     std::vector<boost::filesystem::path> inputFiles;
+
+    /* Promote locals to SSA values before generating facts */
+    bool promoteLocals = true;
 };
 
 #endif

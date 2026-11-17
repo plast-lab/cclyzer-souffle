@@ -84,3 +84,7 @@ else
 fi
 
 check results "$FACTS" "$RESULTS"
+
+# Summary statistics, like Doop's end-of-run statistics
+python3 "$CCLYZER_DIR/scripts/stats.py" "$RESULTS" | tee "$OUTPUT_DIR/stats.txt"
+python3 "$CCLYZER_DIR/scripts/stats.py" "$RESULTS" --json > "$OUTPUT_DIR/stats.json"

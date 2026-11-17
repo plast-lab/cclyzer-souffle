@@ -7,7 +7,6 @@ all:
 # Import common Makefile routines
 include $(LEVEL)/src/common.mk
 
-LLVM_CONFIG ?= llvm-config
 
 #-----------------------------------
 # Configure paths
@@ -124,6 +123,6 @@ py_objects := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.o,$(py_sources))
 py_objects += $(patsubst $(srcdir)/%.cpp,$(outdir)/%.d,$(py_sources))
 py_objects += $(library)
 
-$(py_objects): CXXFLAGS += $(shell python3-config --includes)
-$(py_objects): LDFLAGS  += $(shell python3-config --ldflags)
+$(py_objects): CXXFLAGS += $(shell $(PYTHON3_CONFIG) --includes)
+$(py_objects): LDFLAGS  += $(shell $(PYTHON3_CONFIG) --ldflags)
 $(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)

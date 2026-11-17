@@ -2,13 +2,19 @@
 // [2 Call-site Sensitive + Heap Analysis]
 //
 // In this analysis, context is the cons of the latest 2 invocation
-// instructions, whereas the allocation context consists of just the
-// latest invocation instruction.
+// instructions. Heap and global objects get just the latest invocation
+// as allocation context ("+heap"). Stack objects (allocas, by-value
+// parameters) get the whole method context: at -O0 every local variable is
+// an alloca, and a local belongs to one activation of its function, so
+// with a one-element context the second call site could never separate
+// any value that passes through a local (2-call-site then gave exactly the
+// 1-call-site results on every program). The allocation context has two
+// items; for heap objects the first one is <<empty-context>>.
 //------------------------------------------------------------------------------
 
 .type ContextItem = symbol | Instruction
 .type Context = [?item0: ContextItem, ?item1: ContextItem]
-.type AllocationContext = [?ci: ContextItem]
+.type AllocationContext = [?ci0: ContextItem, ?ci1: ContextItem]
 
 .decl context(?ctx:Context)
 .decl alloc_context(?allocCtx:AllocationContext)
@@ -33,11 +39,30 @@ context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
 .decl acontext_request(?ctx: Context, ?alloc: Allocation, ?var: Variable)
 .decl acontext_response(?ctx: Context, ?alloc: Allocation, ?var: Variable, ?aCtx: AllocationContext)
 
+// Variables holding stack objects: defined from the schema only, so the
+// negation below is stratified.
+.decl _stack_object_var(?var: Variable)
+_stack_object_var(?var) :-
+  alloca_instruction(?instr),
+  instruction_assigns_to(?instr, ?var).
+_stack_object_var(?param) :-
+  function_param_by_value(?func, ?index),
+  function_param(?func, ?index, ?param).
+
 alloc_context(?aCtx),
 acontext_response(?ctx, ?alloc, ?var, ?aCtx) :-
   acontext_request(?ctx, ?alloc, ?var),
+  _stack_object_var(?var),
   ?ctx = [?ctxItem1, ?ctxItem2],
-  ?aCtx = [?ctxItem2],
+  ?aCtx = [?ctxItem1, ?ctxItem2].
+
+alloc_context(?aCtx),
+acontext_response(?ctx, ?alloc, ?var, ?aCtx) :-
+  acontext_request(?ctx, ?alloc, ?var),
+  !_stack_object_var(?var),
+  dummy_context_item_by_str("<<empty-context>>", ?empty),
+  ?ctx = [?ctxItem1, ?ctxItem2],
+  ?aCtx = [?empty, ?ctxItem2],
   ?ctxItem1 = ?ctxItem1.  // dummy assignment to avoid unused record item
 
 //-----------------------------------------------------

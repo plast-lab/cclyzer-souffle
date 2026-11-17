@@ -14,9 +14,12 @@ namespace cclyzer
         return factgen(firstFile, endFile, outputDir, "\t");
     }
 
+    // promoteLocals: promote local variables whose address is never taken
+    // from stack slots to SSA values (LLVM's mem2reg) before generating
+    // facts; see promoteLocals() in main.cpp.
     template<typename FileIt> void
     factgen(FileIt firstFile, FileIt endFile, boost::filesystem::path outputDir,
-            std::string delim);
+            std::string delim, bool promoteLocals = true);
 }
 
 #endif /* FACT_GENERATOR_HPP__ */

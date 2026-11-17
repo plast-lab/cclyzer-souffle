@@ -43,7 +43,7 @@ vpath %.h $(include_dirs)
 
 CPPFLAGS += $(shell $(LLVM_CONFIG) --cppflags)
 LDFLAGS  += $(shell $(LLVM_CONFIG) --ldflags)
-LDLIBS   += $(shell $(LLVM_CONFIG) --libs core irreader)
+LDLIBS   += $(shell $(LLVM_CONFIG) --libs core irreader transformutils)
 LDLIBS   += $(filter-out -lz,$(shell $(LLVM_CONFIG) --system-libs))
 LDLIBS   += -lboost_filesystem -lboost_program_options
 

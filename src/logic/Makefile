@@ -46,9 +46,11 @@ macro.2-call-site-sensitive+2-heap := TWO_CALL_SITE_SENSITIVE_TWO_HEAP
 
 LOGIC_BINARIES := $(ANALYSES:%=$(OUTDIR)/cclyzer-%)
 
+# -j: Soufflé emits parallel code only when compiling with -j; without it
+# the binary ignores its own -j option and runs on one thread.
 $(OUTDIR)/cclyzer-%: $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
 	$(if $(macro.$*),,$(error Unknown analysis '$*'. Known: $(subst macro.,,$(filter macro.%,$(.VARIABLES)))))
-	souffle --macro=$(macro.$*)=1 -o $@ master.project
+	souffle -j auto --macro=$(macro.$*)=1 -o $@ master.project
 
 all: $(LOGIC_BINARIES)
 

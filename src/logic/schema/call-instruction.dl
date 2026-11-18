@@ -68,6 +68,14 @@ attribute(Attr) :- call_instruction_with_param_attribute(_, _, Attr).
 .decl call_instruction_fn_type(instr:CallInstruction, type:Type)
 .decl call_instruction_return_type(instr:CallInstruction, type:Type)
 
+// The call's own signature (CallBase::getFunctionType). With opaque
+// pointers the callee operand has type `ptr`, which no longer says
+// what it points to, so this is the only reliable source.
+.decl call_instruction_function_type(instr:CallInstruction, type:FunctionType)
+
+call_instruction_fn_type(Instr, FnType) :-
+   call_instruction_function_type(Instr, FnType).
+
 call_instruction_fn_type(Instr, FnType) :-
    call_instruction_fn_operand(Instr, FnOp),
    operand_has_type(FnOp, PtrType),

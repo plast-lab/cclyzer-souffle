@@ -49,8 +49,7 @@ context_request(?callerCtx, ?aCtx, ?callerInstr, ?callee) :-
    operand_points_to(?aCtx, ?funcLoc, ?callerCtx, ?funcOp),
    function_by_location(?funcLoc, ?callee),
    function_has_type(?callee, ?actualType),
-   operand_has_type(?funcOp, ?funcOpType),
-   pointer_type_has_component(?funcOpType, ?declaredType),
+   call_instruction_fn_type(?callerInstr, ?declaredType),
    type_compatible(?actualType, ?declaredType).
 
 context_request(?callerCtx, ?aCtx, ?callerInstr, ?callee) :-
@@ -59,8 +58,7 @@ context_request(?callerCtx, ?aCtx, ?callerInstr, ?callee) :-
    operand_points_to(?aCtx, ?funcLoc, ?callerCtx, ?funcOp),
    function_by_location(?funcLoc, ?callee),
    function_has_type(?callee, ?actualType),
-   operand_has_type(?funcOp, ?funcOpType),
-   pointer_type_has_component(?funcOpType, ?declaredType),
+   invoke_instruction_fn_type(?callerInstr, ?declaredType),
    type_compatible(?actualType, ?declaredType).
 
 
@@ -85,10 +83,21 @@ actual_arg(?invokeInstr, ?index, ?argument) :-
 actual_arg(?callInstr, ?index, ?argument) :-
    call_instruction_arg(?callInstr, ?index, ?argument).
 
+// The call's own callee: its direct target, or any target of an
+// indirect call. Not a callback that a library model makes the call
+// reach (qsort's comparator), whose parameters library-models.dl binds.
+.decl _calls_directly(?instr: Instruction, ?callee: FunctionDecl)
+_calls_directly(?instr, ?callee) :-
+   call_instruction_fn_target(?instr, ?callee) ; invoke_instruction_fn_target(?instr, ?callee).
+_calls_directly(?instr, ?callee) :-
+   (indirect_call_instruction(?instr) ; indirect_invoke_instruction(?instr)),
+   callgraph_edge(_, ?callee, _, ?instr).
+
 // Actual argument to formal parameter `assignment`
 interp_assignment(?calleeCtx, ?param, ?callerCtx, ?argument) :-
    callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
    callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee),   //redundant OPT clause?
+   _calls_directly(?callerInstr, ?callee),
    actual_arg(?callerInstr, ?index, ?argument),
    function_param(?callee, ?index, ?param),
    // Attribute is not passed by value
@@ -107,6 +116,7 @@ interp_assignment(?callerCtx, ?toVar, ?calleeCtx, ?retValue) :-
    invoke_instruction(?callerInstr)),
    //callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?callerInstr),
    callgraph_inverted_edge(?callerCtx, ?callerInstr, ?calleeCtx, ?callee),   //redundant OPT clause?
+   _calls_directly(?callerInstr, ?callee),
    function_returns_value(?retValue, ?callee),
    instruction_assigns_to(?callerInstr, ?toVar).
 

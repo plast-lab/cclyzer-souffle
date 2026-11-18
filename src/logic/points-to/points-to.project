@@ -17,6 +17,7 @@
 #include "cplusplus-atexit.dl"
 #include "strip-context-projections.dl"
 #include "interprocedural.dl"
+#include "library-models.dl"
 #include "memcpy.dl"
 #include "field-sensitivity.dl"
 #include "cplusplus-exceptions.dl"

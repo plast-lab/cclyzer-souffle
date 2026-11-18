@@ -1,0 +1,349 @@
+//------------------------------------------------------------------------------
+// [Library models]
+//
+// Whole-program bitcode still calls libc (and a few other libraries)
+// without their bodies. A call to a function with no body produces no
+// points-to facts, so without a model the result of every such call,
+// and everything reached through it, had an empty points-to set.
+//
+// Each library function is described by one or more spec facts below;
+// the rules after them give the specs their meaning. Kinds:
+//
+//   lib_alloc(f)             result is a fresh heap object (per call site),
+//                            as for malloc
+//   lib_owned(f)             as lib_alloc, and the object is owned by the
+//                            library (getpwnam, readdir, FILE*, errno, ...):
+//                            its fields may point to library-owned memory,
+//                            so every part of it points back to the object
+//   lib_ret_arg(f, i)        result points into argument i (strchr, fgets)
+//   lib_ret_saved(f, g, i)   result points to what argument i of any call
+//                            to g pointed to (strtok(NULL), getspecific)
+//   lib_ret_deref_arg(f, i)  result is *argument i (strsep)
+//   lib_out_alloc(f, i)      stores a fresh object into *argument i
+//                            (getline, asprintf, posix_memalign)
+//   lib_out_arg(f, i, j)     stores argument j's objects into *argument i
+//                            (strtol's end pointer)
+//   lib_callback(f, k, p, j) calls the function in argument k, with its
+//                            parameter p bound to argument j (j = -1: no
+//                            binding); qsort, pthread_create, atexit, ...
+//   lib_realloc(f)           like lib_alloc, and the result may also be
+//                            the old block (argument 0), contents and all
+//------------------------------------------------------------------------------
+
+.decl lib_alloc(?name: symbol)
+.decl lib_owned(?name: symbol)
+.decl lib_ret_arg(?name: symbol, ?arg: number)
+.decl lib_ret_saved(?name: symbol, ?from: symbol, ?arg: number)
+.decl lib_ret_deref_arg(?name: symbol, ?arg: number)
+.decl lib_out_alloc(?name: symbol, ?arg: number)
+.decl lib_out_arg(?name: symbol, ?to: number, ?from: number)
+.decl lib_callback(?name: symbol, ?fnArg: number, ?param: number, ?fromArg: number)
+.decl lib_realloc(?name: symbol)
+
+// -- allocators -------------------------------------------------------------
+lib_alloc("@aligned_alloc"). lib_alloc("@memalign"). lib_alloc("@valloc").
+lib_alloc("@pvalloc").
+lib_realloc("@realloc"). lib_realloc("@reallocarray").
+lib_alloc("@strdup"). lib_alloc("@strndup"). lib_alloc("@__strdup").
+lib_alloc("@__strndup"). lib_alloc("@wcsdup").
+lib_alloc("@realpath"). lib_alloc("@canonicalize_file_name").
+lib_alloc("@getcwd"). lib_alloc("@get_current_dir_name").
+lib_alloc("@tempnam"). lib_alloc("@mmap"). lib_alloc("@mmap64").
+lib_alloc("@mremap").
+
+// -- library-owned objects and opaque handles -------------------------------
+lib_owned("@__errno_location"). lib_owned("@__ctype_b_loc").
+lib_owned("@__ctype_tolower_loc"). lib_owned("@__ctype_toupper_loc").
+lib_owned("@setlocale"). lib_owned("@nl_langinfo"). lib_owned("@nl_langinfo_l").
+lib_owned("@localeconv"). lib_owned("@newlocale"). lib_owned("@duplocale").
+lib_owned("@uselocale").
+lib_owned("@getenv"). lib_owned("@secure_getenv").
+lib_owned("@strerror"). lib_owned("@strerror_l"). lib_owned("@strerror_r").
+lib_owned("@strsignal"). lib_owned("@gai_strerror"). lib_owned("@hstrerror").
+lib_owned("@dlerror"). lib_owned("@dlopen"). lib_owned("@dlsym").
+lib_owned("@localtime"). lib_owned("@gmtime"). lib_owned("@ctime").
+lib_owned("@asctime").
+lib_owned("@getpwuid"). lib_owned("@getpwnam"). lib_owned("@getpwent").
+lib_owned("@getgrgid"). lib_owned("@getgrnam"). lib_owned("@getgrent").
+lib_owned("@getutxent"). lib_owned("@getutxid"). lib_owned("@getutxline").
+lib_owned("@getutent"). lib_owned("@getlogin"). lib_owned("@getpass").
+lib_owned("@ttyname"). lib_owned("@ctermid"). lib_owned("@tmpnam").
+lib_owned("@readdir"). lib_owned("@readdir64").
+lib_owned("@opendir"). lib_owned("@fdopendir").
+lib_owned("@fopen"). lib_owned("@fopen64"). lib_owned("@fdopen").
+lib_owned("@popen"). lib_owned("@tmpfile"). lib_owned("@tmpfile64").
+lib_owned("@fmemopen"). lib_owned("@open_memstream").
+lib_owned("@setmntent"). lib_owned("@getmntent"). lib_owned("@hasmntopt").
+lib_owned("@iconv_open").
+lib_owned("@gethostbyname"). lib_owned("@gethostbyname2").
+lib_owned("@gethostbyaddr"). lib_owned("@getservbyname").
+lib_owned("@getservbyport"). lib_owned("@getprotobyname").
+lib_owned("@getprotobynumber"). lib_owned("@inet_ntoa").
+lib_owned("@gnu_get_libc_version"). lib_owned("@backtrace_symbols").
+lib_owned("@pthread_self").
+
+// -- results pointing into an argument ---------------------------------------
+lib_ret_arg("@strchr", 0). lib_ret_arg("@strrchr", 0). lib_ret_arg("@strchrnul", 0).
+lib_ret_arg("@index", 0). lib_ret_arg("@rindex", 0).
+lib_ret_arg("@memchr", 0). lib_ret_arg("@memrchr", 0). lib_ret_arg("@rawmemchr", 0).
+lib_ret_arg("@strstr", 0). lib_ret_arg("@strcasestr", 0). lib_ret_arg("@strpbrk", 0).
+lib_ret_arg("@memmem", 0).
+lib_ret_arg("@strcpy", 0). lib_ret_arg("@strncpy", 0). lib_ret_arg("@stpcpy", 0).
+lib_ret_arg("@stpncpy", 0). lib_ret_arg("@strcat", 0). lib_ret_arg("@strncat", 0).
+lib_ret_arg("@memcpy", 0). lib_ret_arg("@memmove", 0). lib_ret_arg("@memset", 0).
+lib_ret_arg("@mempcpy", 0). lib_ret_arg("@memccpy", 0).
+lib_ret_arg("@wcscpy", 0). lib_ret_arg("@wcsncpy", 0). lib_ret_arg("@wcscat", 0).
+lib_ret_arg("@wcschr", 0). lib_ret_arg("@wcsrchr", 0). lib_ret_arg("@wmemcpy", 0).
+lib_ret_arg("@wmemmove", 0). lib_ret_arg("@wmemset", 0). lib_ret_arg("@wmemchr", 0).
+lib_ret_arg("@fgets", 0). lib_ret_arg("@fgets_unlocked", 0). lib_ret_arg("@gets", 0).
+lib_ret_arg("@fgetws", 0).
+lib_ret_arg("@strtok", 0). lib_ret_arg("@strtok_r", 0).
+lib_ret_arg("@dirname", 0). lib_ret_arg("@basename", 0). lib_ret_arg("@__xpg_basename", 0).
+lib_ret_arg("@mkdtemp", 0). lib_ret_arg("@mktemp", 0).
+lib_ret_arg("@getcwd", 0). lib_ret_arg("@realpath", 1).
+lib_ret_arg("@strerror_r", 1).
+lib_ret_arg("@localtime_r", 1). lib_ret_arg("@gmtime_r", 1).
+lib_ret_arg("@ctime_r", 1). lib_ret_arg("@asctime_r", 1).
+lib_ret_arg("@inet_ntop", 2).
+lib_ret_arg("@freopen", 2). lib_ret_arg("@freopen64", 2).
+lib_ret_arg("@bsearch", 1). lib_ret_arg("@lfind", 1). lib_ret_arg("@lsearch", 1).
+
+// strtok(NULL, ...) continues in the string of an earlier call
+lib_ret_saved("@strtok", "@strtok", 0).
+lib_ret_saved("@strtok_r", "@strtok_r", 0).
+lib_ret_saved("@pthread_getspecific", "@pthread_setspecific", 1).
+lib_ret_saved("@tss_get", "@tss_set", 1).
+
+lib_ret_deref_arg("@strsep", 0).
+
+// -- out-parameters ----------------------------------------------------------
+lib_out_alloc("@getline", 0). lib_out_alloc("@getdelim", 0).
+lib_out_alloc("@__getdelim", 0).
+lib_out_alloc("@asprintf", 0). lib_out_alloc("@vasprintf", 0).
+lib_out_alloc("@__asprintf_chk", 0). lib_out_alloc("@__vasprintf_chk", 0).
+lib_out_alloc("@posix_memalign", 0).
+lib_out_alloc("@getaddrinfo", 3).
+lib_out_alloc("@scandir", 1). lib_out_alloc("@scandir64", 1).
+lib_out_alloc("@open_memstream", 0).
+
+lib_out_arg(?f, 1, 0) :-
+   ( ?f = "@strtol" ; ?f = "@strtoul" ; ?f = "@strtoll" ; ?f = "@strtoull"
+   ; ?f = "@strtod" ; ?f = "@strtof" ; ?f = "@strtold"
+   ; ?f = "@strtoimax" ; ?f = "@strtoumax" ; ?f = "@strtoq" ; ?f = "@strtouq"
+   ; ?f = "@__isoc23_strtol" ; ?f = "@__isoc23_strtoul"
+   ; ?f = "@__isoc23_strtoll" ; ?f = "@__isoc23_strtoull"
+   ; ?f = "@__isoc23_strtoimax" ; ?f = "@__isoc23_strtoumax"
+   ; ?f = "@__strtol_internal" ; ?f = "@__strtoul_internal"
+   ; ?f = "@wcstol" ; ?f = "@wcstoul" ; ?f = "@wcstod" ).
+lib_out_arg("@strtok_r", 2, 0).
+lib_out_arg("@getpwnam_r", 4, 1). lib_out_arg("@getpwuid_r", 4, 1).
+lib_out_arg("@getgrnam_r", 4, 1). lib_out_arg("@getgrgid_r", 4, 1).
+lib_out_arg("@readdir_r", 2, 1).
+
+// -- callbacks ---------------------------------------------------------------
+lib_callback("@qsort", 3, 0, 0). lib_callback("@qsort", 3, 1, 0).
+lib_callback("@qsort_r", 3, 0, 0). lib_callback("@qsort_r", 3, 1, 0).
+lib_callback("@qsort_r", 3, 2, 4).
+lib_callback("@bsearch", 4, 0, 0). lib_callback("@bsearch", 4, 1, 1).
+lib_callback("@lfind", 4, 0, 0). lib_callback("@lfind", 4, 1, 1).
+lib_callback("@lsearch", 4, 0, 0). lib_callback("@lsearch", 4, 1, 1).
+lib_callback("@tsearch", 2, 0, 0). lib_callback("@tsearch", 2, 1, 0).
+lib_callback("@tfind", 2, 0, 0). lib_callback("@tfind", 2, 1, 0).
+lib_callback("@tdelete", 2, 0, 0). lib_callback("@tdelete", 2, 1, 0).
+lib_callback("@twalk", 1, -1, -1).
+lib_callback("@pthread_create", 2, 0, 3).
+lib_callback("@thrd_create", 1, 0, 2).
+lib_callback("@pthread_once", 1, -1, -1).
+lib_callback("@pthread_key_create", 1, -1, -1).
+lib_callback("@atexit", 0, -1, -1). lib_callback("@at_quick_exit", 0, -1, -1).
+lib_callback("@on_exit", 0, 1, 1).
+lib_callback("@signal", 1, -1, -1). lib_callback("@sigset", 1, -1, -1).
+lib_callback("@bsd_signal", 1, -1, -1).
+lib_callback("@nftw", 1, 0, 0). lib_callback("@ftw", 1, 0, 0).
+lib_callback("@nftw64", 1, 0, 0). lib_callback("@ftw64", 1, 0, 0).
+lib_callback("@scandir", 2, -1, -1). lib_callback("@scandir", 3, -1, -1).
+lib_callback("@scandir64", 2, -1, -1). lib_callback("@scandir64", 3, -1, -1).
+lib_callback("@dl_iterate_phdr", 0, 2, 1).
+lib_callback("@fopencookie", 2, 0, 0).
+
+
+//------------------------------------------------------------------------------
+// Meaning of the specs
+//------------------------------------------------------------------------------
+
+// Calls to modelled library functions, by spec name. A function with a
+// body in the program is the program's own and is never modelled.
+.decl _lib_call(?instr: CallInstruction, ?name: symbol)
+_lib_call(?instr, ?name) :-
+   call_instruction_fn_target(?instr, ?func),
+   function_has_name(?func, ?name),
+   !function(?func).
+
+.decl _lib_call_in(?instr: CallInstruction, ?name: symbol, ?ctx: Context)
+_lib_call_in(?instr, ?name, ?ctx) :-
+   _lib_call(?instr, ?name),
+   instruction_in_function(?instr, ?instrFunc),
+   reachable_context(?ctx, ?instrFunc).
+
+.decl lib_realloc_function(?func: FunctionDecl)
+lib_realloc_function(?func) :-
+   lib_realloc(?name), function_has_name(?func, ?name), !function(?func).
+
+heap_alloc_function(?func) :-
+   function_has_name(?func, ?name), !function(?func),
+   ( lib_alloc(?name) ; lib_owned(?name) ; lib_realloc(?name)
+   ; lib_out_alloc(?name, _) ).
+
+// realloc may return the old block, or a new one holding its contents
+lib_ret_arg(?name, 0) :- lib_realloc(?name).
+
+// Result points into argument i
+var_points_to(?aCtx, ?alloc, ?ctx, ?var) :-
+   lib_ret_arg(?name, ?i),
+   _lib_call_in(?instr, ?name, ?ctx),
+   instruction_assigns_to(?instr, ?var),
+   call_instruction_arg(?instr, ?i, ?arg),
+   operand_points_to(?aCtx, ?alloc, ?ctx, ?arg),
+   !null_location(?alloc).
+
+// Result points to what any call to `from` received in argument i
+.decl _lib_saved(?name: symbol, ?aCtx: AllocationContext, ?alloc: Allocation)
+_lib_saved(?name, ?aCtx, ?alloc) :-
+   lib_ret_saved(?name, ?from, ?i),
+   _lib_call_in(?instr, ?from, ?ctx),
+   call_instruction_arg(?instr, ?i, ?arg),
+   operand_points_to(?aCtx, ?alloc, ?ctx, ?arg),
+   !null_location(?alloc).
+
+var_points_to(?aCtx, ?alloc, ?ctx, ?var) :-
+   _lib_call_in(?instr, ?name, ?ctx),
+   _lib_saved(?name, ?aCtx, ?alloc),
+   instruction_assigns_to(?instr, ?var).
+
+// Result is *argument i
+var_points_to(?aCtx, ?alloc, ?ctx, ?var) :-
+   lib_ret_deref_arg(?name, ?i),
+   _lib_call_in(?instr, ?name, ?ctx),
+   instruction_assigns_to(?instr, ?var),
+   call_instruction_arg(?instr, ?i, ?arg),
+   operand_points_to(?baseACtx, ?base, ?ctx, ?arg),
+   ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?base).
+
+// Stores a fresh object into *argument i. The object is the call's own
+// heap object (heap_alloc_function above), with its typed copies: they
+// are what the call's result variable points to.
+ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?base) :-
+   lib_out_alloc(?name, ?i),
+   _lib_call_in(?instr, ?name, ?ctx),
+   instruction_assigns_to(?instr, ?var),
+   var_points_to(?aCtx, ?alloc, ?ctx, ?var),
+   !null_location(?alloc),
+   call_instruction_arg(?instr, ?i, ?arg),
+   operand_points_to(?baseACtx, ?base, ?ctx, ?arg),
+   ptr_compatible_allocation(?base).
+
+// Stores argument j's objects into *argument i
+ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?base) :-
+   lib_out_arg(?name, ?i, ?j),
+   _lib_call_in(?instr, ?name, ?ctx),
+   call_instruction_arg(?instr, ?j, ?from),
+   operand_points_to(?aCtx, ?alloc, ?ctx, ?from),
+   !null_location(?alloc),
+   call_instruction_arg(?instr, ?i, ?arg),
+   operand_points_to(?baseACtx, ?base, ?ctx, ?arg),
+   ptr_compatible_allocation(?base).
+
+// Library-owned objects: every part of one (typed copies, fields,
+// elements) may point to the object and its typed copies.
+.decl _lib_owned_root(?alloc: Allocation)
+_lib_owned_root(?alloc) :-
+   lib_owned(?name),
+   _lib_call(?instr, ?name),
+   heap_allocation_by_instruction(?instr, ?alloc).
+
+.decl _lib_owned_copy(?obj: Allocation, ?root: Allocation)
+_lib_owned_copy(?root, ?root) :- _lib_owned_root(?root).
+_lib_owned_copy(?typed, ?root) :-
+   _lib_owned_root(?root),
+   _keep_alloc_var_assoc(?typed, _, ?root, _).
+_lib_owned_copy(?typed, ?root) :-
+   _lib_owned_root(?root),
+   _assign_rebase_alloc(?typed, _, ?root, _).
+
+.decl _lib_owned_part(?obj: Allocation, ?root: Allocation)
+_lib_owned_part(?obj, ?root) :- _lib_owned_copy(?obj, ?root).
+_lib_owned_part(?region, ?root) :-
+   _lib_owned_part(?base, ?root),
+   alloc_subregion_base(?region, ?base).
+
+ptr_points_to(?aCtx, ?target, ?aCtx, ?part) :-
+   _lib_owned_part(?part, ?root),
+   _lib_owned_copy(?target, ?root),
+   var_points_to(?aCtx, ?root, _, _).
+
+// External global variables (optarg, environ, stdin, stdout, stderr,
+// program_invocation_name, tzname, ...) are set by the library: their
+// contents point to library-owned memory, modelled as the variable's
+// own object.
+.decl _lib_global(?alloc: GlobalAllocation)
+_lib_global(?alloc) :-
+   global_allocation_by_variable(?gVar, ?alloc),
+   !global_variable_has_initializer(?gVar, _).
+
+ptr_points_to(?aCtx, ?alloc, ?aCtx, ?part) :-
+   _lib_global(?alloc),
+   empty_alloc_context(?aCtx),
+   ( ?part = ?alloc ; alloc_subregion_base(?part, ?alloc) ).
+
+// Callbacks: a call to qsort(base, n, size, cmp) is also a call to
+// whatever cmp points to, with the parameters the spec binds.
+.decl _lib_callback_edge(?callerCtx: Context, ?instr: CallInstruction, ?callee: FunctionDecl, ?name: symbol, ?fnArg: number)
+_lib_callback_edge(?callerCtx, ?instr, ?callee, ?name, ?k),
+context_request(?callerCtx, ?aCtx, ?instr, ?callee) :-
+   lib_callback(?name, ?k, _, _),
+   _lib_call_in(?instr, ?name, ?callerCtx),
+   call_instruction_arg(?instr, ?k, ?fnOp),
+   operand_points_to(?aCtx, ?funcLoc, ?callerCtx, ?fnOp),
+   function_by_location(?funcLoc, ?callee),
+   function(?callee).
+
+interp_assignment(?calleeCtx, ?param, ?callerCtx, ?argument) :-
+   _lib_callback_edge(?callerCtx, ?instr, ?callee, ?name, ?k),
+   lib_callback(?name, ?k, ?p, ?j),
+   ?p >= 0,
+   callgraph_edge(?calleeCtx, ?callee, ?callerCtx, ?instr),
+   function_param(?callee, ?p, ?param),
+   call_instruction_arg(?instr, ?j, ?argument).
+
+// Startup: main(argc, argv, envp). argv and envp point to an array of
+// pointers set up by the C runtime, whose elements point to strings.
+// Without this, every command-line argument, and everything derived
+// from one (getopt arguments, file names, patterns), pointed to nothing.
+.decl _startup_object(?alloc: GlobalAllocation, ?type: Type)
+_startup_object("*startup_alloc@argv", "ptr").
+_startup_object("*startup_alloc@envp", "ptr").
+_startup_object("*startup_alloc@argv_strings", "i8").
+
+global_allocation(?alloc),
+allocation_type(?alloc, ?type),
+ptr_compatible_allocation(?alloc) :-
+   _startup_object(?alloc, ?type).
+
+var_points_to(?aCtx, ?alloc, ?ctx, ?param) :-
+   main_function(?main),
+   reachable_context(?ctx, ?main),
+   function_param(?main, ?i, ?param),
+   ( ?i = 1, ?alloc = "*startup_alloc@argv"
+   ; ?i = 2, ?alloc = "*startup_alloc@envp" ),
+   empty_alloc_context(?aCtx).
+
+.decl _startup_array_part(?part: Allocation)
+_startup_array_part("*startup_alloc@argv").
+_startup_array_part("*startup_alloc@envp").
+_startup_array_part(?region) :-
+   _startup_array_part(?part),
+   alloc_subregion_base(?region, ?part).
+
+ptr_points_to(?aCtx, "*startup_alloc@argv_strings", ?aCtx, ?part) :-
+   _startup_array_part(?part),
+   empty_alloc_context(?aCtx).

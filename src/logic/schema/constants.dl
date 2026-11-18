@@ -220,6 +220,13 @@ _constant_expression_next_index(CExpr, Index, Index + 1) :-
 
 // Compute types of GEP constant expression up to some index
 
+// The source element type exported by the fact generator; with opaque
+// pointers the base's type (ptr) no longer gives it.
+.decl getelementptr_constant_expression_source_type(cexpr:GetElementPtrConstantExpression, type:Type)
+
+_getelementptr_constant_expression_interm_type(CExpr, 1, Type) :-
+   getelementptr_constant_expression_source_type(CExpr, Type).
+
 _getelementptr_constant_expression_interm_type(CExpr, 1, Type) :-
    getelementptr_constant_expression_base(CExpr, BaseConstant),
    constant_has_type(BaseConstant, PtrType),

@@ -12,16 +12,27 @@ var_points_to(?aCtx, ?alloc, ?ctx, ?var) :-
 _alloc_var(?stackAlloc,?var),
 stack_allocation(?stackAlloc),
 stack_allocation_by_instruction(?instr, ?stackAlloc),
-allocation_type(?stackAlloc, ?type),
 acontext_request(?ctx, ?stackAlloc, ?var) :-
   alloca_instruction(?instr),
   instruction_assigns_to(?instr, ?var),
   instruction_in_function(?instr, ?instrFunc),
   function_has_name(?instrFunc, ?funcName),
-  variable_has_type(?var,?type),
+  // one object per alloca, named by the allocated type: the variable
+  // can have several (inferred) types, which made several objects for
+  // one stack slot, each seeing only the stores made through it
+  alloca_instruction_type(?instr, ?allocType),
+  ?type = cat(?allocType, "*"),
   variable_has_name(?var,?name),
   ?stackAlloc = cat(cat(cat(cat(cat(cat("*stack_alloc", ?funcName),"["),?type)," "),?name),"]"),
   reachable_context(?ctx, ?instrFunc).
+
+
+// A stack object has the type `alloca` allocates. (The variable's type
+// is the address's type, `ptr` with opaque pointers, which gave every
+// stack object type `ptr`: no field objects and pointer-sized.)
+allocation_type(?stackAlloc, ?type) :-
+  stack_allocation_by_instruction(?instr, ?stackAlloc),
+  alloca_instruction_type(?instr, ?type).
 
 
 /// 2. Parameters with pass-by-value semantics
@@ -77,6 +88,8 @@ heap_alloc_function(?func) :-
  ; function_has_name(?func, "@calloc")
  ; function_has_name(?func, "@realloc")
  ; function_has_name(?func, "@__rust_alloc").
+// More allocators, and library functions returning library-owned
+// objects, are in library-models.dl.
 
 heap_allocation(?heapAlloc),
 heap_allocation_by_malloc(?insn, ?heapAlloc) :-
@@ -95,7 +108,7 @@ heap_allocation_by_calloc(?insn, ?heapAlloc) :-
 heap_allocation(?heapAlloc),
 heap_allocation_by_realloc(?insn, ?heapAlloc) :-
   heap_alloc_function(?func),
-  function_has_name(?func, "@realloc"),
+  lib_realloc_function(?func),
   call_instruction_fn_target(?insn, ?func),
   heap_allocation_by_instruction(?insn, ?heapAlloc).
 
@@ -141,9 +154,11 @@ global_allocation_by_variable(?gVar, ?alloc):-
    global_variable_has_name(?gVar, ?name),
    ?alloc =  cat("*global_alloc",?name).
 
+// A global object has the global's value type (global_variable_has_type
+// is the type of its address).
 allocation_type(?alloc, ?type):-
    global_allocation_by_variable(?gVar, ?alloc),
-   global_variable_has_type(?gVar, ?type).
+   global_variable_value_type(?gVar, ?type).
 
 /// 2. Function Allocations
 
@@ -256,4 +271,5 @@ allocation_pos(?alloc, ?line, ?column) :-
    stack_allocation_by_parameter(?func, ?index, ?alloc),
    function_param(?func, ?index, ?param),
    variable_has_debug_decl_pos(?param, ?line, ?column).
+
 

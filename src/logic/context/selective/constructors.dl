@@ -1,0 +1,304 @@
+//------------------------------------------------------------------------------
+// [Selective Analysis: sticky allocation wrappers + 2-call-site containers]
+//
+// Context only where objects are created together or merged:
+//
+// - allocation wrappers (xmalloc, xstrdup, new_node, ...) are analysed in
+//   2-call-site context, and a wrapper called from a wrapper keeps the
+//   caller's context ("sticky"): xstrdup -> xmalloc -> malloc makes one heap
+//   object per call to xstrdup in user code;
+// - container-like functions (store a parameter through a parameter, return
+//   a value loaded through a parameter, or return a parameter: list_append,
+//   hash_get, nonnull) are analysed in 2-call-site context;
+// - everything else is analysed once (empty context).
+//
+// Heap objects get the newest call site as allocation context and stack
+// objects the whole method context, as in 2-call-site+heap. Selection is
+// syntactic (facts only), so the negations below are stratified.
+//------------------------------------------------------------------------------
+.type ContextItem = symbol | Instruction
+.type Context = [?item0: ContextItem, ?item1: ContextItem]
+.type AllocationContext = [?ci0: ContextItem, ?ci1: ContextItem]
+
+.decl context(?ctx:Context)
+.decl alloc_context(?allocCtx:AllocationContext)
+.decl context_item(?item:ContextItem)
+
+//-----------------------------------------------------
+// Context Constructors
+//-----------------------------------------------------
+
+.decl context_request(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?tofunction: FunctionDecl)
+.decl context_response(?callerCtx: Context, ?aCtx: AllocationContext, ?invoc: Instruction, ?ctx: Context)
+
+// Ordinary callees: analysed once.
+context(?ctx),
+context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
+  context_request(?callerCtx, ?aCtx, ?invoc, ?callee),
+  !_selected_function(?callee),
+  dummy_context_item_by_str("<<empty-context>>", ?empty),
+  ?ctx = [?empty, ?empty].
+
+// A wrapper called from a wrapper keeps the caller's context (sticky).
+context(?callerCtx),
+context_response(?callerCtx, ?aCtx, ?invoc, ?callerCtx) :-
+  context_request(?callerCtx, ?aCtx, ?invoc, ?callee),
+  alloc_wrapper(?callee),
+  instruction_in_function(?invoc, ?caller),
+  alloc_wrapper(?caller).
+
+// Wrappers called from elsewhere, and containers: 2-call-site.
+context(?ctx),
+context_item(?invoc),
+context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
+  context_request(?callerCtx, ?aCtx, ?invoc, ?callee),
+  _selected_function(?callee),
+  instruction_in_function(?invoc, ?caller),
+  !alloc_wrapper(?caller),
+  context_item(?item0),
+  context_item(?newItem0),
+  ?callerCtx = [?item0, ?newItem0],
+  ?ctx = [?newItem0, ?invoc].
+context(?ctx),
+context_item(?invoc),
+context_response(?callerCtx, ?aCtx, ?invoc, ?ctx) :-
+  context_request(?callerCtx, ?aCtx, ?invoc, ?callee),
+  container_function(?callee),
+  !alloc_wrapper(?callee),
+  instruction_in_function(?invoc, ?caller),
+  alloc_wrapper(?caller),
+  context_item(?item0),
+  context_item(?newItem0),
+  ?callerCtx = [?item0, ?newItem0],
+  ?ctx = [?newItem0, ?invoc].
+
+.decl acontext_request(?ctx: Context, ?alloc: Allocation, ?var: Variable)
+.decl acontext_response(?ctx: Context, ?alloc: Allocation, ?var: Variable, ?aCtx: AllocationContext)
+
+// Variables holding stack objects: defined from the schema only, so the
+// negation below is stratified.
+.decl _stack_object_var(?var: Variable)
+_stack_object_var(?var) :-
+  alloca_instruction(?instr),
+  instruction_assigns_to(?instr, ?var).
+_stack_object_var(?param) :-
+  function_param_by_value(?func, ?index),
+  function_param(?func, ?index, ?param).
+
+alloc_context(?aCtx),
+acontext_response(?ctx, ?alloc, ?var, ?aCtx) :-
+  acontext_request(?ctx, ?alloc, ?var),
+  _stack_object_var(?var),
+  ?ctx = [?ctxItem1, ?ctxItem2],
+  ?aCtx = [?ctxItem1, ?ctxItem2].
+
+alloc_context(?aCtx),
+acontext_response(?ctx, ?alloc, ?var, ?aCtx) :-
+  acontext_request(?ctx, ?alloc, ?var),
+  !_stack_object_var(?var),
+  dummy_context_item_by_str("<<empty-context>>", ?empty),
+  ?ctx = [?ctxItem1, ?ctxItem2],
+  ?aCtx = [?empty, ?ctxItem2],
+  ?ctxItem1 = ?ctxItem1.  // dummy assignment to avoid unused record item
+
+//-----------------------------------------------------
+// Context Item Constructors
+//-----------------------------------------------------
+
+.decl context_item_by_invoc(?invoc:Instruction, ?ctxItem:ContextItem)
+.decl context_item_invoc(?ctxItem:ContextItem, ?invoc:Instruction)
+
+context_item_invoc(?ctxItem, ?invoc) :-
+  context_item_by_invoc(?invoc, ?ctxItem).
+
+context_item(?ctxItem),
+context_item_by_invoc(?instr, ?ctxItem) :-
+  (call_instruction(?instr);
+   invoke_instruction(?instr)),
+  ?ctxItem = ?instr.
+
+
+// Dummy context items (needed for empty contexts)
+.decl matches_string_context(?str:symbol)
+
+matches_string_context(?str):-
+  ?str = "<<empty-context>>";
+  ?str = "<<main-context>>";
+  ?str = "<<startup-context>>";
+  ?str = "<<exit-context>>".
+
+.decl dummy_context_item_by_str(?str:symbol,?ctxItem:ContextItem)
+context_item(as(?ctxItem, ContextItem)),
+dummy_context_item_by_str(?str, ?ctxItem) :-
+  matches_string_context(?str),
+  ?ctxItem = ?str.
+
+//-----------------------------------------------------
+// Macro-constructors
+//-----------------------------------------------------
+
+// record[Ctx, Alloc] = ACtx ->
+//    context(Ctx), allocation(Alloc), alloc_context(ACtx).
+
+// merge[CallerCtx, Invoc, ACtx, Alloc] = CalleeCtx ->
+//    context(CallerCtx), context(CalleeCtx),
+//    instruction(Invoc), alloc_context(ACtx), allocation(Alloc).
+
+// // Macro-definitions
+// alloc_context:new[Item] = ACtx <-
+//    record[Ctx, _] = ACtx,
+//    context:new[_, Item] = Ctx.
+
+// context:new[LastItem, NewItem] = CalleeCtx <-
+//    merge[CallerCtx, Invoc, _, _] = CalleeCtx,
+//    context:new[_, LastItem] = CallerCtx,
+//    context_item:by_invoc[Invoc] = NewItem.
+
+//-----------------------------------------------------
+// Unpacking context items
+//-----------------------------------------------------
+
+//Already generated output relations of 1-call-sensitivity
+.decl context_getitem(?ctx: Context, ?ctxItem: ContextItem)
+
+context_getitem(?ctx, ?ctxItem) :-
+  context_response(_, _, ?ctxItem, ?ctx).
+
+//-----------------------------------------------------
+// Allocation wrappers
+//-----------------------------------------------------
+// A small function returning a pointer that calls a heap allocator, or
+// another wrapper: xmalloc, xcalloc, xstrdup, zmalloc, ... Giving such a
+// function call-site context is always sound (it is ordinary context
+// sensitivity for that function), so a false positive only costs extra
+// contexts.
+
+.decl alloc_wrapper(?func: FunctionDecl)
+.decl _alloc_wrapper_candidate(?func: FunctionDecl)
+.decl _function_size(?func: FunctionDecl, ?n: number)
+
+_function_size(?func, ?n) :-
+  function(?func),
+  ?n = count : instruction_in_function(_, ?func).
+
+_alloc_wrapper_candidate(?func) :-
+  function(?func),
+  function_has_type(?func, ?fnType),
+  function_type_return(?fnType, ?retType),
+  pointer_type(?retType),
+  _function_size(?func, ?n),
+  ?n <= 64.
+
+// The values a function can return, followed back through local stack
+// slots (store/load, as at -O0), phi and select. A wrapper returns the
+// result of an allocator call itself; a function returning a pointer into
+// a buffer (pointer arithmetic) does not qualify.
+.decl _assigned_by(?op: Operand, ?instr: Instruction)
+.decl _ret_src(?func: FunctionDecl, ?op: Operand)
+
+_assigned_by(as(?var, Operand), ?instr) :-
+  instruction_assigns_to(?instr, ?var).
+
+_ret_src(?func, ?val) :-
+  _alloc_wrapper_candidate(?func),
+  ret_instruction_value(?ret, ?val),
+  instruction_in_function(?ret, ?func).
+
+_ret_src(?func, ?stored) :-
+  _ret_src(?func, ?val),
+  _assigned_by(?val, ?load),
+  load_instruction_address(?load, ?slot),
+  _assigned_by(?slot, ?alloca),
+  alloca_instruction(?alloca),
+  store_instruction_address(?store, ?slot),
+  store_instruction_value(?store, ?stored),
+  instruction_in_function(?store, ?func).
+
+_ret_src(?func, ?in) :-
+  _ret_src(?func, ?val),
+  _assigned_by(?val, ?phi),
+  phi_instruction_pair(?phi, _, ?pair),
+  ?pair = [?in, _].
+
+_ret_src(?func, ?in) :-
+  _ret_src(?func, ?val),
+  _assigned_by(?val, ?sel),
+  ( select_instruction_first_operand(?sel, ?in)
+  ; select_instruction_second_operand(?sel, ?in) ).
+
+// Pass-through functions return one of their parameters (gnulib's
+// nonnull(p): check p and return it), so `return nonnull(malloc(n))`
+// returns malloc's result: follow the call into that argument.
+.decl _param_op(?func: FunctionDecl, ?index: number, ?op: Operand)
+.decl _returns_param(?func: FunctionDecl, ?index: number)
+
+_param_op(?func, ?index, as(?param, Operand)) :-
+  function_param(?func, ?index, ?param).
+
+_returns_param(?func, ?index) :-
+  _ret_src(?func, ?op),
+  _param_op(?func, ?index, ?op).
+
+_ret_src(?func, ?arg) :-
+  _ret_src(?func, ?val),
+  _assigned_by(?val, ?call),
+  call_instruction_fn_target(?call, ?callee),
+  _returns_param(?callee, ?index),
+  call_instruction_arg(?call, ?index, ?arg).
+
+alloc_wrapper(?func) :-
+  _ret_src(?func, ?val),
+  _assigned_by(?val, ?call),
+  call_instruction_fn_target(?call, ?callee),
+  ( heap_alloc_function(?callee) ; alloc_wrapper(?callee) ).
+
+.output alloc_wrapper
+
+//-----------------------------------------------------
+// Container-like functions
+//-----------------------------------------------------
+
+// Operands derived from a parameter by address arithmetic (GEPs).
+.decl _from_param(?func: FunctionDecl, ?op: Operand)
+_from_param(?func, as(?param, Operand)) :-
+  function_param(?func, _, ?param).
+_from_param(?func, as(?var, Operand)) :-
+  _from_param(?func, ?base),
+  getelementptr_instruction_base(?gep, ?base),
+  instruction_in_function(?gep, ?func),
+  instruction_assigns_to(?gep, ?var).
+
+.decl container_function(?func: FunctionDecl)
+.output container_function
+
+// stores a parameter through a parameter: list_append(l, x), hash_put
+container_function(?func) :-
+  _function_size(?func, ?n), ?n <= 128,
+  store_instruction_value(?store, ?val),
+  instruction_in_function(?store, ?func),
+  function_param(?func, _, ?param),
+  ?val = as(?param, Operand),
+  operand_has_type(?val, ?ptr), pointer_type(?ptr),
+  store_instruction_address(?store, ?addr),
+  _from_param(?func, ?addr).
+
+// returns a pointer loaded through a parameter: list_get, hash_get
+container_function(?func) :-
+  _function_size(?func, ?n), ?n <= 128,
+  ret_instruction_value(?ret, ?val),
+  instruction_in_function(?ret, ?func),
+  operand_has_type(?val, ?ptr), pointer_type(?ptr),
+  _assigned_by(?val, ?load),
+  load_instruction_address(?load, ?addr),
+  _from_param(?func, ?addr).
+
+// returns a parameter (or a pointer into one): nonnull(p), skip_spaces(s)
+container_function(?func) :-
+  _function_size(?func, ?n), ?n <= 128,
+  ret_instruction_value(?ret, ?val),
+  instruction_in_function(?ret, ?func),
+  operand_has_type(?val, ?ptr), pointer_type(?ptr),
+  _from_param(?func, ?val).
+
+.decl _selected_function(?func: FunctionDecl)
+_selected_function(?func) :- alloc_wrapper(?func) ; container_function(?func).

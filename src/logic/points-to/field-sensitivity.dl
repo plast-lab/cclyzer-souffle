@@ -102,7 +102,8 @@ _array_subobjects_at_rel_offset(?alloc, ?offset, ?newAlloc) :-
    alloc_subregion_at_array_index(?base, ?index1, ?alloc),
    alloc_subregion_at_array_index(?base, ?index2 , ?newAlloc),
    ?offset = ?index2 - ?index1,
-   ?offset > 0.
+   // negative offsets too (p[-1] after p++)
+   ?offset != 0.
 
 gep_points_to(?insn, 1, ?baseAlloc, ?newAlloc)
  :-
@@ -428,3 +429,195 @@ var_points_to(?vaCtx, ?valueAlloc, ?ctx, ?toVar) :-
   operand_points_to(?aCtx, ?aggrAlloc, ?ctx, ?base),
   aggregate_points_to(?vaCtx, ?valueAlloc, ?aCtx, ?aggrAlloc),
   instruction_assigns_to(?insn, ?toVar).
+
+
+//------------------------------------------------------------------------------
+// [Array decay]
+//
+// Without this rule a GEP on an array object through a pointer to its
+// element type (`struct s tab[4]; struct s *p = tab; p[i].f`) produced
+// nothing, so the result and everything loaded through it had an empty
+// points-to set.
+//
+// TODO: a GEP whose type does not match the object's type at all
+// (union members, initializers with padding, memory pools) still
+// produces nothing. The fix is offset-based: views of the same memory
+// share contents at equal byte offsets. (Collapsing such objects
+// field-insensitively is sound but far too imprecise: on sed it merged
+// the arguments of every command through the sed_cmd union.)
+//------------------------------------------------------------------------------
+
+// The object (or the whole object at pointer index 0, for a base
+// allocation) is an array whose elements have the GEP's type: the first
+// index selects an element. `struct s tab[4]; struct s *p = tab; p[i].f`
+.decl _gep_array_decay(?insn: GetElementPtrInstruction, ?baseAlloc: Allocation, ?array: Allocation)
+_gep_array_decay(?insn, ?baseAlloc, ?array) :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   alloc_subregion(?alloc),
+   ?array = ?alloc,
+   allocation_type(?array, ?arrayType),
+   array_type_has_component(?arrayType, ?elemType),
+   getelementptr_instruction_interm_type(?insn, 1, ?declaredType),
+   type_compatible(?elemType, ?declaredType).
+_gep_array_decay(?insn, ?baseAlloc, ?array) :-
+   gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
+   basic_allocation(?alloc),
+   alloc_subregion_at_array_index(?alloc, 0, ?array),
+   allocation_type(?array, ?arrayType),
+   array_type_has_component(?arrayType, ?elemType),
+   getelementptr_instruction_interm_type(?insn, 1, ?declaredType),
+   type_compatible(?elemType, ?declaredType).
+
+gep_points_to(?insn, 1, ?baseAlloc, ?elem) :-
+   _gep_array_decay(?insn, ?baseAlloc, ?array),
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?index),
+   alloc_subregion_at_array_index(?array, ?index, ?elem).
+gep_points_to(?insn, 1, ?baseAlloc, ?elem) :-
+   _gep_array_decay(?insn, ?baseAlloc, ?array),
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   !constant_to_int(?indexOp, _),
+   alloc_subregion_at_any_array_index(?array, ?elem).
+
+
+//------------------------------------------------------------------------------
+// [Views: GEPs whose type does not match the object]
+//
+// Union members, memory pools (obstack), initializers with padding and
+// casts between unrelated structs make a GEP's declared type differ
+// from the object's type, and the GEP produced nothing. Now the GEP
+// continues on a view of the object with the declared type: one view per
+// (object, type), so all accesses through the same type agree, and the
+// view's fields share contents with the object's fields at the same
+// byte offset, so mixing the two types stays sound for overlapping
+// fields.
+//------------------------------------------------------------------------------
+
+// Types that a GEP step can handle on an object of a given type
+.decl _gep_step_handles(?insn: GetElementPtrInstruction, ?index: number, ?type: Type)
+_gep_step_handles(?insn, ?index, ?type) :-
+   getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
+   type_compatible(?type, ?declaredType).
+_gep_step_handles(?insn, ?index, ?type) :-
+   getelementptr_instruction_interm_type(?insn, ?index, ?declaredType),
+   array_type_has_component(?type, ?elemType),
+   type_compatible(?elemType, ?declaredType).
+// the object's first field (recursively) has the type: C's embedded
+// first member, `struct charclass { word w[4]; }` accessed as w
+_gep_step_handles(?insn, ?index, ?type) :-
+   struct_type_field(?type, 0, ?fieldType),
+   _gep_step_handles(?insn, ?index, ?fieldType).
+// byte offsets into a struct that land on a field (rule 6 above)
+_gep_step_handles(?insn, 1, ?type) :-
+   getelementptr_instruction_interm_type(?insn, 1, ?i8),
+   int8_type(?i8),
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?offset),
+   struct_type_field_offset(?type, _, ?offset).
+// byte-wise access (i8) is handled by the byte-offset rules
+_gep_step_handles(?insn, ?index, ?type) :-
+   getelementptr_instruction_interm_type(?insn, ?index, ?i8),
+   int8_type(?i8),
+   type(?type).
+.decl alloc_view(?alloc: Allocation, ?type: Type, ?view: AllocSubregion)
+.output alloc_view
+
+alloc_subregion(?view),
+alloc_view(?alloc, ?declaredType, ?view),
+allocation_type(?view, ?declaredType),
+alloc_subregion_base(?view, ?alloc),
+gep_points_to(?insn, ?step, ?baseAlloc, ?view) :-
+   gep_points_to(?insn, ?k, ?baseAlloc, ?alloc),
+   getelementptr_instruction_nindices(?insn, ?total),
+   ?k < ?total,
+   ?step = max(?k, 1),
+   getelementptr_instruction_interm_type(?insn, ?step, ?declaredType),
+   struct_type(?declaredType),
+   allocation_type(?alloc, ?type),
+   // objects of pointer type are typed by type back-propagation
+   ?type != "ptr",
+   !_gep_step_handles(?insn, ?step, ?type),
+   // only the outermost object of an alias class: its [0] element and
+   // its first field are aliases of it, usually of another type; one of
+   // the class matching is enough (negating that would not stratify)
+   !match(".*(\\[0\\]|/0)$", ?alloc),
+   // nor a typed copy made by type back-propagation (or one of its
+   // pointer-index elements): an object has one copy per type it is
+   // used as, a pointer reaches all of them, and a GEP is meant to
+   // match only the copy of its own type
+   !match("[*]infered_type_alloc@.*\\](\\[([*]|-?[0-9]+)\\])*", ?alloc),
+   // no views of views
+   !match(".*<.*>.*", ?alloc),
+   ?view = cat(cat(cat(?alloc, "<"), ?declaredType), ">").
+
+// A view and its object, and their fields at equal byte offsets, have
+// the same contents.
+.decl _view_overlap(?a: Allocation, ?b: Allocation)
+_view_overlap(?view, ?alloc) :-
+   alloc_view(?alloc, _, ?view).
+_view_overlap(?viewField, ?field) :-
+   alloc_view(?alloc, ?viewType, ?view),
+   allocation_type(?alloc, ?type),
+   struct_type_field_offset(?viewType, ?i, ?offset),
+   struct_type_field_offset(?type, ?j, ?offset),
+   alloc_subregion_at_field(?view, ?i, ?viewField),
+   alloc_subregion_at_field(?alloc, ?j, ?field).
+_view_overlap(?b, ?a) :- _view_overlap(?a, ?b).
+
+ptr_points_to(?aCtx, ?target, ?baseACtx, ?a) :-
+   _view_overlap(?a, ?b),
+   ptr_points_to(?aCtx, ?target, ?baseACtx, ?b).
+
+// A typed copy (or one of its elements) reached by a GEP of another
+// type: ask type back-propagation for a copy of the root object with
+// the GEP's type, and continue on the same element of that copy. This
+// is how objects carved out of a memory pool (obstack) get their type.
+.decl _typed_copy_root(?copy: Allocation, ?root: Allocation)
+_typed_copy_root(?copy, ?root) :- _keep_alloc_var_assoc(?copy, _, ?root, _).
+_typed_copy_root(?copy, ?root) :- _assign_rebase_alloc(?copy, _, ?root, _).
+
+// ?elem is ?copy itself (index -1) or its element at ?index (-2: [*])
+.decl _typed_copy_elem(?elem: Allocation, ?copy: Allocation, ?index: number)
+_typed_copy_elem(?copy, ?copy, -1) :- _typed_copy_root(?copy, _).
+_typed_copy_elem(?elem, ?copy, ?index) :-
+   _typed_copy_root(?copy, _),
+   alloc_subregion_at_array_index(?copy, ?index, ?elem).
+_typed_copy_elem(?elem, ?copy, -2) :-
+   _typed_copy_root(?copy, _),
+   alloc_subregion_at_any_array_index(?copy, ?elem).
+
+.decl _gep_retype(?insn: GetElementPtrInstruction, ?step: number, ?baseAlloc: Allocation, ?root: Allocation, ?index: number, ?declaredType: Type)
+_gep_retype(?insn, ?step, ?baseAlloc, ?root, ?index, ?declaredType) :-
+   gep_points_to(?insn, ?k, ?baseAlloc, ?elem),
+   _typed_copy_elem(?elem, ?copy, ?index),
+   _typed_copy_root(?copy, ?root),
+   // heap objects only: memory pools are on the heap, and a stack slot
+   // reached by a struct GEP is reached imprecisely (it holds a pointer)
+   untyped_heap_allocation(_, ?root),
+   getelementptr_instruction_nindices(?insn, ?total),
+   ?k < ?total,
+   ?step = max(?k, 1),
+   getelementptr_instruction_interm_type(?insn, ?step, ?declaredType),
+   struct_type(?declaredType),
+   allocation_type(?elem, ?type),
+   !_gep_step_handles(?insn, ?step, ?type).
+
+type_indication(?declaredType, ?aCtx, ?root) :-
+   _gep_retype(_, _, _, ?root, _, ?declaredType),
+   var_points_to(?aCtx, ?root, _, _).
+
+gep_points_to(?insn, ?step, ?baseAlloc, ?newCopy) :-
+   _gep_retype(?insn, ?step, ?baseAlloc, ?root, -1, ?declaredType),
+   _typed_copy_root(?newCopy, ?root),
+   allocation_type(?newCopy, ?declaredType).
+gep_points_to(?insn, ?step, ?baseAlloc, ?newElem) :-
+   _gep_retype(?insn, ?step, ?baseAlloc, ?root, ?index, ?declaredType),
+   ?index >= 0,
+   _typed_copy_root(?newCopy, ?root),
+   allocation_type(?newCopy, ?declaredType),
+   alloc_subregion_at_array_index(?newCopy, ?index, ?newElem).
+gep_points_to(?insn, ?step, ?baseAlloc, ?newElem) :-
+   _gep_retype(?insn, ?step, ?baseAlloc, ?root, -2, ?declaredType),
+   _typed_copy_root(?newCopy, ?root),
+   allocation_type(?newCopy, ?declaredType),
+   alloc_subregion_at_any_array_index(?newCopy, ?newElem).

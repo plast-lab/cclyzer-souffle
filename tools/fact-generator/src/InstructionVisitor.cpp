@@ -345,6 +345,9 @@ InstructionVisitor::visitInvokeInst(const llvm::InvokeInst &II)
     
     // invoke instruction function (also records type)
     writeInstrOperand(pred::invoke::function, iref, invokeOp);
+    // the call's own signature: with opaque pointers the callee
+    // operand's type (ptr) no longer carries it
+    gen.writeFact(pred::invoke::fn_type, iref, gen.recordType(II.getFunctionType()));
     
     
 
@@ -552,13 +555,8 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
     writeInstrOperand(pred::gep::base, iref, GEP.getPointerOperand());
     auto sourceElementType = GEP.getSourceElementType();
 
-    std::string type_str;
-    llvm::raw_string_ostream rso(type_str);
-    sourceElementType->print(rso);
-    auto pos = type_str.find("= type");
-    if(pos != string::npos){
-      type_str = type_str.substr(0, pos -1);
-    }
+    // the type's canonical id (as used by every other fact)
+    string type_str = gen.recordType(sourceElementType);
 
     string pointer_type_string = type_str;
     pointer_type_string.append("*");
@@ -699,6 +697,9 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
     const llvm::Value *callOp = CI.getCalledOperand();
     // call instruction function (also records type)
     writeInstrOperand(pred::call::function, iref, callOp);
+    // the call's own signature: with opaque pointers the callee
+    // operand's type (ptr) no longer carries it
+    gen.writeFact(pred::call::fn_type, iref, gen.recordType(CI.getFunctionType()));
     
     for (unsigned op = 0; op < CI.arg_size(); ++op){
         writeInstrOperand(pred::call::arg, iref, CI.getArgOperand(op), op);

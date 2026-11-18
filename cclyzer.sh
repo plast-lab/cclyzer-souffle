@@ -14,6 +14,7 @@ declare -A MACRO=(
     [1-call-site-sensitive+heap]=ONE_CALL_SITE_SENSITIVE_HEAP
     [2-call-site-sensitive+heap]=TWO_CALL_SITE_SENSITIVE_HEAP
     [2-call-site-sensitive+2-heap]=TWO_CALL_SITE_SENSITIVE_TWO_HEAP
+    [selective]=SELECTIVE
 )
 
 usage() {

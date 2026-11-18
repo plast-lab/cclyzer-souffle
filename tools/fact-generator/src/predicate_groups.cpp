@@ -169,6 +169,7 @@ pred_t invoke::instr("invoke_instruction");
 pred_t invoke::instr_direct("direct_invoke_instruction");
 pred_t invoke::instr_indirect("indirect_invoke_instruction");
 pred_t invoke::function("invoke_instruction_fn_operand");
+pred_t invoke::fn_type("invoke_instruction_function_type");
 pred_t invoke::arg("invoke_instruction_arg");
 pred_t invoke::calling_conv("invoke_instruction_with_calling_convention");
 pred_t invoke::ret_attr("invoke_instruction_with_return_attribute");
@@ -332,6 +333,7 @@ pred_t call::instr("call_instruction");
 pred_t call::instr_direct("direct_call_instruction");
 pred_t call::instr_indirect("indirect_call_instruction");
 pred_t call::function("call_instruction_fn_operand");
+pred_t call::fn_type("call_instruction_function_type");
 pred_t call::arg("call_instruction_arg");
 pred_t call::calling_conv("call_instruction_with_calling_convention");
 pred_t call::ret_attr("call_instruction_with_return_attribute");
@@ -436,6 +438,7 @@ pred_t ptrtoint_constant_expr::from_ptr_constant("ptrtoint_constant_expression_f
 
 pred_t gep_constant_expr::id("getelementptr_constant_expression");
 pred_t gep_constant_expr::base("getelementptr_constant_expression_base");
+pred_t gep_constant_expr::source_type("getelementptr_constant_expression_source_type");
 pred_t gep_constant_expr::index("getelementptr_constant_expression_index");
 pred_t gep_constant_expr::nindices("getelementptr_constant_expression_nindices");
 

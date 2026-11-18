@@ -60,6 +60,11 @@ attribute(Attr) :- invoke_instruction_with_param_attribute(_, _, Attr).
 .decl invoke_instruction_fn_type(instr:InvokeInstruction, type:Type)
 .decl invoke_instruction_return_type(instr:InvokeInstruction, type:Type)
 
+.decl invoke_instruction_function_type(instr:InvokeInstruction, type:FunctionType)
+
+invoke_instruction_fn_type(Instr, FnType) :-
+   invoke_instruction_function_type(Instr, FnType).
+
 invoke_instruction_fn_type(Instr, FnType) :-
    invoke_instruction_fn_operand(Instr, FnOp),
    operand_has_type(FnOp, PtrType),

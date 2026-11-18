@@ -1,6 +1,7 @@
 #include <string>
 #include <boost/functional/hash.hpp>
 #include <llvm/IR/Constants.h>
+#include <llvm/IR/Operator.h>
 #include "predicate_groups.hpp"
 #include "FactGenerator.hpp"
 #include <llvm/ADT/SmallVector.h>
@@ -133,10 +134,15 @@ FactGenerator::writeConstantExpr(const llvm::ConstantExpr &expr,
     else if (expr.getOpcode() == llvm::Instruction::GetElementPtr){
         unsigned nOperands = expr.getNumOperands();
         
-        //get expr as a GEP instruction
-        auto GEP_form = llvm::dyn_cast<llvm::GetElementPtrInst>(expr.getAsInstruction());
+        // GEPOperator views the expression as a GEP without creating
+        // (and leaking) an instruction, as getAsInstruction() did
+        auto *GEP_form = llvm::cast<llvm::GEPOperator>(&expr);
         //check if all indexes are constant values
         if(GEP_form->hasAllConstantIndices()){
+            // the type the first index steps over: with opaque pointers
+            // the base's type (ptr) no longer says what it points to
+            writeFact(pred::gep_constant_expr::source_type, refmode,
+                      recordType(GEP_form->getSourceElementType()));
             for (unsigned i = 0; i < nOperands; i++)
             {
                 const llvm::Constant *c = cast<llvm::Constant>(expr.getOperand(i));

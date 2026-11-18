@@ -256,6 +256,7 @@ namespace cclyzer
             static pred_t instr_direct;
             static pred_t instr_indirect;
             static pred_t function;
+            static pred_t fn_type;
             static pred_t arg;
             static pred_t calling_conv;
             static pred_t ret_attr;
@@ -479,6 +480,7 @@ namespace cclyzer
             static pred_t instr_direct;
             static pred_t instr_indirect;
             static pred_t function;
+            static pred_t fn_type;
             static pred_t arg;
             static pred_t calling_conv;
             static pred_t ret_attr;
@@ -635,6 +637,7 @@ namespace cclyzer
         struct gep_constant_expr: predicate_group {
             static pred_t id;
             static pred_t base;
+            static pred_t source_type;
             static pred_t index;
             static pred_t nindices;
         };

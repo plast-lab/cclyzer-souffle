@@ -37,7 +37,8 @@ MODULES      := $(patsubst ./%/,%,$(dir $(HEADER_FILES)))
 ANALYSES ?= context-insensitive \
             1-call-site-sensitive+heap \
             2-call-site-sensitive+heap \
-            2-call-site-sensitive+2-heap
+            2-call-site-sensitive+2-heap \
+            selective
 
 macro.context-insensitive          := CONTEXT_INSENSITIVE
 macro.1-call-site-sensitive+heap   := ONE_CALL_SITE_SENSITIVE_HEAP

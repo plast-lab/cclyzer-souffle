@@ -30,18 +30,27 @@ LOGIC_FILES  := $(shell find ./ -type f -name '*.dl')
 HEADER_FILES := $(shell find ./ -type f -name '*.project')
 MODULES      := $(patsubst ./%/,%,$(dir $(HEADER_FILES)))
 
-LOGIC_CXX_OUT := $(OUTDIR)/cclyzer-analyze
+# One compiled binary per analysis, $(OUTDIR)/cclyzer-<analysis>. The
+# analysis is chosen with a Soufflé macro (see master.project), so building
+# or running one analysis never touches the source tree.
+# Build only some of them with e.g. `make ANALYSES=context-insensitive`.
+ANALYSES ?= context-insensitive \
+            1-call-site-sensitive+heap \
+            2-call-site-sensitive+heap \
+            2-call-site-sensitive+2-heap
 
-$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-	souffle -o $@ master.project
+macro.context-insensitive          := CONTEXT_INSENSITIVE
+macro.1-call-site-sensitive+heap   := ONE_CALL_SITE_SENSITIVE_HEAP
+macro.2-call-site-sensitive+heap   := TWO_CALL_SITE_SENSITIVE_HEAP
+macro.2-call-site-sensitive+2-heap := TWO_CALL_SITE_SENSITIVE_TWO_HEAP
 
-#$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-#	souffle --profile=cclyzer.log master.dl
+LOGIC_BINARIES := $(ANALYSES:%=$(OUTDIR)/cclyzer-%)
 
-#$(LOGIC_CXX_OUT): $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
-#	souffle -c -F ../../facts/ -D ../../results/ -o $@ master.project
+$(OUTDIR)/cclyzer-%: $(LOGIC_FILES) $(HEADER_FILES) | $(OUTDIR)
+	$(if $(macro.$*),,$(error Unknown analysis '$*'. Known: $(subst macro.,,$(filter macro.%,$(.VARIABLES)))))
+	souffle --macro=$(macro.$*)=1 -o $@ master.project
 
-all: $(LOGIC_CXX_OUT)
+all: $(LOGIC_BINARIES)
 
 
 #-----------------------------------

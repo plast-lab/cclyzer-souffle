@@ -56,6 +56,15 @@ install:
 #-----------------------------------------
 
 
+# Facts for tests/ must match tests/facts.sha256 (see scripts/test-facts.py).
+# After an intended change: make test-facts-update and commit the new hashes.
+.PHONY: test-facts test-facts-update
+test-facts: $(module.facts)
+	$(PYTHON) scripts/test-facts.py
+
+test-facts-update: $(module.facts)
+	$(PYTHON) scripts/test-facts.py --update
+
 # Overwrite build directory for tests
 OUTDIR = $(BUILDDIR)/tests
 

@@ -37,17 +37,34 @@ memcpy_call(?memcpyInstr, ?callerCtx, ?to, ?from) :-
 // Bitwise copy semantics that respect type information
 .decl memcpy(?insn: Instruction, ?toCtx: AllocationContext, ?to: Allocation, ?fromCtx: AllocationContext , ?from: Allocation)
 
+// The source and destination sides of a memcpy call, each with the aliases
+// and types of the objects its operand points to. Splitting the join keeps
+// each side's work separate: new points-to, alias or type facts for one
+// operand only extend that side, instead of re-walking both sides of every
+// call. memcpy itself is unchanged.
+.decl _memcpy_src(?instr: Instruction, ?ctx: Context, ?fromACtx: AllocationContext, ?fromAlias: Allocation, ?fromType: Type)
+.decl _memcpy_dst(?instr: Instruction, ?ctx: Context, ?toACtx: AllocationContext, ?toAlias: Allocation, ?toType: Type)
+
+_memcpy_src(?instr, ?ctx, ?fromACtx, ?fromAlias, ?fromType) :-
+   memcpy_call(?instr, ?ctx, _, ?from),
+   operand_points_to(?fromACtx, ?fromAlloc, ?ctx, ?from),
+   alloc_aliases(?fromAlias, ?fromAlloc),
+   allocation_type(?fromAlias, ?fromType).
+// Evaluation order only: start from the new facts of the delta atom.
+.plan 2:(3,2,1,4), 3:(4,3,2,1)
+
+_memcpy_dst(?instr, ?ctx, ?toACtx, ?toAlias, ?toType) :-
+   memcpy_call(?instr, ?ctx, ?to, _),
+   operand_points_to(?toACtx, ?toAlloc, ?ctx, ?to),
+   alloc_aliases(?toAlias, ?toAlloc),
+   allocation_type(?toAlias, ?toType).
+.plan 2:(3,2,1,4), 3:(4,3,2,1)
+
 memcpy(?instr, ?toACtx, ?toALias, ?fromACtx, ?fromAlias)
  :-
-   memcpy_call(?instr, ?ctx, ?to, ?from),
-   operand_points_to(?fromACtx, ?fromAlloc, ?ctx, ?from),
-   operand_points_to(?toACtx, ?toAlloc, ?ctx, ?to),
-   // consider any possible aliases
-   alloc_aliases(?toALias, ?toAlloc),
-   alloc_aliases(?fromAlias, ?fromAlloc),
+   _memcpy_dst(?instr, ?ctx, ?toACtx, ?toALias, ?toType),
+   _memcpy_src(?instr, ?ctx, ?fromACtx, ?fromAlias, ?fromType),
    // check type compatibility
-   allocation_type(?toALias, ?toType),
-   allocation_type(?fromAlias, ?fromType),
    type_compatible(?fromType, ?toType).
 
 memcpy(?instr, ?toACtx, ?toALias, ?fromACtx, ?fromAlias)
@@ -88,6 +105,8 @@ _rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
    allocation_type(?srcSubobject, ?srcType),
    allocation_type(?destSubobject, ?destType),
    type_compatible(?srcType, ?destType).
+// Evaluation order only: start from new allocation_type facts (versions 3-4).
+.plan 3:(4,2,1,3,5,6), 4:(5,3,1,2,4,6)
 
 _rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
  :-
@@ -99,6 +118,8 @@ _rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
    allocation_type(?srcSubobject, ?srcType),
    allocation_type(?destSubobject, ?destType),
    type_compatible(?srcType, ?destType).
+// Evaluation order only: start from new allocation_type facts (versions 3-4).
+.plan 3:(4,2,1,3,5,6), 4:(5,3,1,2,4,6)
 
 _rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
  :-
@@ -110,6 +131,8 @@ _rec_memcpy(?insn, ?destSubobject, ?srcSubobject)
    allocation_type(?srcSubobject, ?srcType),
    allocation_type(?destSubobject, ?destType),
    type_compatible(?srcType, ?destType).
+// Evaluation order only: start from new allocation_type facts (versions 3-4).
+.plan 3:(4,2,1,3,5,6), 4:(5,3,1,2,4,6)
 
 
 //------------------------------------------------------------------------------
@@ -136,16 +159,25 @@ _rec_memcpy_to_ptr(?instr, ?to, ?from) :-
 //.output ptr_points_to3
 
 
-//ptr_points_to2(?aCtx, ?alloc, ?toCtx, ?to),
-ptr_points_to(?aCtx, ?alloc, ?toCtx, ?to) :-
+// The (context, object) pairs whose pointer contents a memcpy copies:
+// either the copied objects themselves, or subobjects of copied outer
+// objects. Computing the pairs once, without the instruction, means each
+// pair's points-to set is copied once rather than once per memcpy
+// instruction and rule (same facts as joining in the copy rule).
+.decl _memcpy_ptr_copy(?toCtx: AllocationContext, ?to: Allocation, ?fromCtx: AllocationContext, ?from: Allocation)
+
+_memcpy_ptr_copy(?toCtx, ?to, ?fromCtx, ?from) :-
+   _rec_memcpy_to_ptr(?instr, ?to, ?from),
+   memcpy(?instr, ?toCtx, ?to, ?fromCtx, ?from).
+
+_memcpy_ptr_copy(?toCtx, ?to, ?fromCtx, ?from) :-
    _rec_memcpy_to_ptr(?instr, ?to, ?from),
    region_contains(?toOuter, ?to),
    region_contains(?fromOuter, ?from),
-   memcpy(?instr, ?toCtx, ?toOuter, ?fromCtx, ?fromOuter),
-   ptr_points_to(?aCtx, ?alloc, ?fromCtx, ?from).
+   memcpy(?instr, ?toCtx, ?toOuter, ?fromCtx, ?fromOuter).
+// Evaluation order only: start from new memcpy facts (version 3).
+.plan 3:(4,2,1,3)
 
-//ptr_points_to3(?aCtx, ?alloc, ?toCtx, ?to),
 ptr_points_to(?aCtx, ?alloc, ?toCtx, ?to) :-
-   _rec_memcpy_to_ptr(?instr, ?to, ?from),
-   memcpy(?instr, ?toCtx, ?to, ?fromCtx, ?from),
+   _memcpy_ptr_copy(?toCtx, ?to, ?fromCtx, ?from),
    ptr_points_to(?aCtx, ?alloc, ?fromCtx, ?from).

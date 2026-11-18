@@ -74,8 +74,11 @@ _var_pt_size(?nAllocs, ?var) :-
 
 // Number of variables that point to `NAllocs` number of allocations
 
+// One count per distinct size, not one per variable/object of that size.
+.decl _nvars_by_pt_size_key(?nAllocs: number)
+_nvars_by_pt_size_key(?nAllocs) :- _var_pt_size(?nAllocs, _).
 nvars_by_pt_size(?nAllocs, ?nVars) :-
-   _var_pt_size(?nAllocs, _),
+   _nvars_by_pt_size_key(?nAllocs),
    ?nVars = count : _var_pt_size(?nAllocs, _).
 
 
@@ -115,8 +118,11 @@ nonempty_ptrs(?nPtrs) :-
 
 
 // Compute pointer points-to sets sizes
+// One count per object: iterate over the distinct objects (nonempty_ptr is
+// exactly the objects with some points-to fact), not over every fact, which
+// recomputed the same count once per element of the set.
 alloc_points_to_sizes(?alloc, ?nAllocs) :-
-   stripctx_ptr_points_to(_, ?alloc),
+   nonempty_ptr(?alloc),
    ?nAllocs = count : stripctx_ptr_points_to(_, ?alloc).
 
 _alloc_pt_size(?nAllocs, ?alloc) :-
@@ -126,8 +132,11 @@ _alloc_pt_size(?nAllocs, ?alloc) :-
 // Number of pointer objects that point to `NAllocs` number of
 // allocations
 
+// One count per distinct size, not one per variable/object of that size.
+.decl _nallocs_by_pt_size_key(?nAllocs: number)
+_nallocs_by_pt_size_key(?nAllocs) :- _alloc_pt_size(?nAllocs, _).
 nallocs_by_pt_size(?nAllocs, ?nPtrs) :-
-   _alloc_pt_size(?nAllocs, _),
+   _nallocs_by_pt_size_key(?nAllocs),
    ?nPtrs = count : _alloc_pt_size(?nAllocs, _).
 
 /*

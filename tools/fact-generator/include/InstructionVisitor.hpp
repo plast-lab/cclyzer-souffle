@@ -100,8 +100,6 @@ class cclyzer::InstructionVisitor
     void visitSelectInst(const llvm::SelectInst &);
     void visitLandingPadInst(const llvm::LandingPadInst &);
     void visitCallInst(const llvm::CallInst &);
-    void visitDbgDeclareInst(const llvm::DbgDeclareInst &);
-    void visitDbgValueInst(const llvm::DbgValueInst &);
     void visitVAArgInst(const llvm::VAArgInst &);
 
     // Vector Operations
@@ -114,6 +112,14 @@ class cclyzer::InstructionVisitor
     void visitInstruction(const llvm::Instruction &I);
 
   protected:
+
+    // Debug-variable intrinsics are handled from visitCallInst on every LLVM
+    // version. These are deliberately not InstVisitor hooks: LLVM <= 20
+    // dispatches dbg.declare/dbg.value to visitDbg*Inst, LLVM 21+ does not,
+    // and naming them visitDbg*Inst would make the result version-dependent.
+    void processDbgDeclare(const llvm::DbgDeclareInst &);
+    void processDbgValue(const llvm::DbgValueInst &);
+
 
     //--------------------------------------------------------------------------
     // Template methods that handle many similar instructions

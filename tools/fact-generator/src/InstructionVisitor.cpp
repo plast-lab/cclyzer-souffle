@@ -573,14 +573,14 @@ InstructionVisitor::visitGetElementPtrInst(const llvm::GetElementPtrInst &GEP)
         refmode_t opref =
             writeInstrOperand(pred::gep::index, iref, GepOperand, index - 1);
 
-        if (const llvm::Constant *c = dyn_cast<llvm::Constant>(GepOperand)) {
-            // Compute integer string representation
-            llvm::SmallVector<char> temp;
-            c->getUniqueInteger().toString(temp,10,true);   
-            string int_value = string().append(temp.data(),temp.size());
-            // Write constant to integer fact
-            gen.writeFact(pred::constant::to_integer, opref, int_value);
-        }
+        // Integer value of a constant index (or of a splat vector index),
+        // when it fits Soufflé's 64-bit number domain
+        const llvm::ConstantInt *ci = dyn_cast<llvm::ConstantInt>(GepOperand);
+        if (!ci)
+            if (const llvm::Constant *c = dyn_cast<llvm::Constant>(GepOperand))
+                ci = llvm::dyn_cast_or_null<llvm::ConstantInt>(c->getSplatValue());
+        if (ci && ci->getValue().getSignificantBits() <= 64)
+            gen.writeFact(pred::constant::to_integer, opref, ci->getSExtValue());
     }
 
     gen.writeFact(pred::gep::nindices, iref, GEP.getNumIndices());
@@ -725,19 +725,18 @@ InstructionVisitor::visitCallInst(const llvm::CallInst &CI)
 
     gen.writeFnAttributes<pred::call>(iref, Attrs);
 
-    // Since LLVM 21, dbg CallInsts are not being routed to visitDbgDeclareInst/visitDbgValueInst
-    // and just fall through to visitCallInst, so we need to invoke the debug extraction visits directly.
-    // That also means removing the VisitCallInst call at the top of the handlers which would now be recursive.
+    // Debug-variable intrinsics also get their debug facts. See the note on
+    // processDbgDeclare in InstructionVisitor.hpp for why this lives here.
     if (auto *DDI = dyn_cast<llvm::DbgDeclareInst>(&CI)) {
-        visitDbgDeclareInst(*DDI);
+        processDbgDeclare(*DDI);
     } else if (auto *DVI = dyn_cast<llvm::DbgValueInst>(&CI)) {
-        visitDbgValueInst(*DVI);
+        processDbgValue(*DVI);
     }
 }
 
 
 void
-InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
+InstructionVisitor::processDbgDeclare(const llvm::DbgDeclareInst &DDI)
 {
 
     //=======================================
@@ -783,7 +782,7 @@ InstructionVisitor::visitDbgDeclareInst(const llvm::DbgDeclareInst &DDI)
 
 
 void
-InstructionVisitor::visitDbgValueInst(const llvm::DbgValueInst &DDI)
+InstructionVisitor::processDbgValue(const llvm::DbgValueInst &DDI)
 {
 
     //=======================================

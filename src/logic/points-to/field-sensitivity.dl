@@ -57,6 +57,8 @@ gep_points_to(?insn, 0, ?baseAlloc, ?zeroAliasAlloc)
    // base object
    basic_allocation(?alloc),
    alloc_subregion_at_array_index(?alloc, 0, ?zeroAliasAlloc).
+// Evaluation order only: start from the new facts of the delta atom.
+.plan 1:(3,4,1,2), 2:(4,3,1,2)
 
 
 // 1. First zero index is ignored when address operand points-to
@@ -199,6 +201,8 @@ gep_points_to(?insn, 1, ?baseAlloc, ?alloc)
    gep_points_to(?insn, 0, ?baseAlloc, ?alloc),
    alloc_subregion_at_any_array_index(?base, ?alloc),
    alloc_subregion_base(?alloc, ?base). // OPT: redundant clause
+// Evaluation order only: start from the new facts of the delta atom.
+.plan 1:(2,3,1), 2:(3,2,1)
 
 
 // 5. When address operand points to base object, then we must record
@@ -213,6 +217,8 @@ _gep_addr_points_to_baseobj(?alloc, ?baseAlloc, ?insn) :-
    type_compatible(?type, ?declaredType),
    // base object
    basic_allocation(?alloc).
+// Evaluation order only: start from new allocation_type facts (version 1).
+.plan 1:(3,5,1,2,4)
 
 gep_points_to(?insn, 1, ?baseAlloc, ?indexedAlloc)
  :-
@@ -254,6 +260,8 @@ gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
    struct_type_field_offset(?type, ?field, ?offset),
    // get subobject of this field
    alloc_subregion_at_field(?alloc, ?field, ?allocField).
+// Evaluation order only: start from new allocation_type / subregion facts.
+.plan 1:(7,8,1,2,3,4,5,6,9,10), 2:(10,7,8,1,2,3,4,5,6,9)
 
 
 //same as above but using the generic "ptr" pointer type
@@ -271,6 +279,8 @@ gep_points_to(?insn, 1, ?baseAlloc, ?allocField)
    struct_type_field_offset(?type, ?field, ?offset),
    // get subobject of this field
    alloc_subregion_at_field(?alloc, ?field, ?allocField).
+// Evaluation order only: start from new allocation_type / subregion facts.
+.plan 1:(5,6,1,2,3,4,7,8), 2:(8,5,6,1,2,3,4,7)
 
 
 
@@ -290,6 +300,8 @@ gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc)
    array_type(?declaredType),
    type_compatible(?type, ?declaredType),
    alloc_subregion(?alloc).
+// Evaluation order only: start from new allocation_type facts (version 1).
+.plan 1:(3,4,7,1,2,5,6)
 
 gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc)
  :-
@@ -301,6 +313,8 @@ gep_interm_points_to(?insn, ?index, ?baseAlloc, ?alloc)
    struct_type(?declaredType),
    type_compatible(?type, ?declaredType),
    alloc_subregion(?alloc).
+// Evaluation order only: start from new allocation_type facts (version 1).
+.plan 1:(3,4,7,1,2,5,6)
 
 // Case of unknown index
 gep_points_to(?insn, ?nextIndex, ?baseAlloc, ?indexedAlloc)

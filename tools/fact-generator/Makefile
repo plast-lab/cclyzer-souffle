@@ -14,7 +14,6 @@ CXXFLAGS += -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter    \
             -O1  
 # Linux supports -O3 but macOS for some reason does not
 
-LLVM_CONFIG ?= llvm-config
 
 #-----------------------------------
 # Configure paths
@@ -44,7 +43,7 @@ vpath %.h $(include_dirs)
 
 CPPFLAGS += $(shell $(LLVM_CONFIG) --cppflags)
 LDFLAGS  += $(shell $(LLVM_CONFIG) --ldflags)
-LDLIBS   += $(shell $(LLVM_CONFIG) --libs core irreader)
+LDLIBS   += $(shell $(LLVM_CONFIG) --libs core irreader transformutils)
 LDLIBS   += $(filter-out -lz,$(shell $(LLVM_CONFIG) --system-libs))
 LDLIBS   += -lboost_filesystem -lboost_program_options
 
@@ -72,8 +71,8 @@ $(library): $(objects) | $(LIBDIR)
 
 py_objects := $(addprefix $(outdir)/,PyFactGen.o PyFactGen.d) $(library)
 
-$(py_objects): CXXFLAGS += $(shell python3-config --includes) 
-$(py_objects): LDFLAGS  += $(shell python3-config --ldflags) 
+$(py_objects): CXXFLAGS += $(shell $(PYTHON3_CONFIG) --includes) 
+$(py_objects): LDFLAGS  += $(shell $(PYTHON3_CONFIG) --ldflags) 
 $(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)
 
 #-----------------------------------

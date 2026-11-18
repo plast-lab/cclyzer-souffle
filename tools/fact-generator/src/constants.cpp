@@ -51,13 +51,11 @@ FactGenerator::writeConstant(const llvm::Constant &c)
     else if (isa<ConstantInt>(c)) {
         writeFact(pred::integer_constant::id, id);
 
-        // Compute integer string representation
-        llvm::SmallVector<char> temp;
-        c.getUniqueInteger().toString(temp,10,true);   
-        std::string int_value_as_string = std::string().append(temp.data(),temp.size());
-    
-        // Write constant to integer fact
-        writeFact(pred::constant::to_integer, id, int_value_as_string);
+        // Integer value, when it fits Soufflé's 64-bit number domain
+        // (wider integers, e.g. i128, have no constant_to_int fact)
+        const llvm::APInt &v = cast<ConstantInt>(c).getValue();
+        if (v.getSignificantBits() <= 64)
+            writeFact(pred::constant::to_integer, id, v.getSExtValue());
     }
     else if (isa<ConstantFP>(c)) {
         writeFact(pred::fp_constant::id, id);

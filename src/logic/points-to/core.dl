@@ -136,6 +136,8 @@ ptr_points_to(?aCtx, ?alloc, ?baseACtx, ?baseAlloc) :-
    operand_points_to(?aCtx, ?alloc, ?ctx, ?value),
    operand_points_to(?baseACtx, ?baseAlloc, ?ctx, ?toAddress),
    ptr_compatible_allocation(?baseAlloc).
+// Evaluation order only: start from new ptr_compatible_allocation facts (version 4).
+.plan 4:(5,4,1,2,3)
 
 .decl reachable_load(?instrFunc: Function, ?toVar: Variable, ?fromAdress: Operand)
 

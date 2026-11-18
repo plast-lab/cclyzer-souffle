@@ -30,7 +30,10 @@ Options::Options(int argc, char* argv[])
         ("out-dir,o", po::value<fs::path>(&outdir)->required(),
          "Output directory for generated facts")
         ("recursive,r", "Recurse into input directories")
-        ("force,f", "Remove existing contents of output directory");
+        ("force,f", "Remove existing contents of output directory")
+        ("no-mem2reg", "Keep every local variable in its stack slot, as in "
+                       "unoptimized code, instead of promoting locals whose "
+                       "address is never taken to SSA values");
 
     // hidden options group - don't show in help
     po::options_description hiddenOpts("hidden options");
@@ -84,6 +87,7 @@ Options::Options(int argc, char* argv[])
     // Compute input files and create output directories
     std::vector<fs::path> paths = vm["input-files"].as<std::vector<fs::path> >();
     set_output_dir(outdir, vm.count("force"));
+    promoteLocals = vm.count("no-mem2reg") == 0;
     set_input_files(paths.begin(), paths.end(), vm.count("recursive"));
 }
 

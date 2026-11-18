@@ -77,8 +77,7 @@ relation). Analyses:
 - `1-call-site-sensitive+heap`
 - `2-call-site-sensitive+heap`
 - `2-call-site-sensitive+2-heap`
-- `selective` (experimental, not built by default: `make -C src/logic ANALYSES=selective`;
-  context only for allocation wrappers and
+- `selective` (experimental: context only for allocation wrappers and
   container-like functions)
 
 For C, use `2-call-site-sensitive+heap`: without heap contexts, nearly all

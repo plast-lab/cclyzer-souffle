@@ -187,6 +187,16 @@ array_indices__no_typecomp(?declaredType, ?constantIndex) :-
    constant_to_int(?indexOp, ?constantIndex),
    array_type(?declaredType).
 
+// Pointer arithmetic with a constant on a pointer to an array element
+// (`p = arr; p + 3`, see array decay in field-sensitivity.dl)
+array_indices__no_typecomp(?arrayType, ?constantIndex) :-
+   getelementptr_instruction_index(?insn, 0, ?indexOp),
+   constant_to_int(?indexOp, ?constantIndex),
+   ?constantIndex >= 0,
+   getelementptr_instruction_interm_type(?insn, 1, ?declaredType),
+   array_type_has_component(?arrayType, ?elemType),
+   type_compatible(?elemType, ?declaredType).
+
 // Same thing, but also consider compatible array types
 
 .decl array_indices(?type: ArrayType, ?index: number)

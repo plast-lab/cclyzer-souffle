@@ -15,7 +15,7 @@ context(?ctx) :-
 empty_alloc_context(?aCtx),
 alloc_context(?aCtx) :-
   dummy_context_item_by_str("<<empty-context>>", ?ctxItem),
-  ?aCtx = [?ctxItem].
+  ?aCtx = [?ctxItem, ?ctxItem].
 
 // Special context for when called from main
 .decl main_context(?ctx:Context)

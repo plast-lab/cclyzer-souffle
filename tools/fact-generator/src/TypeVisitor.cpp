@@ -192,9 +192,12 @@ void
 TypeVisitor::visitVectorType(const VectorType *vectorType)
 {
     refmode_t tref = gen.refmode<llvm::Type>(*vectorType);
-    size_t nElements = vectorType->getArrayNumElements();//getVectorNumElements();
+    // Number of elements; for a scalable vector (<vscale x N x T>) this is
+    // the known minimum N. (getArrayNumElements/getArrayElementType assert
+    // on vector types, which crashed the fact generator on SIMD code.)
+    size_t nElements = vectorType->getElementCount().getKnownMinValue();
 
-    Type *componentType = vectorType->getArrayElementType();//getVectorElementType();
+    Type *componentType = vectorType->getElementType();
 
     // Record vector type entity
     gen.writeFact(pred::vector_type::id, tref);

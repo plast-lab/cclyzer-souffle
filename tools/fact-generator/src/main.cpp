@@ -2,8 +2,12 @@
 #include <string>
 #include <boost/filesystem.hpp>
 #include <llvm/Config/llvm-config.h>
+#include <vector>
+#include <llvm/IR/Dominators.h>
+#include <llvm/IR/Instructions.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
+#include <llvm/Transforms/Utils/PromoteMemToReg.h>
 #include <llvm/IRReader/IRReader.h>
 #include <llvm/Support/SourceMgr.h>
 #include "factgen.hpp"
@@ -17,12 +21,47 @@
 namespace fs = boost::filesystem;
 
 //--------------------------------------------------------------------------
+// Local variables: stack slots or SSA values
+//--------------------------------------------------------------------------
+//
+// Unoptimized code keeps every local variable and parameter in a stack
+// slot (alloca) and reads and writes it with load/store. The analysis then
+// models each local as a memory object: every assignment is a store and
+// every use a load into one flow-insensitive abstract object, which costs
+// time and precision (all values ever stored into the slot mix). Locals
+// whose address is never taken are just variables, so promote them to SSA
+// values first, exactly as LLVM's mem2reg pass does. Locals whose address
+// is taken (&x, arrays, structs accessed through pointers) stay stack
+// objects. Calling the utility directly also works on -O0 code, whose
+// functions are marked optnone.
+
+static void promoteLocals(llvm::Module &module)
+{
+    for (llvm::Function &func : module) {
+        if (func.isDeclaration())
+            continue;
+
+        std::vector<llvm::AllocaInst *> allocas;
+        for (llvm::Instruction &instr : func.getEntryBlock())
+            if (auto *alloca = llvm::dyn_cast<llvm::AllocaInst>(&instr))
+                if (llvm::isAllocaPromotable(alloca))
+                    allocas.push_back(alloca);
+
+        if (!allocas.empty()) {
+            llvm::DominatorTree domTree(func);
+            llvm::PromoteMemToReg(allocas, domTree);
+        }
+    }
+}
+
+
+//--------------------------------------------------------------------------
 // Driver Fact-Generation Routine
 //--------------------------------------------------------------------------
 
 template<typename FileIt> void
 cclyzer::factgen(FileIt firstFile, FileIt endFile,
-                 fs::path outputDir, std::string delim)
+                 fs::path outputDir, std::string delim, bool promote)
 {
     using cclyzer::FactGenerator;
     using cclyzer::FactWriter;
@@ -52,6 +91,11 @@ cclyzer::factgen(FileIt firstFile, FileIt endFile,
         // Check if parsing succeeded
         if (!module)
             throw ParseException(inputFile);
+
+        // Before the debug-info conversion below: promotion turns each
+        // promoted variable's declaration into value records.
+        if (promote)
+            promoteLocals(*module);
 
         // Since LLVM 19, debug info lives in records rather than @llvm.dbg.* intrinsics so debug facts are lost.
         // Convert the records into the intrinsic representation to capture them
@@ -88,7 +132,7 @@ int main(int argc, char *argv[])
     Options::input_file_iterator input_end = options.input_file_end();
 
     try {
-        cclyzer::factgen(input_begin, input_end, outdir, delim);
+        cclyzer::factgen(input_begin, input_end, outdir, delim, options.promote_locals());
     }
     catch (const ParseException &error) {
         std::cerr << error.what() << std::endl;

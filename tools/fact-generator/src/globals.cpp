@@ -72,14 +72,13 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
     refmode_t visibility = refmode(gv.getVisibility());
     refmode_t linkage    = refmode(gv.getLinkage());
     auto value_type = gv.getValueType();
-    recordType(value_type);
-    //string representation of value_type
-    std::string value_type_string;
-    llvm::raw_string_ostream rso(value_type_string);
-    value_type->print(rso);
+    // the type's canonical id, the same one every other fact uses;
+    // print() spells out a named struct's whole body, so ids built from
+    // it never matched (no field of a global struct got an object)
+    refmode_t value_type_id = recordType(value_type);
 
     //var type is pointer to value type
-    refmode_t varType  = value_type_string + "*";
+    refmode_t varType  = value_type_id + "*";
     // refmode_t valueType = refmode(gv.getValueType());
     refmode_t thrLocMode = refmode(gv.getThreadLocalMode());
 
@@ -111,7 +110,7 @@ FactGenerator::writeGlobalVar(const llvm::GlobalVariable& gv,
 
     writeFact(pred::global_var::flag, id, flag);
     writeFact(pred::global_var::type, id, varType);
-    writeFact(pred::global_var::value_type, id, value_type_string);
+    writeFact(pred::global_var::value_type, id, value_type_id);
 
     // Record initializer
     if (gv.hasInitializer()) {

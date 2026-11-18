@@ -77,6 +77,14 @@ relation). Analyses:
 - `1-call-site-sensitive+heap`
 - `2-call-site-sensitive+heap`
 - `2-call-site-sensitive+2-heap`
+- `selective` (experimental, not built by default: `make -C src/logic ANALYSES=selective`;
+  context only for allocation wrappers and
+  container-like functions)
+
+For C, use `2-call-site-sensitive+heap`: without heap contexts, nearly all
+memory comes from a few allocation wrappers (xmalloc, palloc), so the
+context-insensitive heap is a handful of objects and the analysis is both
+slower and less precise.
 
 `cclyzer.sh` uses the compiled analysis when it exists and Soufflé's
 interpreter otherwise. It does not write into the source tree, so several
@@ -153,6 +161,46 @@ object belongs to one activation of its function. With a one-element
 context for stack objects too, two activations that differ only in the
 older call site would share their locals, and the second call site could
 never separate a value that passes through one.
+
+## Working on the analyses
+
+The Datalog is in `src/logic/`. After a change, `make -C src/logic` rebuilds
+the compiled analyses (minutes each). For fast iteration on small programs,
+run the interpreter on existing facts instead:
+
+```sh
+souffle -j 8 --macro=TWO_CALL_SITE_SENSITIVE_HEAP=1 -F out/facts -D out2 src/logic/master.project
+```
+
+Tools to check a result (`<results>` is `out/results`, `<facts>` is `out/facts`):
+
+```sh
+scripts/stats.py <results> --facts <facts>   # reachable code, call graph, unresolved indirect calls, empty dereferences
+scripts/empty-derefs.py <results> <facts>    # why dereferenced pointers have empty points-to sets
+scripts/unmodelled.py <facts>                # library functions called without a model
+```
+
+In a sound result a dereferenced pointer has an empty points-to set only if
+it is null or never points anywhere at runtime, so the empty dereferences are
+the first thing to check after a change.
+
+### Library models
+
+Library functions (libc, libpq, zlib, ...) have no body in the bitcode, so a
+call to one produces no points-to facts unless it has a model. Models are
+one-line specs in `src/logic/points-to/library-models.dl`; the comment at the
+top of the file explains each kind. For example:
+
+```
+lib_alloc("@strdup").          // returns a fresh object
+lib_ret_arg("@strchr", 0).     // returns a pointer into argument 0
+lib_out_alloc("@getline", 0).  // stores a fresh object into *argument 0
+lib_callback("@qsort", 3, 0, 0).  // calls argument 3 with argument 0 as its parameter 0
+```
+
+`scripts/unmodelled.py` lists the functions still missing, ranked by call
+sites. Functions that return a pointer almost always need a model; ones that
+only read their pointer arguments (free, strlen, fprintf) need none.
 
 ## Tests
 

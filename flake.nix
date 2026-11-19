@@ -12,17 +12,10 @@
       nixpkgs.lib.genAttrs systems (system: f (import nixpkgs {inherit system;}));
 
     # Everything the build needs. LLVM is pinned to 22, the version the
-    # Docker image uses; Python is nixpkgs' default (any Python 3 that
-    # Boost.Python is built for).
+    # Docker image uses; Python (for scripts/) is nixpkgs' default.
     buildDeps = pkgs: let
       llvm = pkgs.llvmPackages_22;
       python = pkgs.python3;
-
-      # Boost.Python for the factgen.so / astexport.so bindings
-      boostPython = pkgs.boost.override {
-        enablePython = true;
-        inherit python;
-      };
 
       # Soufflé built with a 64-bit domain. The default 32-bit build fails to load
       # facts containing LLVM's ~0U sentinel (4294967295)
@@ -40,7 +33,7 @@
       llvm.libclang
       llvm.libclang.dev
 
-      boostPython
+      pkgs.boost
       python
     ];
   in {

@@ -18,7 +18,6 @@ sources      := $(wildcard $(srcdir)/*.cpp)
 objects      := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.o,$(sources))
 dependencies := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.d,$(sources))
 program      := $(BINDIR)/json-ast-exporter
-library      := $(LIBDIR)/astexport.so
 json_library := ../jsoncons/include
 include_dirs := $(json_library)
 
@@ -58,11 +57,8 @@ $(outdir)/%.o: %.cpp | $(outdir) $(json_library)
 	$(QUIET) $(MKDIR) $(@D)
 	$(COMPILE.cc) -o $@ $<
 
-$(program): $(filter-out $(outdir)/Py%.o, $(objects)) | $(BINDIR)
+$(program): $(objects) | $(BINDIR)
 	$(LINK.cc) -o $@ $^ $(LDLIBS)
-
-$(library): $(objects) | $(LIBDIR)
-	$(LINK.cpp) -shared -o $@ $^ $(LDLIBS)
 
 
 #-----------------------------------
@@ -70,7 +66,7 @@ $(library): $(objects) | $(LIBDIR)
 #-----------------------------------
 
 .PHONY: all
-all: $(program) $(library)
+all: $(program)
 
 .PHONY: clean
 clean:
@@ -112,17 +108,3 @@ jsonscons: $(json_library)
 
 $(json_library):
 	git submodule update --init
-
-
-#-----------------------------------
-# Python specific flags
-#-----------------------------------
-
-py_sources := $(wildcard $(srcdir)/*.cpp)
-py_objects := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.o,$(py_sources))
-py_objects += $(patsubst $(srcdir)/%.cpp,$(outdir)/%.d,$(py_sources))
-py_objects += $(library)
-
-$(py_objects): CXXFLAGS += $(shell $(PYTHON3_CONFIG) --includes)
-$(py_objects): LDFLAGS  += $(shell $(PYTHON3_CONFIG) --ldflags)
-$(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)

@@ -2,8 +2,6 @@
 build/
 bin/fact-generator
 bin/json-ast-exporter
-lib/factgen.so
-lib/astexport.so
 src/logic/analysis.config
 src/logic/**/deps.mk
 **/*.pyc

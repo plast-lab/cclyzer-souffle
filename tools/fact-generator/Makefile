@@ -25,7 +25,6 @@ sources      := $(wildcard $(srcdir)/*.cpp)
 objects      := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.o,$(sources))
 dependencies := $(patsubst $(srcdir)/%.cpp,$(outdir)/%.d,$(sources))
 program      := $(BINDIR)/fact-generator
-library      := $(LIBDIR)/factgen.so
 include_dirs := include
 
 
@@ -58,29 +57,16 @@ CXXFLAGS += -fPIC -g -std=c++17
 $(outdir)/%.o: %.cpp | $(outdir)
 	$(COMPILE.cpp) -o $@ $<
 
-$(program): $(filter-out $(outdir)/PyFactGen.o, $(objects))  | $(BINDIR)
+$(program): $(objects) | $(BINDIR)
 	$(LINK.cpp) -o $@ $^ $(LDLIBS)
 
-$(library): $(objects) | $(LIBDIR)
-	$(LINK.cpp) -shared -o $@ $^ $(LDLIBS)
-
-
-#-----------------------------------
-# Python specific flags
-#-----------------------------------
-
-py_objects := $(addprefix $(outdir)/,PyFactGen.o PyFactGen.d) $(library)
-
-$(py_objects): CXXFLAGS += $(shell $(PYTHON3_CONFIG) --includes) 
-$(py_objects): LDFLAGS  += $(shell $(PYTHON3_CONFIG) --ldflags) 
-$(py_objects): LDLIBS   += $(LIBBOOST_PYTHON)
 
 #-----------------------------------
 # Phony targets
 #-----------------------------------
 
 .PHONY: all
-all: $(program) $(library)
+all: $(program)
 
 .PHONY: clean
 clean:

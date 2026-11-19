@@ -71,31 +71,3 @@ $(error '$(LLVM_CONFIG)' is LLVM $(LLVM_VERSION_MAJOR), but cclyzer needs LLVM $
 endif
 endif
 
-
-#--------------------
-# Python and Boost.Python
-#--------------------
-
-# The Python bindings must use the Python that Boost.Python was built for.
-# Override PYTHON3 when the first python3 on PATH is a different one, e.g.
-# PYTHON3=/usr/bin/python3 when a Homebrew python3 shadows the system one.
-PYTHON3        ?= python3
-PYTHON3_CONFIG ?= $(PYTHON3)-config
-PYTHON_VERSION_NODOT := $(shell $(PYTHON3) -c 'import sys; print("%d%d" % sys.version_info[:2])')
-LIBBOOST_PYTHON ?= -lboost_python$(PYTHON_VERSION_NODOT)
-
-# Fail at the start rather than at the final link step: link an empty
-# shared object against Boost.Python with the same compiler and LDFLAGS as
-# the real link. -shared because the real target is a shared object: an
-# executable link must also resolve Boost.Python's Python C API symbols,
-# which only the interpreter provides, and fails on Nix. (Not
-# -print-file-name: it ignores -L, so it misses libraries outside the
-# compiler's default search path, e.g. Boost on Nix.)
-ifneq ($(filter-out clean %.clean,$(or $(MAKECMDGOALS),all)),)
-BOOST_PYTHON_LIB := libboost_python$(PYTHON_VERSION_NODOT)
-ifneq ($(shell printf 'int main(){}\n' | $(CXX) -x c++ - -shared $(LDFLAGS) $(LIBBOOST_PYTHON) -o /dev/null 2>/dev/null && echo ok),ok)
-ifeq ($(origin LIBBOOST_PYTHON),file)
-$(error No $(BOOST_PYTHON_LIB) found for '$(shell command -v $(PYTHON3))'. Install Boost.Python for that Python, or set PYTHON3 to the Python Boost.Python was built for, e.g. PYTHON3=/usr/bin/python3)
-endif
-endif
-endif

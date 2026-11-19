@@ -1,7 +1,6 @@
 LEVEL := .
 CCLYZER_OPTS ?=
 PYTHON = python3
-PIP    = pip
 CCLYZER = ./cclyzer.sh
 
 all:
@@ -39,10 +38,6 @@ all: $(modules)
 clean: $(modules.clean)
 	$(RM) -r $(OUTDIR)/
 
-.PHONY: install
-install:
-	$(PIP) install -r requirements.txt
-	$(PYTHON) setup.py install
 
 
 #-----------------------------------------

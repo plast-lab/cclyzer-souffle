@@ -11,15 +11,14 @@ engine. It computes points-to sets, a call graph and type information.
   cclyzer reads bitcode from the same or older LLVM versions.
 - **Soufflé built with 64-bit domains** (`-DSOUFFLE_DOMAIN_64BIT=ON`). The
   default 32-bit build cannot load cclyzer's facts.
-- Boost (filesystem, program_options, python) and Python 3 headers, for the
-  same Python that Boost.Python was built for (`PYTHON3=...` selects it).
+- Boost (filesystem, program_options) and Python 3 (for the scripts).
 
 There are three tested ways to get all of this.
 
 ### Nix
 
 ```sh
-nix develop      # LLVM 22, 64-bit Soufflé, Boost.Python, Python
+nix develop      # LLVM 22, 64-bit Soufflé, Boost, Python
 make
 ```
 
@@ -39,7 +38,7 @@ LLVM_VERSION=21` for another one).
 # LLVM from apt.llvm.org (Ubuntu 24.04 also ships llvm-20 itself)
 wget https://apt.llvm.org/llvm.sh && sudo bash llvm.sh 22
 sudo apt install llvm-22-dev libclang-22-dev \
-     libboost-filesystem-dev libboost-program-options-dev libboost-python-dev python3-dev \
+     libboost-filesystem-dev libboost-program-options-dev python3 \
      bison flex cmake libffi-dev libsqlite3-dev zlib1g-dev mcpp
 
 # Soufflé with 64-bit domains
@@ -49,9 +48,6 @@ sudo cmake --build souffle/build -j8 --target install
 
 make
 ```
-
-If a `python3` other than the system one comes first on `PATH` (for example
-from Homebrew), build with `make PYTHON3=/usr/bin/python3`.
 
 ## Build
 

@@ -11,9 +11,8 @@ WORKDIR /workdir
 RUN apt-get -y update && apt-get -y install \
         bison build-essential ca-certificates cmake flex g++ git gnupg \
         libffi-dev libncurses-dev libsqlite3-dev make mcpp python3 \
-        python3-dev sqlite3 wget zlib1g-dev \
-        libboost-dev libboost-filesystem-dev libboost-program-options-dev \
-        libboost-python-dev
+        sqlite3 wget zlib1g-dev \
+        libboost-dev libboost-filesystem-dev libboost-program-options-dev
 
 # Soufflé with 64-bit domains: the default 32-bit build cannot load facts
 # that contain LLVM's ~0U sentinel (4294967295).
